@@ -16,9 +16,7 @@
 
 <br />
 
-
-> [!WARNING]
+> [!IMPORTANT]
 > **Ethereum Follow Protocol** is under active development. Expected testnet launch is Q1 2024.
-
 
 Follow [**@ethfollowpr**](https://x.com/ethfollowpr) on **𝕏** for updates and join the [**Discord**](https://discord.ethfollow.xyz) to get involved.
