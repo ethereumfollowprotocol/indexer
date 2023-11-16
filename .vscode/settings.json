@@ -17,25 +17,20 @@
   "[jsonc]": { "editor.defaultFormatter": "biomejs.biome" },
   "files.associations": {
     "biome.json": "jsonc",
-    "wrangler.json": "jsonc",
-    ".dev.vars": "dotenv",
-    ".dev.vars.example": "dotenv",
     "settings.json": "jsonc"
   },
   "search.exclude": {
     "_": true,
-    "**/.turbo": true,
     "public/*.js": true,
     "pnpm-lock.yaml": true,
     "**/node_modules": true,
+    "drizzle/**": true,
     "**/dist/**": true
   },
   "files.exclude": {
-    "**/.turbo": true,
     "**/.wrangler": true
   },
   "yaml.format.singleQuote": true,
-
   // disable various telemetry services
   "docsYaml.telemetry.enableTelemetry": false,
   "redhat.telemetry.enabled": false,
