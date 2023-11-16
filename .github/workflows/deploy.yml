@@ -1,0 +1,52 @@
+name: Deploy
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+jobs:
+  checks:
+    if: ${{ !contains(github.event.head_commit.message, '[skip-deploy]') }}
+    timeout-minutes: 3
+    runs-on: ['ubuntu-latest']
+    steps:
+      - name: 🔑 Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/setup
+
+      - name: 'Lint / Build / Test'
+        uses: ./.github/actions/checks
+        with:
+          skip-build: false
+
+  deploy-indexer:
+    if: ${{ !contains(github.event.head_commit.message, '[skip-deploy]') }}
+    needs: [checks]
+    timeout-minutes: 3
+    runs-on: ['ubuntu-latest']
+    steps:
+      - name: 🔑 Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/setup
+
+      - name: 'TODO'
+        run: |
+          echo 'TODO'

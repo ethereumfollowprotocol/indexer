@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "resolvePackageJsonExports": true,
+    "resolvePackageJsonImports": true,
+    "allowArbitraryExtensions": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": false,
+    "declarationMap": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "checkJs": true,
+    "types": ["node", "bun-types"],
+    "baseUrl": ".",
+    "paths": {
+      "#/*": ["src/*"],
+      "~schema" :  ["./drizzle/schema.ts"]
+    },
+  },
+  "include": ["src", "scripts", "drizzle/**/*.ts"],
+  "files": ["environment.d.ts", "reset.d.ts", "drizzle.config.ts"]
+}

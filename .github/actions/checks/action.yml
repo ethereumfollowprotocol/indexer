@@ -1,0 +1,31 @@
+name: 'Lint/Build/Test'
+description: 'lint, format, typecheck, build'
+
+inputs:
+  skip-build:
+    description: 'Skip the build step'
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: '🧹 Lint'
+      shell: bash
+      run: |
+        bun lint
+        # https://github.com/oxc-project/oxc
+        bunx oxlint@latest . --fix --import-plugin --ignore-pattern="dist" --ignore-pattern=".wrangler"
+
+    - name: '🧹 Format'
+      shell: bash
+      run: bun format
+
+    - name: '🧪 Typecheck'
+      shell: bash
+      run: bun typecheck
+
+    - name: '🔧 Build'
+      shell: bash
+      if: ${{ !inputs.skip-build }}
+      run: bun run build
