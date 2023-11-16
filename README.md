@@ -1,6 +1,8 @@
 
 > [!NOTE]
-> **Ethereum Follow Protocol** is in active development.
+> The project is under active development.
+
+<br />
 
 <p align="center">
   <a href="https://ethfollow.xyz" target="_blank" rel="noopener noreferrer">
@@ -15,6 +17,8 @@
 </p>
 
 <h1 align="center" style="font-size: 2.75rem; font-weight: 900; color: white;">Ethereum Follow Protocol Indexer</h1>
+
+> A native Ethereum protocol for following and tagging Ethereum accounts.
 
 ## Important links
 
