@@ -11,3 +11,14 @@
 </p>
 
 <h1 align="center" style="font-size: 2.75rem; font-weight: 900; color: white;">Ethereum Follow Protocol Indexer ⚡</h1>
+
+**Ethereum Follow Protocol** (**EFP**) is a native Ethereum protocol for following and tagging Ethereum accounts.
+
+<br />
+
+
+> [!WARNING]
+> **Ethereum Follow Protocol** is under active development. Expected testnet launch is Q1 2024.
+
+
+Follow [**@ethfollowpr**](https://x.com/ethfollowpr) on **𝕏** for updates and join the [**Discord**](https://discord.ethfollow.xyz) to get involved.
