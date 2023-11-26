@@ -1,5 +1,6 @@
 {
   "name": "efp-indexer",
+  "description": "Ethereum Follow Protocol Indexer",
   "repository": "github:ethereumfollowprotocol/indexer",
   "type": "module",
   "scripts": {
@@ -10,34 +11,31 @@
     "database:introspect": "bun drizzle-kit introspect:pg --config='drizzle.config.ts'",
     "database:generate": "bun drizzle-kit generate:pg --config='drizzle.config.ts'",
     "database:migrate": "bun ./src/database/migration.ts",
-    "database:dump": "dbmate dump",
     "lint": "biome check --apply .",
     "format": "biome format . --write",
     "typecheck": "tsc --project tsconfig.json --noEmit",
+    "update-dependencies": "bun ./scripts/update-dependencies.ts",
     "clean": "/bin/bash ./scripts/clean.sh"
   },
   "dependencies": {
     "@viem/anvil": "^0.0.6",
-    "@wagmi/core": "2.0.0-beta.5",
-    "viem": "2.0.0-beta.6",
     "consola": "^3.2.3",
     "drizzle-orm": "^0.29.0",
-    "postgres": "^3.4.3"
+    "postgres": "^3.4.3",
+    "@wagmi/core": "2.0.0-beta.5",
+    "viem": "2.0.0-beta.6"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.3.3",
     "@total-typescript/ts-reset": "^0.5.1",
-    "@types/node": "^20.9.4",
+    "@types/node": "^20.10.0",
     "@types/pg": "^8.10.9",
-    "bun": "^1.0.13",
-    "bun-types": "^1.0.13",
+    "bun": "^1.0.14",
+    "bun-types": "^1.0.14",
     "dbmate": "^2.8.0",
     "drizzle-kit": "^0.20.4",
-    "tsx": "^4.3.0",
+    "tsx": "^4.5.0",
     "typescript": "^5.3.2"
   },
-  "description": "Ethereum Follow Protocol Indexer",
-  "homepage": "github:ethereumfollowprotocol/indexer/README.md",
-  "private": true,
   "sideEffects": false
 }

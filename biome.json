@@ -61,6 +61,9 @@
       "correctness": {
         "noUndeclaredVariables": "off"
       },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      },
       "suspicious": {
         "noRedeclare": "off",
         "noExplicitAny": "off",
