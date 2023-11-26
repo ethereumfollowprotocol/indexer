@@ -47,6 +47,12 @@ jobs:
       - name: 'Install Dependencies'
         uses: ./.github/actions/setup
 
-      - name: 'TODO'
+      - name: Install Railway CLI
         run: |
-          echo 'TODO'
+          bun add --global @railway/cli
+
+      - name: Deploy Indexer
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --detach --service='indexer' --environment='production'

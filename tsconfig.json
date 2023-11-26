@@ -34,5 +34,5 @@
     },
   },
   "include": ["src", "scripts", "drizzle/**/*.ts"],
-  "files": ["environment.d.ts", "reset.d.ts", "drizzle.config.ts"]
+  "files": ["environment.d.ts", "reset.d.ts", "drizzle.config.ts", "biome.json"]
 }

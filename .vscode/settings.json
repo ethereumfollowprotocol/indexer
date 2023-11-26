@@ -1,6 +1,7 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
   "git.autofetch": true,
   "git.confirmSync": false,
   "git.enableCommitSigning": true,
@@ -28,12 +29,14 @@
     "**/dist/**": true
   },
   "files.exclude": {
-    "**/.wrangler": true
   },
   "yaml.format.singleQuote": true,
   // disable various telemetry services
   "docsYaml.telemetry.enableTelemetry": false,
   "redhat.telemetry.enabled": false,
   "gitlens.telemetry.enabled": false,
-  "database-client.telemetry.usesOnlineServices": false
+  "database-client.telemetry.usesOnlineServices": false,
+  "[sql]": {
+    "editor.defaultFormatter": "cweijan.vscode-database-client2"
+  }
 }

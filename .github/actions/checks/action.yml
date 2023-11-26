@@ -15,7 +15,7 @@ runs:
       run: |
         bun lint
         # https://github.com/oxc-project/oxc
-        bunx oxlint@latest . --fix --import-plugin --ignore-pattern="dist" --ignore-pattern=".wrangler"
+        bunx oxlint@latest . --fix --import-plugin --ignore-pattern="dist"
 
     - name: '🧹 Format'
       shell: bash
