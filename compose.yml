@@ -1,0 +1,56 @@
+version: 2.23.3
+name: efp-indexer
+
+# WIP
+
+services:
+  database:
+    container_name: efp-database
+    image: postgres:latest
+    restart: always
+    networks:
+      - default
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=efp
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    
+  indexer:
+    container_name: efp-indexer
+    depends_on:
+      - database
+    restart: always
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    develop:
+      watch:
+        - action: sync
+        - path: src
+        - target: /usr/src/app/src
+        - ignore:
+            - node_modules
+
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:latest
+    platform: linux/amd64
+    container_name: efp-anvil
+    restart: always
+    command: ["anvil", "--host", "0.0.0.0"]
+    networks:
+      - default
+
+networks:
+  default:
+    name: efp-network
+
+volumes:
+  database:

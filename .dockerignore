@@ -1,0 +1,12 @@
+# ignore everything
+*
+# except for
+!package.json
+!tsconfig.json
+!bun.lockb
+!reset.d.ts
+!environment.d.ts
+!drizzle.config.ts
+.gitignore
+!scripts/entrypoint.sh
+!src/

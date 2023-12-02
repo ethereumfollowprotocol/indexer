@@ -51,6 +51,7 @@
       },
       "nursery": {
         "all": true,
+        "useAwait": "off",
         "noUnusedImports": "off",
         "noDefaultExport": "off",
         "useImportRestrictions": "off"
