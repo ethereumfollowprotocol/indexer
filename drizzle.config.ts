@@ -4,7 +4,7 @@ import type { Config } from 'drizzle-kit'
 const connectionString =
   process.env.DATABASE_URL_POOLED ?? raise('DATABASE_URL_POOLED is not defined')
 
-export default {
+export default ({
   driver: 'pg',
   strict: true,
   verbose: true,
@@ -12,4 +12,4 @@ export default {
   breakpoints: true,
   dbCredentials: { connectionString },
   introspect: { casing: 'preserve' }
-} satisfies Config
+} satisfies Config)
