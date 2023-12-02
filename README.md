@@ -28,7 +28,25 @@
 
 ### Prerequisites
 
-- [Bun runtime](https://bun.sh/)
+- [Bun runtime](https://bun.sh/) (latest version)
+- [Node.js](https://nodejs.org/en/) (LTS which is currently 20)
+
+### Installation
+
+```bash
+git clone https://github.com/ethereumfollowprotocol/indexer.git && cd indexer
+```
+
+```bash
+# upgrade bun to make sure you have the latest version then install dependencies
+bun upgrade && bun install
+```
+
+### Environment Variables
+
+```bash
+cp .env.example .env
+```
 
 ____
 TODO: Continue documentation

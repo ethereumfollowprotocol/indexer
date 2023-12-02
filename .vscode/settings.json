@@ -28,8 +28,7 @@
     "drizzle/**": true,
     "**/dist/**": true
   },
-  "files.exclude": {
-  },
+  "files.exclude": {},
   "yaml.format.singleQuote": true,
   // disable various telemetry services
   "docsYaml.telemetry.enableTelemetry": false,

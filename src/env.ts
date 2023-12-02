@@ -1,4 +1,4 @@
-import { raise } from './utilities.ts'
+import { raise } from './utilities'
 
 export const env = Object.freeze({
   NODE_ENV: getEnvVariable('NODE_ENV'),
