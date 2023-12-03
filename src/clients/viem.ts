@@ -1,9 +1,30 @@
 import { env } from '#/env.ts'
-import { mainnet, optimism, sepolia, optimismSepolia } from 'viem/chains'
-import { http, fallback, createPublicClient, walletActions, webSocket } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+import { mainnet, optimism, sepolia, optimismSepolia, foundry } from 'viem/chains'
+import {
+  http,
+  fallback,
+  createPublicClient,
+  walletActions,
+  webSocket,
+  createTestClient,
+  publicActions
+} from 'viem'
 
 export const evmClients = {
-  mainnet: () =>
+  '31337': () =>
+    createTestClient({
+      chain: foundry,
+      mode: 'anvil',
+      transport: http('http://127.0.0.1:8545'),
+      account: privateKeyToAccount(
+        env.ANVIL_ACCOUNT_PRIVATE_KEY ||
+          '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+      )
+    })
+      .extend(publicActions)
+      .extend(walletActions),
+  '1': () =>
     createPublicClient({
       key: 'mainnet-client',
       name: 'Mainnet Client',
@@ -28,7 +49,7 @@ export const evmClients = {
       ),
       batch: { multicall: true }
     }).extend(walletActions),
-  optimism: () =>
+  '10': () =>
     createPublicClient({
       key: 'optimism-client',
       name: 'Optimism Client',
@@ -46,7 +67,7 @@ export const evmClients = {
       ),
       batch: { multicall: true }
     }).extend(walletActions),
-  sepolia: () =>
+  '11155111': () =>
     createPublicClient({
       key: 'sepolia-client',
       name: 'Sepolia Client',
@@ -63,7 +84,7 @@ export const evmClients = {
       ),
       batch: { multicall: true }
     }).extend(walletActions),
-  optimismSepolia: () =>
+  '11155420': () =>
     createPublicClient({
       key: 'op-sepolia-client',
       name: 'OP Sepolia Client',

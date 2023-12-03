@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "bun build ./src/index.ts --minify --target='bun' --format='esm' --outfile='./dist/index.js'",
+    "nixpacksVersion": "1.19.0"
+  },
+  "deploy": {
+    "startCommand": "bun ./dist/index.js",
+    "restartPolicyType": "ALWAYS",
+    "restartPolicyMaxRetries": 10
+  }
+}

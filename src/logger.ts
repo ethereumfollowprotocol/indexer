@@ -1,6 +1,6 @@
 import { createConsola } from 'consola'
 
-export const indexerLogger = createConsola({
+export const logger = createConsola({
   defaults: { tag: 'efp-indexer' },
   formatOptions: {
     date: true,
