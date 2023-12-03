@@ -11,10 +11,14 @@ RUN apt-get update && apt-get install --yes \
 
 WORKDIR /usr/src/app
 
-COPY . /usr/src/app/
+COPY bun.lockb bun.lockb
+COPY package.json package.json
 
-RUN chmod +x ./scripts/entrypoint.sh && \
-  bun install
+RUN bun install
 
-ENTRYPOINT ["./scripts/entrypoint.sh"]
+COPY . .
+
+# RUN chmod +x ./scripts/entrypoint.sh
+
+# ENTRYPOINT ["./scripts/entrypoint.sh"]
 CMD ["bun", "--watch", "./src/index.ts"]
