@@ -1,4 +1,4 @@
-import { raise } from './utilities.ts'
+import { raise } from './utilities'
 import { getAddress, type Hex } from 'viem'
 
 export const env = Object.freeze({
