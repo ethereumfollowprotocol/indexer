@@ -8,5 +8,5 @@
 !environment.d.ts
 !drizzle.config.ts
 .gitignore
-!scripts/entrypoint.sh
+!scripts/
 !src/

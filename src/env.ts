@@ -1,4 +1,5 @@
-import { raise } from './utilities'
+import { raise } from './utilities.ts'
+import { getAddress, type Hex } from 'viem'
 
 export const env = Object.freeze({
   NODE_ENV: getEnvVariable('NODE_ENV'),
@@ -8,9 +9,18 @@ export const env = Object.freeze({
   ANKR_ID: getEnvVariable('ANKR_ID'),
   INFURA_ID: getEnvVariable('INFURA_ID'),
   SEPOLIA_ALCHEMY_ID: getEnvVariable('SEPOLIA_ALCHEMY_ID'),
-  OPTIMISM_ALCHEMY_ID: getEnvVariable('OPTIMISM_ALCHAMY_ID'),
+  OPTIMISM_ALCHEMY_ID: getEnvVariable('OPTIMISM_ALCHEMY_ID'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
-  DATABASE_URL_POOLED: getEnvVariable('DATABASE_URL_POOLED')
+  DATABASE_URL_POOLED: getEnvVariable('DATABASE_URL_POOLED'),
+  ANVIL_ACCOUNT_PRIVATE_KEY: getEnvVariable('ANVIL_ACCOUNT_PRIVATE_KEY') as Hex,
+  CHAIN_ID: getEnvVariable('CHAIN_ID') as EnvironmentVariables['CHAIN_ID'],
+  EFP_CONTRACTS: {
+    ACCOUNT_METADATA: getAddress(getEnvVariable('EFP_CONTRACT_ACCOUNT_METADATA')),
+    LIST_METADATA: getAddress(getEnvVariable('EFP_CONTRACT_LIST_METADATA')),
+    LIST_MINTER: getAddress(getEnvVariable('EFP_CONTRACT_LINT_MINTER')),
+    LIST_REGISTRY: getAddress(getEnvVariable('EFP_CONTRACT_LIST_REGISTRY')),
+    LIST_RECORDS: getAddress(getEnvVariable('EFP_CONTRACT_LIST_RECORDS'))
+  }
 })
 
 function getEnvVariable(name: keyof EnvironmentVariables) {

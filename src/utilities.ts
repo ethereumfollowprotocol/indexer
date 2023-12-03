@@ -1,7 +1,7 @@
-import { indexerLogger } from '#/logger.ts'
+import { logger } from '#/logger.ts'
 
 export function raise(error: unknown): never {
-  indexerLogger.fatal(error)
+  logger.fatal(error)
   throw typeof error === 'string' ? new Error(error) : error
 }
 
@@ -10,5 +10,5 @@ export function raise(error: unknown): never {
  * not implemented
  */
 export async function notifyError(error: unknown): Promise<void> {
-  return indexerLogger.error(error)
+  return logger.error(error)
 }

@@ -37,6 +37,9 @@
 git clone https://github.com/ethereumfollowprotocol/indexer.git && cd indexer
 ```
 
+> [!NOTE]
+> If vscode extensions behave weirdly or you stop getting type hints, run CMD+P and type `> Developer: Restart Extension Host` to restart the extension host.
+
 ```bash
 # upgrade bun to make sure you have the latest version then install dependencies
 bun upgrade && bun install
