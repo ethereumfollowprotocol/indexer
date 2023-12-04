@@ -1,118 +1,50 @@
-import {
-  EFPAccountMetadataABI,
-  EFPListMetadataABI,
-  EFPListMinterABI,
-  EFPListRecordsABI,
-  EFPListRegistryABI
-} from '#/abi'
 import { env } from '#/env'
-import { logger } from '#/logger'
-import { decodeEventLog, type PublicClient } from 'viem'
-
-// Custom replacer function for JSON.stringify
-function replacer(key: string, value: any): any {
-  if (typeof value === 'bigint') {
-    // Check if the value is a BigInt
-    return value.toString() // Convert BigInt to string
-  }
-  return value // Return the value unchanged if not a BigInt
-}
+import { type PublicClient } from 'viem'
+import {
+  EFPAccountMetadataPublisher,
+  EFPListMetadataPublisher,
+  EFPListMinterPublisher,
+  EFPListRecordsPublisher,
+  EFPListRegistryPublisher
+} from './pubsub/publishers'
+import {
+  EFPAccountMetadataSubscriber,
+  EFPListMetadataSubscriber,
+  EFPListMinterSubscriber,
+  EFPListRecordsSubscriber,
+  EFPListRegistrySubscriber
+} from './pubsub/subscribers'
 
 export async function watchAllEfpContractEvents({ client }: { client: PublicClient }) {
-  logger.info('Watching EFP contract events...')
-  client.watchContractEvent({
-    abi: EFPAccountMetadataABI,
-    address: env.EFP_CONTRACTS.ACCOUNT_METADATA,
-    onError: error => {
-      console.log('EFPAccountMetadataABI error:', error)
-    },
-    onLogs: logs => {
-      console.log('\n--- EFPAccountMetadata ---\n')
-      logs.map(({ data, topics }) => {
-        const _topics = decodeEventLog({
-          abi: EFPAccountMetadataABI,
-          data,
-          topics
-        })
-        console.log('[EFPAccountMetadata] Decoded topics:', JSON.stringify(_topics, replacer, 2))
-      })
-    }
-  })
+  const efpAccountMetadataPublisher = new EFPAccountMetadataPublisher(
+    client,
+    env.EFP_CONTRACTS.ACCOUNT_METADATA
+  )
+  const efpListMetadataPublisher = new EFPListMetadataPublisher(
+    client,
+    env.EFP_CONTRACTS.LIST_METADATA
+  )
+  const efpListRegistryPublisher = new EFPListRegistryPublisher(
+    client,
+    env.EFP_CONTRACTS.LIST_REGISTRY
+  )
+  const efpListRecordsPublisher = new EFPListRecordsPublisher(
+    client,
+    env.EFP_CONTRACTS.LIST_RECORDS
+  )
+  const efpListMinterPublisher = new EFPListMinterPublisher(client, env.EFP_CONTRACTS.LIST_MINTER)
 
-  client.watchContractEvent({
-    abi: EFPListRegistryABI,
-    address: env.EFP_CONTRACTS.LIST_REGISTRY,
-    onError: error => {
-      console.log('EFPListRegistryABI error:', error)
-    },
-    onLogs: logs => {
-      console.log('\n--- EFPListRegistry ---\n')
-      logs.map(({ data, topics }) => {
-        const _topics = decodeEventLog({
-          abi: EFPListRegistryABI,
-          data,
-          topics
-        })
-        console.log('[EFPListRegistry] Decoded topics:', JSON.stringify(_topics, replacer, 2))
-      })
-    }
-  })
+  const efpAccountMetadataSubscriber = new EFPAccountMetadataSubscriber(
+    env.EFP_CONTRACTS.ACCOUNT_METADATA
+  )
+  const efpListMetadataSubscriber = new EFPListMetadataSubscriber(env.EFP_CONTRACTS.LIST_METADATA)
+  const efpListRegistrySubscriber = new EFPListRegistrySubscriber(env.EFP_CONTRACTS.LIST_REGISTRY)
+  const efpListRecordsSubscriber = new EFPListRecordsSubscriber(env.EFP_CONTRACTS.LIST_RECORDS)
+  const efpListMinterSubscriber = new EFPListMinterSubscriber(env.EFP_CONTRACTS.LIST_MINTER)
 
-  client.watchContractEvent({
-    abi: EFPListMetadataABI,
-    address: env.EFP_CONTRACTS.LIST_METADATA,
-    onError: error => {
-      console.log('EFPListMetadataABI error:', error)
-    },
-    onLogs: logs => {
-      console.log('\n--- EFPListMetadata ---\n')
-      logs.map(({ data, topics }) => {
-        const _topics = decodeEventLog({
-          abi: EFPListMetadataABI,
-          data,
-          topics
-        })
-
-        console.log('[EFPListMetadata] Decoded topics:', JSON.stringify(_topics, replacer, 2))
-      })
-    }
-  })
-
-  client.watchContractEvent({
-    abi: EFPListRecordsABI,
-    address: env.EFP_CONTRACTS.LIST_RECORDS,
-    onError: error => {
-      logger.error('EFPListRecordsABI error:', error)
-    },
-    onLogs: logs => {
-      logger.info('\n--- EFPListRecords ---\n')
-      logs.map(({ data, topics }) => {
-        const _topics = decodeEventLog({
-          abi: EFPListRecordsABI,
-          data,
-          topics
-        })
-        logger.info('[EFPListRecords] Decoded topics:', JSON.stringify(_topics, replacer, 2))
-      })
-    }
-  })
-
-  client.watchContractEvent({
-    abi: EFPListMinterABI,
-    address: env.EFP_CONTRACTS.LIST_MINTER,
-    onError: error => {
-      console.log('EFPListMinterABI error:', error)
-    },
-    onLogs: logs => {
-      console.log('\n--- EFPListMinter ---\n')
-      logs.map(({ data, topics }) => {
-        const _topics = decodeEventLog({
-          abi: EFPListMinterABI,
-          data,
-          topics
-        })
-        console.log('[EFPListMinter] Decoded topics:', JSON.stringify(_topics, replacer, 2))
-      })
-    }
-  })
+  efpAccountMetadataPublisher.subscribe(efpAccountMetadataSubscriber)
+  efpListMetadataPublisher.subscribe(efpListMetadataSubscriber)
+  efpListRegistryPublisher.subscribe(efpListRegistrySubscriber)
+  efpListRecordsPublisher.subscribe(efpListRecordsSubscriber)
+  efpListMinterPublisher.subscribe(efpListMinterSubscriber)
 }
