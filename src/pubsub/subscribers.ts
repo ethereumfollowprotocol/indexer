@@ -5,8 +5,18 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
+import { database } from '#/database'
 import { logger } from '#/logger'
-import { decodeEventLog, type Log } from 'viem'
+import { type Abi } from 'viem'
+import { events } from '~schema'
+import { type Event } from './event'
+
+/**
+ * Interface defining the structure and methods for an EventSubscriber.
+ */
+export interface EventSubscriber {
+  onEvent(event: Event): Promise<void>
+}
 
 /**
  * Abstract base class representing a generic event subscriber for Ethereum
@@ -14,12 +24,12 @@ import { decodeEventLog, type Log } from 'viem'
  * for event subscribers, which can be specialized for different Ethereum smart
  * contracts.
  */
-export abstract class EventSubscriber {
+export abstract class ContractEventSubscriber implements EventSubscriber {
   /** Contract name for easier identification. */
   public readonly contractName: string
 
   /** ABI of the contract for decoding event logs. */
-  public readonly abi: any
+  public readonly abi: Abi
 
   /** Ethereum address of the contract. */
   public readonly address: `0x${string}`
@@ -40,70 +50,85 @@ export abstract class EventSubscriber {
    * Generic handler for log events. This function should be overridden by subclasses to process each log.
    * @param log - The log to process.
    */
-  onLog(log: Log): void {
-    this.log(log)
-  }
-
-  /**
-   * Error handler for the event subscriber.
-   * @param error - The error to be logged.
-   */
-  onError(error: Error): void {
-    logger.error(`${this.contractName} error:`, error)
+  async onEvent(event: Event): Promise<void> {
+    this.log(event)
   }
 
   /**
    * Default log processing implementation. Decodes the log and logs the output.
    * @param log - The log to process.
    */
-  protected log(log: Log): void {
-    const { data, topics, transactionHash, blockNumber } = log
-    const decodedTopics = decodeEventLog({ abi: this.abi, data, topics })
-
-    const logEntry = {
-      Contract: this.contractName,
-      TransactionHash: transactionHash,
-      BlockNumber: blockNumber !== null ? blockNumber.toString() : 'N/A',
-      DecodedData: decodedTopics
-    }
-
+  protected log(event: Event): void {
     function customSerializer(_: string, value: any): any {
       return typeof value === 'bigint' ? value.toString() : value
     }
 
-    logger.log(
-      `[${this.contractName}] Event Details:`,
-      JSON.stringify(logEntry, customSerializer, 2)
-    )
+    logger.log(`[${this.contractName}]`, JSON.stringify(event, customSerializer, 2))
   }
 }
 
-export class EFPAccountMetadataSubscriber extends EventSubscriber {
+export class EFPAccountMetadataSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
     super('EFPAccountMetadata', EFPAccountMetadataABI, address)
   }
 }
 
-export class EFPListMetadataSubscriber extends EventSubscriber {
+export class EFPListMetadataSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
     super('EFPListMetadata', EFPListMetadataABI, address)
   }
 }
 
-export class EFPListRegistrySubscriber extends EventSubscriber {
+export class EFPListRegistrySubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
     super('EFPListRegistry', EFPListRegistryABI, address)
   }
 }
 
-export class EFPListRecordsSubscriber extends EventSubscriber {
+export class EFPListRecordsSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
     super('EFPListRecords', EFPListRecordsABI, address)
   }
 }
 
-export class EFPListMinterSubscriber extends EventSubscriber {
+export class EFPListMinterSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
     super('EFPListMinter', EFPListMinterABI, address)
+  }
+}
+
+export class DatabaseUploader implements EventSubscriber {
+  /**
+   * Generic handler for log events. This function should be overridden by subclasses to process each log.
+   * @param log - The log to process.
+   */
+  async onEvent(event: Event): Promise<void> {
+    type Row = typeof events.$inferInsert
+
+    // eventParameters will have an args field
+    const serializableEventParameters: { eventName: string; args: Record<string, any> } = {
+      eventName: event.eventParameters.eventName,
+      args: {}
+    }
+    for (const key in event.eventParameters.args) {
+      // convert bigints to strings
+      const value = event.eventParameters.args[key]
+      serializableEventParameters.args[key] = typeof value === 'bigint' ? value.toString() : value
+    }
+
+    const row: Row = {
+      transactionHash: event.transactionHash,
+      blockNumber: event.blockNumber.toString(),
+      // problem: we don't have contract address here
+      contractAddress: event.contractAddress,
+      // problem: we don't have event name here
+      eventName: event.contractName,
+      eventParameters: serializableEventParameters,
+      timestamp: new Date().toISOString()
+    }
+
+    logger.log('Inserting event into database:', row)
+    await database.insert(events).values(row)
+    logger.log('Successfully inserted event into database')
   }
 }

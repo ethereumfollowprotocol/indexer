@@ -1,4 +1,6 @@
-export const EFPAccountMetadataABI = [
+import type { Abi } from 'viem'
+
+export const EFPAccountMetadataABI: Abi = [
   {
     anonymous: false,
     inputs: [

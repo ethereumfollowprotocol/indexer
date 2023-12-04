@@ -210,6 +210,7 @@ CREATE TABLE public."user" (
     updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
 );
 
+
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --
@@ -221,9 +222,9 @@ CREATE TABLE public."events" (
     contract_address VARCHAR(42) NOT NULL,
     event_name VARCHAR(255) NOT NULL,
     event_parameters JSONB NOT NULL,
-    timestamp TIMESTAMPTZ NOT NULL,
-    processed BOOLEAN DEFAULT FALSE
+    timestamp TIMESTAMPTZ NOT NULL
 );
+
 
 --
 -- Name: Indexes for events; Type: INDEX; Schema: public; Owner: -

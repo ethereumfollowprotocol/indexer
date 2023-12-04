@@ -1,8 +1,7 @@
 #!/usr/bin/env bun
 
-import { env } from '#/env'
-import { logger } from '#/logger'
 import { evmClients } from '#/clients'
+import { logger } from '#/logger'
 import { watchAllEfpContractEvents } from '#/watch'
 import { asyncExitHook, gracefulExit } from 'exit-hook'
 

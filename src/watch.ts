@@ -1,5 +1,6 @@
 import { env } from '#/env'
 import { type PublicClient } from 'viem'
+import { logger } from './logger'
 import {
   EFPAccountMetadataPublisher,
   EFPListMetadataPublisher,
@@ -8,11 +9,13 @@ import {
   EFPListRegistryPublisher
 } from './pubsub/publishers'
 import {
+  DatabaseUploader,
   EFPAccountMetadataSubscriber,
   EFPListMetadataSubscriber,
   EFPListMinterSubscriber,
   EFPListRecordsSubscriber,
-  EFPListRegistrySubscriber
+  EFPListRegistrySubscriber,
+  type EventSubscriber
 } from './pubsub/subscribers'
 
 export async function watchAllEfpContractEvents({ client }: { client: PublicClient }) {
@@ -48,9 +51,18 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
   efpListRecordsPublisher.subscribe(efpListRecordsSubscriber)
   efpListMinterPublisher.subscribe(efpListMinterSubscriber)
 
+  const dbUploader: EventSubscriber = new DatabaseUploader()
+  efpAccountMetadataPublisher.subscribe(dbUploader)
+  efpListMetadataPublisher.subscribe(dbUploader)
+  efpListRegistryPublisher.subscribe(dbUploader)
+  efpListRecordsPublisher.subscribe(dbUploader)
+  efpListMinterPublisher.subscribe(dbUploader)
+
   efpAccountMetadataPublisher.start()
   efpListMetadataPublisher.start()
   efpListRegistryPublisher.start()
   efpListRecordsPublisher.start()
   efpListMinterPublisher.start()
+
+  logger.log('Watching EFP contracts for events...')
 }
