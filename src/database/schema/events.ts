@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 import * as s from 'drizzle-orm/pg-core'
 
-export const event = s.pgTable(
+export const events = s.pgTable(
   'events',
   {
     id: s.text('id').default(sql`generate_ulid()`).primaryKey().notNull(),

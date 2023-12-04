@@ -7,9 +7,9 @@ import {
 } from '#/abi'
 import { database } from '#/database'
 import { logger } from '#/logger'
-import { type Abi } from 'viem'
+import type { Abi } from 'viem'
 import { events } from '~schema'
-import { type Event } from './event'
+import type { Event } from './event'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.
