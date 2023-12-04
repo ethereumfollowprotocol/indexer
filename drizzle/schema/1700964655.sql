@@ -210,6 +210,30 @@ CREATE TABLE public."user" (
     updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
 );
 
+--
+-- Name: events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."events" (
+    id SERIAL PRIMARY KEY,
+    transaction_hash VARCHAR(66) NOT NULL,
+    block_number INTEGER NOT NULL,
+    contract_address VARCHAR(42) NOT NULL,
+    event_name VARCHAR(255) NOT NULL,
+    event_parameters JSONB NOT NULL,
+    timestamp TIMESTAMPTZ NOT NULL,
+    processed BOOLEAN DEFAULT FALSE
+);
+
+--
+-- Name: Indexes for events; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_transaction_hash ON public.events(transaction_hash);
+CREATE INDEX idx_contract_address ON public.events(contract_address);
+CREATE INDEX idx_event_name ON public.events(event_name);
+CREATE INDEX idx_block_number ON public.events(block_number);
+
 
 --
 -- Name: activity activity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
