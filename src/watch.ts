@@ -47,4 +47,10 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
   efpListRegistryPublisher.subscribe(efpListRegistrySubscriber)
   efpListRecordsPublisher.subscribe(efpListRecordsSubscriber)
   efpListMinterPublisher.subscribe(efpListMinterSubscriber)
+
+  efpAccountMetadataPublisher.start()
+  efpListMetadataPublisher.start()
+  efpListRegistryPublisher.start()
+  efpListRecordsPublisher.start()
+  efpListMinterPublisher.start()
 }

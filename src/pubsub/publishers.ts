@@ -14,12 +14,14 @@ export class EventPublisher {
   public readonly contractName: string
   public readonly abi: any
   public readonly address: `0x${string}`
+  private unwatch: () => void = () => {}
 
   constructor(client: PublicClient, contractName: string, abi: any, address: `0x${string}`) {
     this.client = client
     this.contractName = contractName
     this.abi = abi
     this.address = address
+    this.unwatch = () => {}
   }
 
   subscribe(subscriber: EventSubscriber): void {
@@ -30,12 +32,32 @@ export class EventPublisher {
     }
 
     this.subscribers.push(subscriber)
-    this.client.watchContractEvent({
-      abi: subscriber.abi,
-      address: subscriber.address,
-      onLogs: logs => logs.forEach(log => subscriber.onLog(log)),
-      onError: subscriber.onError
+  }
+
+  unsubscribe(subscriber: EventSubscriber): void {
+    this.subscribers = this.subscribers.filter(
+      existingSubscriber => existingSubscriber !== subscriber
+    )
+  }
+
+  start(): void {
+    // This Action will batch up all the event logs found within the pollingInterval, and invoke them via onLogs.
+    this.unwatch = this.client.watchContractEvent({
+      abi: this.abi,
+      address: this.address,
+      onLogs: logs =>
+        logs.forEach(log => this.subscribers.forEach(subscriber => subscriber.onLog(log))),
+      onError: error => this.subscribers.forEach(subscriber => subscriber.onError(error)),
+      // Default: false for WebSocket Clients, true for non-WebSocket Clients
+      poll: undefined
+      // Default: 1000
+      // pollingInterval: 1000,
     })
+  }
+
+  stop(): void {
+    this.unwatch()
+    this.unwatch = () => {}
   }
 }
 
