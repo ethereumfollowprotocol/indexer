@@ -1,260 +1,260 @@
 export const EFPListRecordsABI = [
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        indexed: true,
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "manager",
-        "type": "address"
+        indexed: false,
+        internalType: 'address',
+        name: 'manager',
+        type: 'address'
       }
     ],
-    "name": "ListManagerChange",
-    "type": "event"
+    name: 'ListManagerChange',
+    type: 'event'
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        indexed: true,
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "op",
-        "type": "bytes"
+        indexed: false,
+        internalType: 'bytes',
+        name: 'op',
+        type: 'bytes'
       }
     ],
-    "name": "ListOperation",
-    "type": "event"
+    name: 'ListOperation',
+    type: 'event'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "internalType": "bytes",
-        "name": "op",
-        "type": "bytes"
+        internalType: 'bytes',
+        name: 'op',
+        type: 'bytes'
       }
     ],
-    "name": "applyListOp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'applyListOp',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "internalType": "bytes[]",
-        "name": "ops",
-        "type": "bytes[]"
+        internalType: 'bytes[]',
+        name: 'ops',
+        type: 'bytes[]'
       }
     ],
-    "name": "applyListOps",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'applyListOps',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       }
     ],
-    "name": "claimListManager",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'claimListManager',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       }
     ],
-    "name": "getAllListOps",
-    "outputs": [
+    name: 'getAllListOps',
+    outputs: [
       {
-        "internalType": "bytes[]",
-        "name": "",
-        "type": "bytes[]"
+        internalType: 'bytes[]',
+        name: '',
+        type: 'bytes[]'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       }
     ],
-    "name": "getListManager",
-    "outputs": [
+    name: 'getListManager',
+    outputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
+        internalType: 'address',
+        name: '',
+        type: 'address'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256'
       }
     ],
-    "name": "getListOp",
-    "outputs": [
+    name: 'getListOp',
+    outputs: [
       {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       }
     ],
-    "name": "getListOpCount",
-    "outputs": [
+    name: 'getListOpCount',
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'end',
+        type: 'uint256'
       }
     ],
-    "name": "getListOpsInRange",
-    "outputs": [
+    name: 'getListOpsInRange',
+    outputs: [
       {
-        "internalType": "bytes[]",
-        "name": "",
-        "type": "bytes[]"
+        internalType: 'bytes[]',
+        name: '',
+        type: 'bytes[]'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
       }
     ],
-    "name": "listOps",
-    "outputs": [
+    name: 'listOps',
+    outputs: [
       {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
       }
     ],
-    "name": "managers",
-    "outputs": [
+    name: 'managers',
+    outputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
+        internalType: 'address',
+        name: '',
+        type: 'address'
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256'
       },
       {
-        "internalType": "address",
-        "name": "manager",
-        "type": "address"
+        internalType: 'address',
+        name: 'manager',
+        type: 'address'
       }
     ],
-    "name": "setListManager",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'setListManager',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as const
