@@ -6,6 +6,7 @@ interface EnvironmentVariables {
   readonly SEPOLIA_ALCHEMY_ID: string
   readonly INFURA_ID: string
   readonly ANKR_ID: string
+  readonly ETHEREUM_LOCAL_NODE_URL: string
   readonly DATABASE_URL: string
   readonly DATABASE_URL_POOLED: string
   readonly ENABLE_DATABASE_LOGGING: string

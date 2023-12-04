@@ -4,6 +4,18 @@ name: efp-indexer
 # WIP
 
 services:
+  ping:
+    container_name: efp-indexer-ping
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    command: ./scripts/ping.sh
+    entrypoint: /bin/bash
+    volumes:
+      - .:/usr/src/app
+
   database:
     container_name: efp-database
     image: postgres:latest
@@ -16,10 +28,8 @@ services:
       - database:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    
-  
+
+
   indexer:
     container_name: efp-indexer
     depends_on:
@@ -31,6 +41,8 @@ services:
       dockerfile: Dockerfile
       args:
         - NODE_ENV=production
+    volumes:
+      - ./:/usr/src/app
     environment:
       - DATABASE_URL_POOLED=${DATABASE_URL_POOLED:-postgres://postgres:postgres@database:5432/efp}
       - NODE_ENV=${NODE_ENV:-production}
@@ -41,6 +53,7 @@ services:
       - INFURA_ID=${INFURA_ID}
       - SEPOLIA_ALCHEMY_ID=${SEPOLIA_ALCHEMY_ID}
       - OPTIMISM_ALCHEMY_ID=${OPTIMISM_ALCHEMY_ID}
+      - ETHEREUM_LOCAL_NODE_URL=${ETHEREUM_LOCAL_NODE_URL:-http://host.docker.internal:8545}
       - DATABASE_URL=postgres://postgres:postgres@database:5432/efp
       - ANVIL_ACCOUNT_PRIVATE_KEY=${ANVIL_ACCOUNT_PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}
       - CHAIN_ID=${CHAIN_ID:-31337}

@@ -1,5 +1,5 @@
-import { raise } from './utilities'
 import { getAddress, type Hex } from 'viem'
+import { raise } from './utilities'
 
 export const env = Object.freeze({
   NODE_ENV: getEnvVariable('NODE_ENV'),
@@ -10,6 +10,7 @@ export const env = Object.freeze({
   INFURA_ID: getEnvVariable('INFURA_ID'),
   SEPOLIA_ALCHEMY_ID: getEnvVariable('SEPOLIA_ALCHEMY_ID'),
   OPTIMISM_ALCHEMY_ID: getEnvVariable('OPTIMISM_ALCHEMY_ID'),
+  ETHEREUM_LOCAL_NODE_URL: getEnvVariable('ETHEREUM_LOCAL_NODE_URL'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
   DATABASE_URL_POOLED: getEnvVariable('DATABASE_URL_POOLED'),
   ANVIL_ACCOUNT_PRIVATE_KEY: getEnvVariable('ANVIL_ACCOUNT_PRIVATE_KEY') as Hex,
