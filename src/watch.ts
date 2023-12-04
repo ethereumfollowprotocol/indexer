@@ -1,19 +1,28 @@
-import { decodeEventLog, type PublicClient, type TestClient } from 'viem'
 import {
+  EFPAccountMetadataABI,
+  EFPListMetadataABI,
   EFPListMinterABI,
   EFPListRecordsABI,
-  EFPListRegistryABI,
-  EFPListMetadataABI,
-  EFPAccountMetadataABI
+  EFPListRegistryABI
 } from '#/abi'
 import { env } from '#/env'
 import { logger } from '#/logger'
+import { decodeEventLog, type PublicClient } from 'viem'
+
+// Custom replacer function for JSON.stringify
+function replacer(key: string, value: any): any {
+  if (typeof value === 'bigint') {
+    // Check if the value is a BigInt
+    return value.toString() // Convert BigInt to string
+  }
+  return value // Return the value unchanged if not a BigInt
+}
 
 export async function watchAllEfpContractEvents({ client }: { client: PublicClient }) {
   logger.info('Watching EFP contract events...')
   client.watchContractEvent({
     abi: EFPAccountMetadataABI,
-    address: env.EFP_CONTRACTS.LIST_RECORDS,
+    address: env.EFP_CONTRACTS.ACCOUNT_METADATA,
     onError: error => {
       console.log('EFPAccountMetadataABI error:', error)
     },
@@ -25,7 +34,7 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
           data,
           topics
         })
-        console.log('[EFPAccountMetadata] Decoded topics:', JSON.stringify(_topics, undefined, 2))
+        console.log('[EFPAccountMetadata] Decoded topics:', JSON.stringify(_topics, replacer, 2))
       })
     }
   })
@@ -44,7 +53,7 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
           data,
           topics
         })
-        console.log('[EFPListRegistry] Decoded topics:', JSON.stringify(_topics, undefined, 2))
+        console.log('[EFPListRegistry] Decoded topics:', JSON.stringify(_topics, replacer, 2))
       })
     }
   })
@@ -63,7 +72,8 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
           data,
           topics
         })
-        console.log('[EFPListMetadata] Decoded topics:', JSON.stringify(_topics, undefined, 2))
+
+        console.log('[EFPListMetadata] Decoded topics:', JSON.stringify(_topics, replacer, 2))
       })
     }
   })
@@ -82,7 +92,7 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
           data,
           topics
         })
-        logger.info('[EFPListRecords] Decoded topics:', JSON.stringify(_topics, undefined, 2))
+        logger.info('[EFPListRecords] Decoded topics:', JSON.stringify(_topics, replacer, 2))
       })
     }
   })
@@ -101,7 +111,7 @@ export async function watchAllEfpContractEvents({ client }: { client: PublicClie
           data,
           topics
         })
-        console.log('[EFPListMinter] Decoded topics:', JSON.stringify(_topics, undefined, 2))
+        console.log('[EFPListMinter] Decoded topics:', JSON.stringify(_topics, replacer, 2))
       })
     }
   })
