@@ -1,162 +1,162 @@
 export const EFPListMinterABI = [
   {
-    type: 'constructor',
-    inputs: [
+    "inputs": [
       {
-        name: '_registryAddress',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "_registryAddress",
+        "type": "address"
       },
       {
-        name: '_accountMetadataAddress',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "_accountMetadataAddress",
+        "type": "address"
       },
       {
-        name: '_listMetadataAddress',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "_listMetadataAddress",
+        "type": "address"
       },
       {
-        name: '_listsAddressL1',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "_listsAddressL1",
+        "type": "address"
       }
     ],
-    stateMutability: 'nonpayable'
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    type: 'function',
-    name: 'accountMetadata',
-    inputs: [],
-    outputs: [
+    "inputs": [],
+    "name": "accountMetadata",
+    "outputs": [
       {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPAccountMetadata'
+        "internalType": "contract IEFPAccountMetadata",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: 'view'
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'listMetadata',
-    inputs: [],
-    outputs: [
+    "inputs": [],
+    "name": "listMetadata",
+    "outputs": [
       {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPListMetadata'
+        "internalType": "contract IEFPListMetadata",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: 'view'
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'listsAddressL1',
-    inputs: [],
-    outputs: [
+    "inputs": [],
+    "name": "listsAddressL1",
+    "outputs": [
       {
-        name: '',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: 'view'
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'mintToWithListLocationOnL1AndSetAsDefaultList',
-    inputs: [
+    "inputs": [
       {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        name: 'nonceL1',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "nonceL1",
+        "type": "uint256"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "mintToWithListLocationOnL1AndSetAsDefaultList",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'mintToWithListLocationOnL2AndSetAsDefaultList',
-    inputs: [
+    "inputs": [
       {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        name: 'chainId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
       },
       {
-        name: 'addressL2',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "addressL2",
+        "type": "address"
       },
       {
-        name: 'nonceL2',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "nonceL2",
+        "type": "uint256"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "mintToWithListLocationOnL2AndSetAsDefaultList",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'mintWithListLocationOnL1AndSetAsDefaultList',
-    inputs: [
+    "inputs": [
       {
-        name: 'nonceL1',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "nonceL1",
+        "type": "uint256"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "mintWithListLocationOnL1AndSetAsDefaultList",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'mintWithListLocationOnL2AndSetAsDefaultList',
-    inputs: [
+    "inputs": [
       {
-        name: 'chainId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
       },
       {
-        name: 'addressL2',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "addressL2",
+        "type": "address"
       },
       {
-        name: 'nonceL2',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "nonceL2",
+        "type": "uint256"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "mintWithListLocationOnL2AndSetAsDefaultList",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'registry',
-    inputs: [],
-    outputs: [
+    "inputs": [],
+    "name": "registry",
+    "outputs": [
       {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPListRegistry_'
+        "internalType": "contract IEFPListRegistry_",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: 'view'
+    "stateMutability": "view",
+    "type": "function"
   }
 ] as const

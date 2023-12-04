@@ -1,304 +1,323 @@
 export const EFPListMetadataABI = [
   {
-    type: 'function',
-    name: 'addProxy',
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        name: 'proxy',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'efpListRegistry',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'contract IERC721'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getEFPListRegistry',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getValue',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
       },
       {
-        name: 'key',
-        type: 'string',
-        internalType: 'string'
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    outputs: [
-      {
-        name: '',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    stateMutability: 'view'
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'getValues',
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      },
-      {
-        name: 'keys',
-        type: 'string[]',
-        internalType: 'string[]'
+        "indexed": false,
+        "internalType": "address",
+        "name": "proxy",
+        "type": "address"
       }
     ],
-    outputs: [
+    "name": "ProxyAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
-        name: '',
-        type: 'bytes[]',
-        internalType: 'bytes[]'
+        "indexed": false,
+        "internalType": "address",
+        "name": "proxy",
+        "type": "address"
       }
     ],
-    stateMutability: 'view'
+    "name": "ProxyRemoved",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'owner',
-    inputs: [],
-    outputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        name: '',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "value",
+        "type": "bytes"
       }
     ],
-    stateMutability: 'view'
+    "name": "ValueSet",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'removeProxy',
-    inputs: [
+    "inputs": [
       {
-        name: 'proxy',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "proxy",
+        "type": "address"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
+    "name": "addProxy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'renounceOwnership',
-    inputs: [],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setEFPListRegistry',
-    inputs: [
+    "inputs": [],
+    "name": "efpListRegistry",
+    "outputs": [
       {
-        name: 'efpListRegistry_',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "contract IERC721",
+        "name": "",
+        "type": "address"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'setValue',
-    inputs: [
+    "inputs": [],
+    "name": "getEFPListRegistry",
+    "outputs": [
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      },
-      {
-        name: 'key',
-        type: 'string',
-        internalType: 'string'
-      },
-      {
-        name: 'value',
-        type: 'bytes',
-        internalType: 'bytes'
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'setValue2',
-    inputs: [
+    "inputs": [
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
       {
-        name: 'key',
-        type: 'string',
-        internalType: 'string'
-      },
-      {
-        name: 'value',
-        type: 'bytes',
-        internalType: 'bytes'
-      },
-      {
-        name: 'key2',
-        type: 'string',
-        internalType: 'string'
-      },
-      {
-        name: 'value2',
-        type: 'bytes',
-        internalType: 'bytes'
+        "internalType": "string",
+        "name": "key",
+        "type": "string"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
+    "name": "getValue",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'setValues',
-    inputs: [
+    "inputs": [
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
       {
-        name: 'records',
-        type: 'tuple[]',
-        internalType: 'struct IEFPListMetadata.KeyValue[]',
-        components: [
+        "internalType": "string[]",
+        "name": "keys",
+        "type": "string[]"
+      }
+    ],
+    "name": "getValues",
+    "outputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "",
+        "type": "bytes[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "proxy",
+        "type": "address"
+      }
+    ],
+    "name": "isProxy",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "proxy",
+        "type": "address"
+      }
+    ],
+    "name": "removeProxy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "efpListRegistry_",
+        "type": "address"
+      }
+    ],
+    "name": "setEFPListRegistry",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "value",
+        "type": "bytes"
+      }
+    ],
+    "name": "setValue",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "value",
+        "type": "bytes"
+      },
+      {
+        "internalType": "string",
+        "name": "key2",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "value2",
+        "type": "bytes"
+      }
+    ],
+    "name": "setValue2",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "components": [
           {
-            name: 'key',
-            type: 'string',
-            internalType: 'string'
+            "internalType": "string",
+            "name": "key",
+            "type": "string"
           },
           {
-            name: 'value',
-            type: 'bytes',
-            internalType: 'bytes'
+            "internalType": "bytes",
+            "name": "value",
+            "type": "bytes"
           }
-        ]
+        ],
+        "internalType": "struct IEFPListMetadata.KeyValue[]",
+        "name": "records",
+        "type": "tuple[]"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
+    "name": "setValues",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'transferOwnership',
-    inputs: [
+    "inputs": [
       {
-        name: 'newOwner',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'event',
-    name: 'OwnershipTransferred',
-    inputs: [
-      {
-        name: 'previousOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'newOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'ProxyAdded',
-    inputs: [
-      {
-        name: 'proxy',
-        type: 'address',
-        indexed: false,
-        internalType: 'address'
-      }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'ProxyRemoved',
-    inputs: [
-      {
-        name: 'proxy',
-        type: 'address',
-        indexed: false,
-        internalType: 'address'
-      }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'ValueSet',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        indexed: true,
-        internalType: 'uint256'
-      },
-      {
-        name: 'key',
-        type: 'string',
-        indexed: false,
-        internalType: 'string'
-      },
-      {
-        name: 'value',
-        type: 'bytes',
-        indexed: false,
-        internalType: 'bytes'
-      }
-    ],
-    anonymous: false
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ] as const
