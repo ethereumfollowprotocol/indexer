@@ -9,6 +9,7 @@ export default ({
   strict: true,
   verbose: true,
   out: './drizzle',
+  schema: './src/database/schema/*.ts',
   breakpoints: true,
   dbCredentials: { connectionString },
   introspect: { casing: 'preserve' }

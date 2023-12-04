@@ -1,44 +1,26 @@
 import {
-  index,
-  jsonb,
-  pgEnum,
   pgTable,
-  text,
-  timestamp,
   unique,
-  varchar
+  pgEnum,
+  text,
+  varchar,
+  timestamp,
+  index,
+  foreignKey
 } from 'drizzle-orm/pg-core'
-
 import { sql } from 'drizzle-orm'
-export const key_status = pgEnum('key_status', ['default', 'valid', 'invalid', 'expired'])
-export const key_type = pgEnum('key_type', [
-  'aead-ietf',
-  'aead-det',
-  'hmacsha512',
-  'hmacsha256',
-  'auth',
-  'shorthash',
-  'generichash',
-  'kdf',
-  'secretbox',
-  'secretstream',
-  'stream_xchacha20'
-])
-export const factor_type = pgEnum('factor_type', ['totp', 'webauthn'])
-export const factor_status = pgEnum('factor_status', ['unverified', 'verified'])
-export const aal_level = pgEnum('aal_level', ['aal1', 'aal2', 'aal3'])
-export const code_challenge_method = pgEnum('code_challenge_method', ['s256', 'plain'])
-export const action = pgEnum('action', ['follow', 'unfollow', 'block', 'unblock', 'mute', 'unmute'])
+
+export const action = pgEnum('action', ['unmute', 'mute', 'unblock', 'block', 'unfollow', 'follow'])
 
 export const user = pgTable(
   'user',
   {
     id: text('id').default(sql`generate_ulid()`).primaryKey().notNull(),
     wallet_address: varchar('wallet_address').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' })
       .default(sql`(now() AT TIME ZONE 'utc'::text)`)
       .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'string' })
       .default(sql`(now() AT TIME ZONE 'utc'::text)`)
       .notNull()
   },
@@ -62,10 +44,10 @@ export const activity = pgTable(
       withTimezone: true,
       mode: 'string'
     }).notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' })
       .default(sql`(now() AT TIME ZONE 'utc'::text)`)
       .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'string' })
       .default(sql`(now() AT TIME ZONE 'utc'::text)`)
       .notNull()
   },
@@ -74,28 +56,6 @@ export const activity = pgTable(
       index_activity_actor: index('index_activity_actor').on(table.actor_address),
       index_activity_target: index('index_activity_target').on(table.target_address),
       index_activity_action: index('index_activity_action').on(table.action)
-    }
-  }
-)
-
-export const events = pgTable(
-  'events',
-  {
-    id: text('id').default(sql`generate_ulid()`).primaryKey().notNull(),
-    transactionHash: varchar('transaction_hash', { length: 66 }).notNull(),
-    blockNumber: text('block_number').notNull(), // Or integer, based on your requirements
-    contractAddress: varchar('contract_address', { length: 42 }).notNull(),
-    eventName: varchar('event_name', { length: 255 }).notNull(),
-    eventParameters: jsonb('event_parameters').notNull(),
-    timestamp: timestamp('timestamp', { withTimezone: true, mode: 'string' }).notNull(),
-    processed: text('processed').default('false').notNull() // Or boolean, based on your requirements
-  },
-  table => {
-    return {
-      idxTransactionHash: index('idx_transaction_hash').on(table.transactionHash),
-      idxContractAddress: index('idx_contract_address').on(table.contractAddress),
-      idxEventName: index('idx_event_name').on(table.eventName),
-      idxBlockNumber: index('idx_block_number').on(table.blockNumber)
     }
   }
 )
