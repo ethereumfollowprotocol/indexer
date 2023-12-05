@@ -112,6 +112,13 @@ CREATE TABLE public.contracts (
     owner character varying(42) NOT NULL
 );
 
+CREATE TABLE public.list_nfts (
+    chain_id bigint NOT NULL,
+    address character varying(42) NOT NULL,
+    token_id bigint NOT NULL,
+    owner character varying(42) NOT NULL
+);
+
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --

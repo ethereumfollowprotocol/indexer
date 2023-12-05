@@ -5,7 +5,7 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
-import { database, type ContractsRow, type EventsRow } from '#/database'
+import { database, type ContractsRow, type EventsRow, type ListNFTsRow } from '#/database'
 import { logger } from '#/logger'
 import type { Abi } from 'viem'
 import type { Event } from './event'
@@ -96,6 +96,8 @@ export class EFPListMinterSubscriber extends ContractEventSubscriber {
   }
 }
 
+export class OwnershipTransferredSubscriber implements EventSubscriber {}
+
 export class DatabaseUploader implements EventSubscriber {
   /**
    * Generic handler for log events. This function should be overridden by subclasses to process each log.
@@ -128,34 +130,75 @@ export class DatabaseUploader implements EventSubscriber {
     await database.insertInto('events').values([row]).executeTakeFirst()
 
     if (eventName === 'OwnershipTransferred') {
-      // this was a new contract that got deployed and transferred
-      // ownership to the owner
-      const previousOwner = event.eventParameters.args['previousOwner']
-      const newOwner = event.eventParameters.args['newOwner']
-      if (previousOwner === '0x0000000000000000000000000000000000000000') {
-        const contractsRow: ContractsRow = {
-          chain_id: 1,
-          address: event.contractAddress,
-          name: event.contractName,
-          owner: newOwner
-        }
-        logger.log(`Insert ${event.contractName} contract into contracts table:`, contractsRow)
-        await database.insertInto('contracts').values([contractsRow]).executeTakeFirst()
-      } else {
-        // contract ownership was transferred but the contract should already
-        // be in the database
+      await this.onOwnershipTransferred(event)
+    } else if (eventName === 'Transfer') {
+      await this.onTransfer(event)
+    }
+  }
 
-        // we will update the owner in the database
-        logger.log(
-          `Updating ${event.contractName} contract owner from ${previousOwner} to ${newOwner} in contracts table`
-        )
-        await database
-          .updateTable('contracts')
-          .set({ owner: newOwner })
-          .where('chain_id', '=', '1')
-          .where('address', '=', event.contractAddress)
-          .executeTakeFirst()
+  async onTransfer(event: Event): Promise<void> {
+    if (event.eventParameters.eventName !== 'Transfer') {
+      return
+    }
+
+    const from: string = event.eventParameters.args['from']
+    const to: string = event.eventParameters.args['to']
+    if (from === '0x0000000000000000000000000000000000000000') {
+      // insert as new row
+      const row: ListNFTsRow = {
+        chain_id: 1,
+        address: event.contractAddress,
+        token_id: event.eventParameters.args['tokenId'],
+        owner: to
       }
+
+      logger.log(`Insert ${event.eventParameters.eventName} event into db`)
+      await database.insertInto('list_nfts').values([row]).executeTakeFirst()
+    } else {
+      // update existing row
+      logger.log(`Update ${event.eventParameters.eventName} event in db`)
+      await database
+        .updateTable('list_nfts')
+        .set({ owner: to })
+        .where('chain_id', '=', '1')
+        .where('address', '=', event.contractAddress)
+        .where('token_id', '=', event.eventParameters.args['tokenId'])
+        .executeTakeFirst()
+    }
+  }
+
+  async onOwnershipTransferred(event: Event): Promise<void> {
+    if (event.eventParameters.eventName !== 'OwnershipTransferred') {
+      return
+    }
+
+    // this was a new contract that got deployed and transferred
+    // ownership to the owner
+    const previousOwner = event.eventParameters.args['previousOwner']
+    const newOwner = event.eventParameters.args['newOwner']
+    if (previousOwner === '0x0000000000000000000000000000000000000000') {
+      const contractsRow: ContractsRow = {
+        chain_id: 1,
+        address: event.contractAddress,
+        name: event.contractName,
+        owner: newOwner
+      }
+      logger.log(`Insert ${event.contractName} contract into contracts table:`, contractsRow)
+      await database.insertInto('contracts').values([contractsRow]).executeTakeFirst()
+    } else {
+      // contract ownership was transferred but the contract should already
+      // be in the database
+
+      // we will update the owner in the database
+      logger.log(
+        `Updating ${event.contractName} contract owner from ${previousOwner} to ${newOwner} in contracts table`
+      )
+      await database
+        .updateTable('contracts')
+        .set({ owner: newOwner })
+        .where('chain_id', '=', '1')
+        .where('address', '=', event.contractAddress)
+        .executeTakeFirst()
     }
   }
 }
