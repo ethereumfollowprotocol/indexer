@@ -29,9 +29,7 @@ export class ContractEventPublisher implements EventPublisher {
   public readonly contractName: string
   public readonly abi: Abi
   public readonly address: `0x${string}`
-  private unwatch: () => void = () => {
-    logger.fail('ContractEventPublisher unwatch function not initialized')
-  }
+  private unwatch: () => void = () => {}
 
   /**
    * Creates an instance of ContractEventPublisher.
@@ -46,7 +44,7 @@ export class ContractEventPublisher implements EventPublisher {
     this.abi = abi
     this.address = address
     this.unwatch = () => {
-      logger.fail('ContractEventPublisher unwatch function not initialized')
+      logger.warn('ContractEventPublisher unwatch function not yet implemented')
     }
   }
 
@@ -106,9 +104,7 @@ export class ContractEventPublisher implements EventPublisher {
    */
   stop(): void {
     this.unwatch()
-    this.unwatch = () => {
-      logger.fail('ContractEventPublisher unwatch function not initialized')
-    }
+    this.unwatch = () => {}
   }
 }
 

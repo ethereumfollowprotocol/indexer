@@ -54,7 +54,8 @@
         "useAwait": "off",
         "noUnusedImports": "off",
         "noDefaultExport": "off",
-        "useImportRestrictions": "off"
+        "useImportRestrictions": "off",
+        "noEmptyBlockStatements": "off"
       },
       "complexity": {
         "noForEach": "off",

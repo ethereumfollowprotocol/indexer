@@ -10,13 +10,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: drizzle; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA drizzle;
-
-
---
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -183,37 +176,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: __drizzle_migrations; Type: TABLE; Schema: drizzle; Owner: -
---
-
-CREATE TABLE drizzle.__drizzle_migrations (
-    id integer NOT NULL,
-    hash text NOT NULL,
-    created_at bigint
-);
-
-
---
--- Name: __drizzle_migrations_id_seq; Type: SEQUENCE; Schema: drizzle; Owner: -
---
-
-CREATE SEQUENCE drizzle.__drizzle_migrations_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: __drizzle_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: drizzle; Owner: -
---
-
-ALTER SEQUENCE drizzle.__drizzle_migrations_id_seq OWNED BY drizzle.__drizzle_migrations.id;
-
-
---
 -- Name: activity; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -283,21 +245,6 @@ CREATE TABLE public."user" (
     created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
     updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
 );
-
-
---
--- Name: __drizzle_migrations id; Type: DEFAULT; Schema: drizzle; Owner: -
---
-
-ALTER TABLE ONLY drizzle.__drizzle_migrations ALTER COLUMN id SET DEFAULT nextval('drizzle.__drizzle_migrations_id_seq'::regclass);
-
-
---
--- Name: __drizzle_migrations __drizzle_migrations_pkey; Type: CONSTRAINT; Schema: drizzle; Owner: -
---
-
-ALTER TABLE ONLY drizzle.__drizzle_migrations
-    ADD CONSTRAINT __drizzle_migrations_pkey PRIMARY KEY (id);
 
 
 --
@@ -422,8 +369,4 @@ ALTER TABLE ONLY public.activity
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20231205004227'),
-    ('20231205040738'),
-    ('20231205041811'),
-    ('20231205043403'),
-    ('20231205044938');
+    ('20231205052550');

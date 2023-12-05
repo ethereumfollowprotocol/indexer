@@ -5,10 +5,9 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
-import { database } from '#/database'
+import { database, type EventsRow } from '#/database'
 import { logger } from '#/logger'
 import type { Abi } from 'viem'
-import type { Events } from 'kysely-codegen'
 import type { Event } from './event'
 
 /**
@@ -103,7 +102,7 @@ export class DatabaseUploader implements EventSubscriber {
    * @param log - The log to process.
    */
   async onEvent(event: Event): Promise<void> {
-    type Row = Events
+    type Row = EventsRow
 
     // eventParameters will have an args field
     const serializableEventParameters: { eventName: string; args: Record<string, any> } = {
@@ -116,19 +115,19 @@ export class DatabaseUploader implements EventSubscriber {
       serializableEventParameters.args[key] = typeof value === 'bigint' ? value.toString() : value
     }
 
-    const row: Row = {
-      transactionHash: event.transactionHash,
-      blockNumber: Number(event.blockNumber.toString()),
+    const row = {
+      transaction_hash: event.transactionHash,
+      block_number: event.blockNumber,
       // problem: we don't have contract address here
-      contractAddress: event.contractAddress,
+      contract_address: event.contractAddress,
       // problem: we don't have event name here
-      eventName: event.contractName,
-      eventParameters: serializableEventParameters,
+      event_name: event.contractName,
+      event_parameters: JSON.stringify(serializableEventParameters),
       timestamp: new Date().toISOString()
-    }
+    } satisfies Row
 
     logger.log('Inserting event into database:', row)
-    await database.insertInto('events').values(row).executeTakeFirst()
+    await database.insertInto('events').values([row]).executeTakeFirst()
     logger.log('Successfully inserted event into database')
   }
 }

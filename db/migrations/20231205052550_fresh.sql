@@ -1,4 +1,5 @@
 -- migrate:up
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -11,18 +12,17 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE SCHEMA IF NOT EXISTS public;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON SCHEMA public IS 'standard public schema';
-
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 --
 -- Name: action; Type: TYPE; Schema: public; Owner: -
@@ -106,7 +106,7 @@ $$;
 -- Name: get_followers(character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE FUNCTION public.get_followers(target_address character varying) RETURNS TABLE(actor_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
+CREATE FUNCTION public.get_followers(target_address character varying) RETURNS TABLE(actor_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
     LANGUAGE plpgsql STABLE
     AS $$
 BEGIN
@@ -127,7 +127,7 @@ END; $$;
 -- Name: get_following(character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE FUNCTION public.get_following(actor_address character varying) RETURNS TABLE(target_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
+CREATE FUNCTION public.get_following(actor_address character varying) RETURNS TABLE(target_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -148,7 +148,7 @@ END; $$;
 -- Name: health(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE FUNCTION public.health() RETURNS text
+CREATE FUNCTION public.health() RETURNS text
     LANGUAGE plpgsql STABLE
     AS $$
 BEGIN
@@ -161,7 +161,7 @@ $$;
 -- Name: insert_user_if_not_exists(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE FUNCTION public.insert_user_if_not_exists() RETURNS trigger
+CREATE FUNCTION public.insert_user_if_not_exists() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -190,43 +190,54 @@ CREATE TABLE public.activity (
     created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
     updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
 );
---
--- Name: user; Type: TABLE; Schema: public; Owner: -
---
-
--- CREATE TABLE public."user" (
-CREATE TABLE IF NOT EXISTS public."user" (
-    id text DEFAULT public.generate_ulid() NOT NULL,
-    wallet_address character varying NOT NULL,
-    created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
-    updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
-);
 
 
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."events" (
-    id SERIAL PRIMARY KEY,
-    transaction_hash VARCHAR(66) NOT NULL,
-    block_number INTEGER NOT NULL,
-    contract_address VARCHAR(42) NOT NULL,
-    event_name VARCHAR(255) NOT NULL,
-    event_parameters JSONB NOT NULL,
-    timestamp TIMESTAMPTZ NOT NULL
+CREATE TABLE public.events (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    transaction_hash character varying(66) NOT NULL,
+    block_number bigint NOT NULL,
+    contract_address character varying(42) NOT NULL,
+    event_name character varying(255) NOT NULL,
+    event_parameters jsonb NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    processed text DEFAULT 'false'::text NOT NULL
 );
 
 
 --
--- Name: Indexes for events; Type: INDEX; Schema: public; Owner: -
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_transaction_hash ON public.events(transaction_hash);
-CREATE INDEX idx_contract_address ON public.events(contract_address);
-CREATE INDEX idx_event_name ON public.events(event_name);
-CREATE INDEX idx_block_number ON public.events(block_number);
+CREATE SEQUENCE public.events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
+
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."user" (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    wallet_address character varying NOT NULL,
+    created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
+    updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
+);
 
 --
 -- Name: activity activity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
@@ -234,6 +245,14 @@ CREATE INDEX idx_block_number ON public.events(block_number);
 
 ALTER TABLE ONLY public.activity
     ADD CONSTRAINT activity_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 
 --
@@ -250,6 +269,34 @@ ALTER TABLE ONLY public."user"
 
 ALTER TABLE ONLY public."user"
     ADD CONSTRAINT user_wallet_address_key UNIQUE (wallet_address);
+
+
+--
+-- Name: idx_block_number; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_block_number ON public.events USING btree (block_number);
+
+
+--
+-- Name: idx_contract_address; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_contract_address ON public.events USING btree (contract_address);
+
+
+--
+-- Name: idx_event_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_event_name ON public.events USING btree (event_name);
+
+
+--
+-- Name: idx_transaction_hash; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_transaction_hash ON public.events USING btree (transaction_hash);
 
 
 --
@@ -289,13 +336,11 @@ ALTER TABLE ONLY public.activity
 
 
 --
--- PostgreSQL database dump complete
+-- Name: activity activity_actor_address_user_wallet_address_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-
---
--- Dbmate schema migrations
---
+ALTER TABLE ONLY public.activity
+    ADD CONSTRAINT activity_actor_address_user_wallet_address_fk FOREIGN KEY (actor_address) REFERENCES public."user"(wallet_address) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 -- migrate:down
 
