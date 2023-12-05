@@ -5,8 +5,6 @@ import { Kysely, PostgresDialect, type InsertObject } from 'kysely'
 import { env } from '#/env.ts'
 
 export type EventsRow = InsertObject<DB, 'events'>
-export type UserRow = InsertObject<DB, 'user'>
-export type ActivityRow = InsertObject<DB, 'activity'>
 
 export const database = new Kysely<DB>({
   dialect: new PostgresDialect({

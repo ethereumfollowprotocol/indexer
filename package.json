@@ -10,7 +10,7 @@
     "build": "bun build ./src/index.ts --minify --target='bun' --format='esm' --outfile='./dist/index.js'",
     "database": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans database",
     "database:codegen": "kysely-codegen --dialect='postgres' --type-only-imports --log-level=error",
-    "database:migrate": "dbmate up",
+    "database:up": "dbmate up",
     "database:status": "dbmate status",
     "db": "bun database",
     "down": "docker compose --file='compose.yml' --project-name='efp' down --remove-orphans",
@@ -24,12 +24,12 @@
     "update-dependencies": "bun ./scripts/update-dependencies.ts"
   },
   "dependencies": {
-    "@wagmi/core": "2.0.0-beta.5",
     "consola": "^3.2.3",
     "exit-hook": "^4.0.0",
     "kysely": "^0.26.3",
     "kysely-postgres-js": "^2.0.0",
     "pg": "^8.11.3",
+    "@wagmi/core": "2.0.0-beta.5",
     "viem": "2.0.0-beta.6"
   },
   "devDependencies": {

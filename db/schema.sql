@@ -24,20 +24,6 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- Name: action; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.action AS ENUM (
-    'follow',
-    'unfollow',
-    'block',
-    'unblock',
-    'mute',
-    'unmute'
-);
-
-
---
 -- Name: generate_ulid(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -101,48 +87,6 @@ $$;
 
 
 --
--- Name: get_followers(character varying); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.get_followers(target_address character varying) RETURNS TABLE(actor_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
-    LANGUAGE plpgsql STABLE
-    AS $$
-BEGIN
-RETURN QUERY
-SELECT t.actor_address, t.action_timestamp, t.created_at
-FROM (
-    SELECT a.actor_address, a.action_timestamp, a.created_at, a.action,
-           ROW_NUMBER() OVER (PARTITION BY a.actor_address ORDER BY a.action_timestamp DESC) as rn
-    FROM activity a
-    WHERE a.target_address = get_followers.target_address
-    AND a.action IN ('follow', 'unfollow')
-) t
-WHERE t.rn = 1 AND t.action = 'follow';
-END; $$;
-
-
---
--- Name: get_following(character varying); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.get_following(actor_address character varying) RETURNS TABLE(target_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-RETURN QUERY
-SELECT t.target_address, t.action_timestamp, t.created_at
-FROM (
-    SELECT a.target_address, a.action_timestamp, a.created_at, a.action,
-           ROW_NUMBER() OVER (PARTITION BY a.target_address ORDER BY a.action_timestamp DESC) as rn
-    FROM activity a
-    WHERE a.actor_address = get_following.actor_address
-    AND a.action IN ('follow', 'unfollow')
-) t
-WHERE t.rn = 1 AND t.action = 'follow';
-END; $$;
-
-
---
 -- Name: health(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -155,40 +99,9 @@ END;
 $$;
 
 
---
--- Name: insert_user_if_not_exists(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.insert_user_if_not_exists() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM "user" WHERE wallet_address = NEW.actor_address) THEN
-        INSERT INTO "user" (wallet_address) VALUES (NEW.actor_address);
-    END IF;
-    RETURN NEW;
-END;
-$$;
-
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
-
---
--- Name: activity; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.activity (
-    id text DEFAULT public.generate_ulid() NOT NULL,
-    action public.action NOT NULL,
-    actor_address character varying NOT NULL,
-    target_address character varying NOT NULL,
-    action_timestamp timestamp with time zone NOT NULL,
-    created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
-    updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
-);
-
 
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
@@ -236,26 +149,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: user; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."user" (
-    id text DEFAULT public.generate_ulid() NOT NULL,
-    wallet_address character varying NOT NULL,
-    created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
-    updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
-);
-
-
---
--- Name: activity activity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.activity
-    ADD CONSTRAINT activity_pkey PRIMARY KEY (id);
-
-
---
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -269,22 +162,6 @@ ALTER TABLE ONLY public.events
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."user"
-    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
-
-
---
--- Name: user user_wallet_address_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."user"
-    ADD CONSTRAINT user_wallet_address_key UNIQUE (wallet_address);
 
 
 --
@@ -313,50 +190,6 @@ CREATE INDEX idx_event_name ON public.events USING btree (event_name);
 --
 
 CREATE INDEX idx_transaction_hash ON public.events USING btree (transaction_hash);
-
-
---
--- Name: index_activity_action; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_activity_action ON public.activity USING btree (action);
-
-
---
--- Name: index_activity_actor; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_activity_actor ON public.activity USING btree (actor_address);
-
-
---
--- Name: index_activity_target; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_activity_target ON public.activity USING btree (target_address);
-
-
---
--- Name: activity activity_insert_user; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER activity_insert_user BEFORE INSERT ON public.activity FOR EACH ROW EXECUTE FUNCTION public.insert_user_if_not_exists();
-
-
---
--- Name: activity activity_actor_address_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.activity
-    ADD CONSTRAINT activity_actor_address_fkey FOREIGN KEY (actor_address) REFERENCES public."user"(wallet_address) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: activity activity_actor_address_user_wallet_address_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.activity
-    ADD CONSTRAINT activity_actor_address_user_wallet_address_fk FOREIGN KEY (actor_address) REFERENCES public."user"(wallet_address) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
