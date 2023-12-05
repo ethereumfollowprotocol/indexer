@@ -171,7 +171,7 @@ CREATE TABLE public.list_nfts (
 CREATE TABLE public.list_ops (
     id text DEFAULT public.generate_ulid() NOT NULL,
     chain_id bigint NOT NULL,
-    address character varying(42) NOT NULL,
+    contract_address character varying(42) NOT NULL,
     nonce bigint NOT NULL,
     op character varying(255) NOT NULL,
     version smallint NOT NULL,
@@ -179,6 +179,24 @@ CREATE TABLE public.list_ops (
     data character varying(255) NOT NULL,
     CONSTRAINT list_ops_code_check CHECK (((code >= 0) AND (code <= 255))),
     CONSTRAINT list_ops_version_check CHECK (((version >= 0) AND (version <= 255)))
+);
+
+
+--
+-- Name: list_records; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.list_records (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    chain_id bigint NOT NULL,
+    contract_address character varying(42) NOT NULL,
+    nonce bigint NOT NULL,
+    record character varying(255) NOT NULL,
+    version smallint NOT NULL,
+    type smallint NOT NULL,
+    data character varying(255) NOT NULL,
+    CONSTRAINT list_records_type_check CHECK (((type >= 0) AND (type <= 255))),
+    CONSTRAINT list_records_version_check CHECK (((version >= 0) AND (version <= 255)))
 );
 
 

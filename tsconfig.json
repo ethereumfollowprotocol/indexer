@@ -32,6 +32,6 @@
       "#/*": ["src/*"]
     },
   },
-  "include": ["src", "scripts", "drizzle/**/*.ts"],
-  "files": ["environment.d.ts", "reset.d.ts", "biome.json"]
+  "include": ["src", "scripts"],
+  "files": ["environment.d.ts", "reset.d.ts"]
 }
