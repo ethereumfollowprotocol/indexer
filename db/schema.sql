@@ -165,6 +165,24 @@ CREATE TABLE public.list_nfts (
 
 
 --
+-- Name: list_ops; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.list_ops (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    chain_id bigint NOT NULL,
+    address character varying(42) NOT NULL,
+    nonce bigint NOT NULL,
+    op character varying(255) NOT NULL,
+    version smallint NOT NULL,
+    code smallint NOT NULL,
+    data character varying(255) NOT NULL,
+    CONSTRAINT list_ops_code_check CHECK (((code >= 0) AND (code <= 255))),
+    CONSTRAINT list_ops_version_check CHECK (((version >= 0) AND (version <= 255)))
+);
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 

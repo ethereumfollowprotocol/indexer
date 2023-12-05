@@ -9,7 +9,7 @@ function query_eth_blockNumber() {
     echo "========================================"
 
 
-    (set -x; curl http://$host:8545 --request POST \
+    (curl http://$host:8545 --request POST \
       --header "Content-Type: application/json" \
       --connect-timeout 3 \
       --silent \
@@ -17,7 +17,7 @@ function query_eth_blockNumber() {
       --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}';
       if [ $? -eq 0 ]; then
         # green success message
-        echo -e "\033[0;32mhttp://$host:8545 connection succeeded\033[0m"
+        echo -e "\n\033[0;32mhttp://$host:8545 connection succeeded\033[0m"
       else
         # red error message
         echo -e "\033[0;31mhttp://$host:8545 Failed to connect\033[0m"

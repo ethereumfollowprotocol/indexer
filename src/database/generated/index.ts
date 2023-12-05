@@ -46,6 +46,17 @@ export interface ListNfts {
   token_id: Int8
 }
 
+export interface ListOps {
+  address: string
+  chain_id: Int8
+  code: number
+  data: string
+  id: Generated<string>
+  nonce: Int8
+  op: string
+  version: number
+}
+
 export interface SchemaMigrations {
   version: string
 }
@@ -54,5 +65,6 @@ export interface DB {
   contracts: Contracts
   events: Events
   list_nfts: ListNfts
+  list_ops: ListOps
   schema_migrations: SchemaMigrations
 }

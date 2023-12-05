@@ -4,17 +4,17 @@ name: efp-indexer
 services:
   ping:
     container_name: efp-indexer-ping
+    image: bash:latest
     build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - NODE_ENV=production
+      dockerfile_inline: |
+        FROM bash:latest
+        WORKDIR /usr/src/app
+        RUN apk add --no-cache curl && rm -rf /var/cache/apk/*
+        COPY ./scripts/ping.sh /usr/src/app/ping.sh
+    command: ./ping.sh
+    entrypoint: /usr/local/bin/bash
     networks:
       - default
-    command: ./scripts/ping.sh
-    entrypoint: /bin/bash
-    volumes:
-      - .:/usr/src/app
 
   database:
     container_name: efp-database
