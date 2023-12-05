@@ -21,6 +21,4 @@ echo "Current database migrations status:"
 bunx dbmate status
 echo
 
-bun --hot --watch ./src/index.ts
-
-tail -f /dev/null
+exec "$@"
