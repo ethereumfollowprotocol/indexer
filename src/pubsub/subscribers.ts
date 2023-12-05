@@ -96,8 +96,6 @@ export class EFPListMinterSubscriber extends ContractEventSubscriber {
   }
 }
 
-export class OwnershipTransferredSubscriber implements EventSubscriber {}
-
 export class DatabaseUploader implements EventSubscriber {
   /**
    * Generic handler for log events. This function should be overridden by subclasses to process each log.
@@ -129,42 +127,44 @@ export class DatabaseUploader implements EventSubscriber {
     logger.log(`Insert ${event.eventParameters.eventName} event into db`)
     await database.insertInto('events').values([row]).executeTakeFirst()
 
-    if (eventName === 'OwnershipTransferred') {
+    if (eventName === 'ListOperation') {
+      await this.onListOperation(event)
+    } else if (eventName === 'OwnershipTransferred') {
       await this.onOwnershipTransferred(event)
     } else if (eventName === 'Transfer') {
       await this.onTransfer(event)
     }
   }
 
-  async onTransfer(event: Event): Promise<void> {
-    if (event.eventParameters.eventName !== 'Transfer') {
+  async onListOperation(event: Event): Promise<void> {
+    if (event.eventParameters.eventName !== 'ListOperation') {
       return
     }
 
-    const from: string = event.eventParameters.args['from']
-    const to: string = event.eventParameters.args['to']
-    if (from === '0x0000000000000000000000000000000000000000') {
-      // insert as new row
-      const row: Row<'list_nfts'> = {
-        chain_id: 1,
-        address: event.contractAddress,
-        token_id: event.eventParameters.args['tokenId'],
-        owner: to
-      }
+    const nonce: bigint = event.eventParameters.args['nonce']
+    const op: `0x${string}` = event.eventParameters.args['op']
+    const opBytes: Uint8Array = Buffer.from(op.slice(2), 'hex')
+    const opDataView: DataView = new DataView(opBytes.buffer)
+    // to get a number from a Uint8Array, we need to use the DataView class like so:
+    const version: number = opDataView.getUint8(0)
+    const code: number = opDataView.getUint8(1)
+    const data: Uint8Array = opBytes.slice(2)
+    const dataHex: `0x${string}` = `0x${Buffer.from(data).toString('hex')}`
 
-      logger.log(`Insert ${event.eventParameters.eventName} event into db`)
-      await database.insertInto('list_nfts').values([row]).executeTakeFirst()
-    } else {
-      // update existing row
-      logger.log(`Update ${event.eventParameters.eventName} event in db`)
-      await database
-        .updateTable('list_nfts')
-        .set({ owner: to })
-        .where('chain_id', '=', '1')
-        .where('address', '=', event.contractAddress)
-        .where('token_id', '=', event.eventParameters.args['tokenId'])
-        .executeTakeFirst()
+    // log bright cyan so it stands out
+    logger.log(`\x1b[96m${event.eventParameters.eventName} w/ op: ${op}\x1b[0m`)
+
+    // insert
+    const row: Row<'list_ops'> = {
+      chain_id: 1,
+      address: event.contractAddress,
+      nonce: nonce,
+      op: op,
+      version,
+      code,
+      data: dataHex
     }
+    database.insertInto('list_ops').values([row]).executeTakeFirst()
   }
 
   async onOwnershipTransferred(event: Event): Promise<void> {
@@ -198,6 +198,37 @@ export class DatabaseUploader implements EventSubscriber {
         .set({ owner: newOwner })
         .where('chain_id', '=', '1')
         .where('address', '=', event.contractAddress)
+        .executeTakeFirst()
+    }
+  }
+
+  async onTransfer(event: Event): Promise<void> {
+    if (event.eventParameters.eventName !== 'Transfer') {
+      return
+    }
+
+    const from: string = event.eventParameters.args['from']
+    const to: string = event.eventParameters.args['to']
+    if (from === '0x0000000000000000000000000000000000000000') {
+      // insert as new row
+      const row: Row<'list_nfts'> = {
+        chain_id: 1,
+        address: event.contractAddress,
+        token_id: event.eventParameters.args['tokenId'],
+        owner: to
+      }
+
+      logger.log(`Insert ${event.eventParameters.eventName} event into db`)
+      await database.insertInto('list_nfts').values([row]).executeTakeFirst()
+    } else {
+      // update existing row
+      logger.log(`Update ${event.eventParameters.eventName} event in db`)
+      await database
+        .updateTable('list_nfts')
+        .set({ owner: to })
+        .where('chain_id', '=', '1')
+        .where('address', '=', event.contractAddress)
+        .where('token_id', '=', event.eventParameters.args['tokenId'])
         .executeTakeFirst()
     }
   }

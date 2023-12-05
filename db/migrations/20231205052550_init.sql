@@ -119,6 +119,19 @@ CREATE TABLE public.list_nfts (
     owner character varying(42) NOT NULL
 );
 
+CREATE TABLE public.list_ops (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    chain_id bigint NOT NULL,
+    address character varying(42) NOT NULL,
+    nonce bigint NOT NULL,
+    op character varying(255) NOT NULL,
+    version smallint NOT NULL,
+    CHECK (version >= 0 AND version <= 255),
+    code smallint NOT NULL,
+    CHECK (code >= 0 AND code <= 255),
+    data character varying(255) NOT NULL
+);
+
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --
