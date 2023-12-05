@@ -12,5 +12,5 @@ export default ({
   schema: './src/database/schema/*.ts',
   breakpoints: true,
   dbCredentials: { connectionString },
-  introspect: { casing: 'preserve' }
+  introspect: { casing: 'camel' }
 } satisfies Config)

@@ -1,7 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM oven/bun:latest as installer
-
-# This is WIP atm
+FROM oven/bun:latest as setup
 
 RUN apt-get update && apt-get install --yes \
   curl \
@@ -17,8 +15,6 @@ COPY package.json package.json
 RUN bun install
 
 COPY . .
+RUN chmod +x ./scripts/entrypoint.sh
 
-# RUN chmod +x ./scripts/entrypoint.sh
-
-# ENTRYPOINT ["./scripts/entrypoint.sh"]
-CMD ["bun", "--watch", "./src/index.ts"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]

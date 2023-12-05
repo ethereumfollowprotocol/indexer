@@ -1,32 +1,41 @@
 import {
   pgTable,
-  unique,
   pgEnum,
-  text,
   varchar,
-  timestamp,
   index,
-  foreignKey
+  serial,
+  integer,
+  jsonb,
+  timestamp,
+  foreignKey,
+  text,
+  unique
 } from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
 export const action = pgEnum('action', ['unmute', 'mute', 'unblock', 'block', 'unfollow', 'follow'])
 
-export const user = pgTable(
-  'user',
+export const schemaMigrations = pgTable('schema_migrations', {
+  version: varchar('version', { length: 128 }).primaryKey().notNull()
+})
+
+export const events = pgTable(
+  'events',
   {
-    id: text('id').default(sql`generate_ulid()`).primaryKey().notNull(),
-    wallet_address: varchar('wallet_address').notNull(),
-    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .default(sql`(now() AT TIME ZONE 'utc'::text)`)
-      .notNull(),
-    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'string' })
-      .default(sql`(now() AT TIME ZONE 'utc'::text)`)
-      .notNull()
+    id: serial('id').primaryKey().notNull(),
+    transactionHash: varchar('transaction_hash', { length: 66 }).notNull(),
+    blockNumber: integer('block_number').notNull(),
+    contractAddress: varchar('contract_address', { length: 42 }).notNull(),
+    eventName: varchar('event_name', { length: 255 }).notNull(),
+    eventParameters: jsonb('event_parameters').notNull(),
+    timestamp: timestamp('timestamp', { withTimezone: true, mode: 'string' }).notNull()
   },
   table => {
     return {
-      user_wallet_address_key: unique('user_wallet_address_key').on(table.wallet_address)
+      idxTransactionHash: index('idx_transaction_hash').on(table.transactionHash),
+      idxContractAddress: index('idx_contract_address').on(table.contractAddress),
+      idxEventName: index('idx_event_name').on(table.eventName),
+      idxBlockNumber: index('idx_block_number').on(table.blockNumber)
     }
   }
 )
@@ -36,26 +45,45 @@ export const activity = pgTable(
   {
     id: text('id').default(sql`generate_ulid()`).primaryKey().notNull(),
     action: action('action').notNull(),
-    actor_address: varchar('actor_address')
+    actorAddress: varchar('actor_address')
       .notNull()
-      .references(() => user.wallet_address, { onDelete: 'restrict', onUpdate: 'cascade' }),
-    target_address: varchar('target_address').notNull(),
-    action_timestamp: timestamp('action_timestamp', {
+      .references(() => user.walletAddress, { onDelete: 'restrict', onUpdate: 'cascade' }),
+    targetAddress: varchar('target_address').notNull(),
+    actionTimestamp: timestamp('action_timestamp', {
       withTimezone: true,
       mode: 'string'
     }).notNull(),
-    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
       .default(sql`(now() AT TIME ZONE 'utc'::text)`)
       .notNull(),
-    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
       .default(sql`(now() AT TIME ZONE 'utc'::text)`)
       .notNull()
   },
   table => {
     return {
-      index_activity_actor: index('index_activity_actor').on(table.actor_address),
-      index_activity_target: index('index_activity_target').on(table.target_address),
-      index_activity_action: index('index_activity_action').on(table.action)
+      indexActivityAction: index('index_activity_action').on(table.action),
+      indexActivityActor: index('index_activity_actor').on(table.actorAddress),
+      indexActivityTarget: index('index_activity_target').on(table.targetAddress)
+    }
+  }
+)
+
+export const user = pgTable(
+  'user',
+  {
+    id: text('id').default(sql`generate_ulid()`).primaryKey().notNull(),
+    walletAddress: varchar('wallet_address').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .default(sql`(now() AT TIME ZONE 'utc'::text)`)
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .default(sql`(now() AT TIME ZONE 'utc'::text)`)
+      .notNull()
+  },
+  table => {
+    return {
+      userWalletAddressKey: unique('user_wallet_address_key').on(table.walletAddress)
     }
   }
 )

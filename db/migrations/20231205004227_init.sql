@@ -1,3 +1,4 @@
+-- migrate:up
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -13,7 +14,7 @@ SET row_security = off;
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE SCHEMA public;
+CREATE SCHEMA IF NOT EXISTS public;
 
 
 --
@@ -27,6 +28,7 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 -- Name: action; Type: TYPE; Schema: public; Owner: -
 --
 
+DROP TYPE IF EXISTS public.action;
 CREATE TYPE public.action AS ENUM (
     'follow',
     'unfollow',
@@ -41,7 +43,7 @@ CREATE TYPE public.action AS ENUM (
 -- Name: generate_ulid(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.generate_ulid() RETURNS text
+CREATE OR REPLACE FUNCTION public.generate_ulid() RETURNS text
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -104,7 +106,7 @@ $$;
 -- Name: get_followers(character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.get_followers(target_address character varying) RETURNS TABLE(actor_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
+CREATE OR REPLACE FUNCTION public.get_followers(target_address character varying) RETURNS TABLE(actor_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
     LANGUAGE plpgsql STABLE
     AS $$
 BEGIN
@@ -125,7 +127,7 @@ END; $$;
 -- Name: get_following(character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.get_following(actor_address character varying) RETURNS TABLE(target_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
+CREATE OR REPLACE FUNCTION public.get_following(actor_address character varying) RETURNS TABLE(target_address character varying, action_timestamp timestamp with time zone, created_at timestamp with time zone)
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -146,7 +148,7 @@ END; $$;
 -- Name: health(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.health() RETURNS text
+CREATE OR REPLACE FUNCTION public.health() RETURNS text
     LANGUAGE plpgsql STABLE
     AS $$
 BEGIN
@@ -159,7 +161,7 @@ $$;
 -- Name: insert_user_if_not_exists(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.insert_user_if_not_exists() RETURNS trigger
+CREATE OR REPLACE FUNCTION public.insert_user_if_not_exists() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -188,22 +190,12 @@ CREATE TABLE public.activity (
     created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
     updated_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL
 );
-
-
---
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.schema_migrations (
-    version character varying(128) NOT NULL
-);
-
-
 --
 -- Name: user; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."user" (
+-- CREATE TABLE public."user" (
+CREATE TABLE IF NOT EXISTS public."user" (
     id text DEFAULT public.generate_ulid() NOT NULL,
     wallet_address character varying NOT NULL,
     created_at timestamp with time zone DEFAULT (now() AT TIME ZONE 'utc'::text) NOT NULL,
@@ -242,14 +234,6 @@ CREATE INDEX idx_block_number ON public.events(block_number);
 
 ALTER TABLE ONLY public.activity
     ADD CONSTRAINT activity_pkey PRIMARY KEY (id);
-
-
---
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.schema_migrations
-    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
 
 
 --
@@ -312,4 +296,6 @@ ALTER TABLE ONLY public.activity
 --
 -- Dbmate schema migrations
 --
+
+-- migrate:down
 

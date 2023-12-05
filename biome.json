@@ -57,6 +57,7 @@
         "useImportRestrictions": "off"
       },
       "complexity": {
+        "noForEach": "off",
         "useLiteralKeys": "off",
         "noUselessEmptyExport": "off"
       },

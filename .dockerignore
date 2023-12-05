@@ -9,4 +9,6 @@
 !drizzle.config.ts
 .gitignore
 !scripts/
+!drizzle/
+!db/
 !src/

@@ -43,6 +43,4 @@ async function main() {
   if (writtenBytesSize > 0 === false && newSchemaFile.length > 0) {
     throw new Error(`Failed to write to ${schemaFilePath}`)
   }
-
-  bun.spawn(['bun', 'format'])
 }

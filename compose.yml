@@ -1,8 +1,6 @@
 version: 2.23.3
 name: efp-indexer
 
-# WIP
-
 services:
   ping:
     container_name: efp-indexer-ping
@@ -11,6 +9,8 @@ services:
       dockerfile: Dockerfile
       args:
         - NODE_ENV=production
+    networks:
+      - default
     command: ./scripts/ping.sh
     entrypoint: /bin/bash
     volumes:
@@ -20,6 +20,8 @@ services:
     container_name: efp-database
     image: postgres:latest
     restart: always
+    networks:
+      - default
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -29,22 +31,20 @@ services:
     ports:
       - 5432:5432
 
-
   indexer:
     container_name: efp-indexer
     depends_on:
       - database
     restart: always
-    network_mode: host
+    networks:
+      - default
     build:
       context: .
       dockerfile: Dockerfile
       args:
         - NODE_ENV=production
-    volumes:
-      - ./:/usr/src/app
     environment:
-      - DATABASE_URL_POOLED=${DATABASE_URL_POOLED:-postgres://postgres:postgres@host.docker.internal:5432/efp}
+      - DATABASE_URL_POOLED=${DATABASE_URL_POOLED:-postgresql://postgres:postgres@efp-database:5432/efp?sslmode=disable}
       - NODE_ENV=${NODE_ENV:-production}
       - ENABLE_DATABASE_LOGGING=${ENABLE_DATABASE_LOGGING:-true}
       - LLAMAFOLIO_ID=${LLAMAFOLIO_ID}
@@ -54,7 +54,7 @@ services:
       - SEPOLIA_ALCHEMY_ID=${SEPOLIA_ALCHEMY_ID}
       - OPTIMISM_ALCHEMY_ID=${OPTIMISM_ALCHEMY_ID}
       - ETHEREUM_LOCAL_NODE_URL=${ETHEREUM_LOCAL_NODE_URL:-http://host.docker.internal:8545}
-      - DATABASE_URL=postgres://postgres:postgres@host.docker.internal:5432/efp
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@efp-database:5432/efp?sslmode=disable}
       - ANVIL_ACCOUNT_PRIVATE_KEY=${ANVIL_ACCOUNT_PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}
       - CHAIN_ID=${CHAIN_ID:-31337}
       - EFP_CONTRACT_ACCOUNT_METADATA=${EFP_CONTRACT_ACCOUNT_METADATA:-0x5FbDB2315678afecb367f032d93F642f64180aa3}
@@ -65,3 +65,7 @@ services:
 
 volumes:
   database:
+
+networks:
+  default:
+    driver: bridge
