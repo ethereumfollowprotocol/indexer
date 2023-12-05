@@ -51,6 +51,28 @@ bun upgrade && bun install
 cp .env.example .env
 ```
 
+### Database
+
+- [PostgreSQL](https://www.postgresql.org/)
+- [dbmate](https://github.com/amacneil/dbmate) (for migrations)
+
+Migration files are located in `./db/migrations`. `dbmate` commands:
+
+```bash
+bunx dbmate --help    # print usage help
+bunx dbmate new       # generate a new migration file
+bunx dbmate up        # create the database (if it does not already exist) and run any pending migrations
+bunx dbmate create    # create the database
+bunx dbmate drop      # drop the database
+bunx dbmate migrate   # run any pending migrations
+bunx dbmate rollback  # roll back the most recent migration
+bunx dbmate down      # alias for rollback
+bunx dbmate status    # show the status of all migrations (supports --exit-code and --quiet)
+bunx dbmate dump      # write the database schema.sql file
+bunx dbmate wait      # wait for the database server to become available
+```
+
+
 ____
 TODO: Continue documentation
 ____

@@ -1,13 +1,1 @@
-{
-  "version": "5",
-  "dialect": "pg",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1701742105105,
-      "tag": "0000_strong_jackpot",
-      "breakpoints": true
-    }
-  ]
-}
+{"version":"5","dialect":"pg","entries":[]}

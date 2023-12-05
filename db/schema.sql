@@ -219,13 +219,14 @@ CREATE TABLE public.activity (
 --
 
 CREATE TABLE public.events (
-    id integer NOT NULL,
+    id text DEFAULT public.generate_ulid() NOT NULL,
     transaction_hash character varying(66) NOT NULL,
-    block_number integer NOT NULL,
+    block_number bigint NOT NULL,
     contract_address character varying(42) NOT NULL,
     event_name character varying(255) NOT NULL,
     event_parameters jsonb NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL
+    "timestamp" timestamp with time zone NOT NULL,
+    processed text DEFAULT 'false'::text NOT NULL
 );
 
 
@@ -275,13 +276,6 @@ CREATE TABLE public."user" (
 --
 
 ALTER TABLE ONLY drizzle.__drizzle_migrations ALTER COLUMN id SET DEFAULT nextval('drizzle.__drizzle_migrations_id_seq'::regclass);
-
-
---
--- Name: events id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
 
 
 --
@@ -397,6 +391,14 @@ ALTER TABLE ONLY public.activity
 
 
 --
+-- Name: activity activity_actor_address_user_wallet_address_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.activity
+    ADD CONSTRAINT activity_actor_address_user_wallet_address_fk FOREIGN KEY (actor_address) REFERENCES public."user"(wallet_address) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -406,4 +408,5 @@ ALTER TABLE ONLY public.activity
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20231205004227');
+    ('20231205004227'),
+    ('20231205040738');

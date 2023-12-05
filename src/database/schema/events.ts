@@ -6,7 +6,7 @@ export const events = s.pgTable(
   {
     id: s.text('id').default(sql`generate_ulid()`).primaryKey().notNull(),
     transactionHash: s.varchar('transaction_hash', { length: 66 }).notNull(),
-    blockNumber: s.text('block_number').notNull(), // Or integer, based on your requirements
+    blockNumber: s.bigint('block_number', { mode: 'number' }).notNull(), // Or integer, based on your requirements
     contractAddress: s.varchar('contract_address', { length: 42 }).notNull(),
     eventName: s.varchar('event_name', { length: 255 }).notNull(),
     eventParameters: s.jsonb('event_parameters').notNull(),
