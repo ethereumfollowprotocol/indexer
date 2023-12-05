@@ -15,7 +15,6 @@ COPY package.json package.json
 RUN bun install
 
 COPY . .
-RUN chmod +x ./scripts/entrypoint.sh
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 CMD bun --hot --watch ./src/index.ts
