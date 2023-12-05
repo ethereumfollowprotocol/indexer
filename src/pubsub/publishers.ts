@@ -6,7 +6,7 @@ import {
   EFPListRegistryABI
 } from '#/abi'
 import { logger } from '#/logger'
-import type { Abi, PublicClient } from 'viem'
+import type { Abi, Log, PublicClient } from 'viem'
 import { decodeLogtoEvent, type Event } from './event'
 import { ContractEventSubscriber, type EventSubscriber } from './subscribers'
 
@@ -84,11 +84,29 @@ export class ContractEventPublisher implements EventPublisher {
     this.unwatch = this.client.watchContractEvent({
       abi: this.abi,
       address: this.address,
-      onLogs: logs =>
-        logs.forEach(async log => {
+      onLogs: async logs => {
+        // sort logs by logIndex
+        logs.sort((a: Log, b: Log) => {
+          if (a.logIndex === null || b.logIndex === null) {
+            throw new Error('Log index is null')
+          }
+          return a.logIndex - b.logIndex
+        })
+
+        // check if log indexes are sequential
+        let logIndex = -1
+        for (const log of logs) {
+          if (log.logIndex === null || logIndex >= log.logIndex) {
+            throw new Error('Log indexes are not sequential')
+          }
+          // print log in purple
+          logger.log(
+            `\x1b[35m${log.transactionHash} ${log.transactionIndex} ${log.logIndex} ${this.contractName}\x1b[0m`
+          )
           const event: Event = decodeLogtoEvent(this.contractName, this.abi, log)
           await Promise.all(this.subscribers.map(subscriber => subscriber.onEvent(event)))
-        }),
+        }
+      },
       onError: error => {
         logger.error(`${this.contractName} error:`, error)
       },

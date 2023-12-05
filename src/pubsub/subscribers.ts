@@ -52,7 +52,7 @@ export abstract class ContractEventSubscriber implements EventSubscriber {
    * @param log - The log to process.
    */
   async onEvent(event: Event): Promise<void> {
-    this.log(event)
+    // this.log(event)
   }
 
   /**
@@ -126,7 +126,7 @@ export class DatabaseUploader implements EventSubscriber {
       timestamp: new Date().toISOString()
     }
 
-    logger.log(`Insert ${event.eventParameters.eventName} event into db`)
+    logger.log(`Insert ${event.eventParameters.eventName} event into \`events\` table`)
     await database.insertInto('events').values([row]).executeTakeFirst()
 
     if (eventName === 'ListOperation') {
@@ -156,7 +156,6 @@ export class DatabaseUploader implements EventSubscriber {
     const opDataHexstring: `0x${string}` = `0x${Buffer.from(opData).toString('hex')}`
 
     // log bright cyan so it stands out
-    logger.log(`\x1b[96m${event.eventParameters.eventName} w/ op: ${op}\x1b[0m`)
 
     // insert
     const row: Row<'list_ops'> = {
@@ -168,6 +167,7 @@ export class DatabaseUploader implements EventSubscriber {
       code: opCode,
       data: opDataHexstring
     }
+    logger.log(`\x1b[96mInsert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
     await database.insertInto('list_ops').values([row]).executeTakeFirst()
 
     await this.processListOp(event.contractAddress, nonce, listOp)
@@ -240,7 +240,7 @@ export class DatabaseUploader implements EventSubscriber {
         name: event.contractName,
         owner: newOwner
       }
-      logger.log(`Insert ${event.contractName} contract into contracts table:`, contractsRow)
+      logger.log(`\x1b[96mInsert ${event.contractName} contract into \`contracts\` table\x1b[0m`)
       await database.insertInto('contracts').values([contractsRow]).executeTakeFirst()
     } else {
       // contract ownership was transferred but the contract should already
@@ -248,7 +248,7 @@ export class DatabaseUploader implements EventSubscriber {
 
       // we will update the owner in the database
       logger.log(
-        `Updating ${event.contractName} contract owner from ${previousOwner} to ${newOwner} in contracts table`
+        `\x1b[95mUpdating ${event.contractName} contract owner from ${previousOwner} to ${newOwner} in \`contracts\` table\x1b[0m`
       )
       await database
         .updateTable('contracts')
@@ -275,11 +275,13 @@ export class DatabaseUploader implements EventSubscriber {
         owner: to
       }
 
-      logger.log(`Insert ${event.eventParameters.eventName} event into db`)
+      logger.log(
+        `\x1b[94mInsert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`
+      )
       await database.insertInto('list_nfts').values([row]).executeTakeFirst()
     } else {
       // update existing row
-      logger.log(`Update ${event.eventParameters.eventName} event in db`)
+      logger.log(`\x1b[93mUpdate ${event.eventParameters.eventName} event in db\x1b[0m`)
       await database
         .updateTable('list_nfts')
         .set({ owner: to })
