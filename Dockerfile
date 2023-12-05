@@ -13,4 +13,5 @@ RUN bun install
 COPY . .
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
+
 CMD bun --hot --watch ./src/index.ts
