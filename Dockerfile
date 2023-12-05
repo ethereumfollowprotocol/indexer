@@ -6,8 +6,7 @@ RUN apt-get update \
 
 WORKDIR /usr/src/app
 
-COPY bun.lockb bun.lockb
-COPY package.json package.json
+COPY bun.lockb package.json ./
 
 RUN bun install
 
