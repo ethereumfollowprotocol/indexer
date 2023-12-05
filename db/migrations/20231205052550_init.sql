@@ -104,6 +104,14 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+CREATE TABLE public.contracts (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    chain_id bigint NOT NULL,
+    address character varying(42) NOT NULL,
+    name character varying(255) NOT NULL,
+    owner character varying(42) NOT NULL
+);
+
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --

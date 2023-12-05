@@ -8,13 +8,8 @@ echo "Current database migrations status:"
 bunx dbmate status
 echo
 
-echo "Setting up database..."
+echo "Setting up database and generating types..."
 bunx dbmate up
-echo
-
-echo "Generating introspection..."
-bun database:codegen
-bun format
 echo
 
 echo "Current database migrations status:"

@@ -5,7 +5,7 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
-import { database, type EventsRow } from '#/database'
+import { database, type ContractsRow, type EventsRow } from '#/database'
 import { logger } from '#/logger'
 import type { Abi } from 'viem'
 import type { Event } from './event'
@@ -62,7 +62,7 @@ export abstract class ContractEventSubscriber implements EventSubscriber {
       return typeof value === 'bigint' ? value.toString() : value
     }
 
-    logger.log(`[${this.contractName}]`, JSON.stringify(event, customSerializer, 2))
+    logger.log(`[${this.contractName}]`, JSON.parse(JSON.stringify(event, customSerializer, 2)))
   }
 }
 
@@ -102,8 +102,6 @@ export class DatabaseUploader implements EventSubscriber {
    * @param log - The log to process.
    */
   async onEvent(event: Event): Promise<void> {
-    type Row = EventsRow
-
     // eventParameters will have an args field
     const serializableEventParameters: { eventName: string; args: Record<string, any> } = {
       eventName: event.eventParameters.eventName,
@@ -115,19 +113,49 @@ export class DatabaseUploader implements EventSubscriber {
       serializableEventParameters.args[key] = typeof value === 'bigint' ? value.toString() : value
     }
 
-    const row = {
+    const eventName: string = event.eventParameters.eventName
+    const row: EventsRow = {
       transaction_hash: event.transactionHash,
       block_number: event.blockNumber,
-      // problem: we don't have contract address here
       contract_address: event.contractAddress,
       // problem: we don't have event name here
-      event_name: event.contractName,
+      event_name: event.eventParameters.eventName,
       event_parameters: JSON.stringify(serializableEventParameters),
       timestamp: new Date().toISOString()
-    } satisfies Row
+    }
 
-    logger.log('Inserting event into database:', row)
+    logger.log(`Insert ${event.eventParameters.eventName} event into db`)
     await database.insertInto('events').values([row]).executeTakeFirst()
-    logger.log('Successfully inserted event into database')
+
+    if (eventName === 'OwnershipTransferred') {
+      // this was a new contract that got deployed and transferred
+      // ownership to the owner
+      const previousOwner = event.eventParameters.args['previousOwner']
+      const newOwner = event.eventParameters.args['newOwner']
+      if (previousOwner === '0x0000000000000000000000000000000000000000') {
+        const contractsRow: ContractsRow = {
+          chain_id: 1,
+          address: event.contractAddress,
+          name: event.contractName,
+          owner: newOwner
+        }
+        logger.log(`Insert ${event.contractName} contract into contracts table:`, contractsRow)
+        await database.insertInto('contracts').values([contractsRow]).executeTakeFirst()
+      } else {
+        // contract ownership was transferred but the contract should already
+        // be in the database
+
+        // we will update the owner in the database
+        logger.log(
+          `Updating ${event.contractName} contract owner from ${previousOwner} to ${newOwner} in contracts table`
+        )
+        await database
+          .updateTable('contracts')
+          .set({ owner: newOwner })
+          .where('chain_id', '=', '1')
+          .where('address', '=', event.contractAddress)
+          .executeTakeFirst()
+      }
+    }
   }
 }

@@ -20,12 +20,31 @@ export const EFPListMinterABI: Abi = [
       },
       {
         internalType: 'address',
-        name: '_listsAddressL1',
+        name: '_listRecordsL1',
         type: 'address'
       }
     ],
     stateMutability: 'nonpayable',
     type: 'constructor'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address'
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
+      }
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event'
   },
   {
     inputs: [],
@@ -55,10 +74,10 @@ export const EFPListMinterABI: Abi = [
   },
   {
     inputs: [],
-    name: 'listsAddressL1',
+    name: 'listRecordsL1',
     outputs: [
       {
-        internalType: 'address',
+        internalType: 'contract IEFPListRecords',
         name: '',
         type: 'address'
       }
@@ -150,6 +169,19 @@ export const EFPListMinterABI: Abi = [
   },
   {
     inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'registry',
     outputs: [
       {
@@ -159,6 +191,26 @@ export const EFPListMinterABI: Abi = [
       }
     ],
     stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
+      }
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   }
 ] as const
