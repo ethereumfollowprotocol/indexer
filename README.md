@@ -72,6 +72,32 @@ bunx dbmate dump      # write the database schema.sql file
 bunx dbmate wait      # wait for the database server to become available
 ```
 
+#### Setup
+
+Assuming the `efp-database` container from `compose.yml` is running, run the following command to create the database and generate TypeScript types for the database schema:
+
+```bash
+bun database:up
+```
+
+The command creates the database (if it doesn't exist) and runs migrations (see `./db/migrations`).
+
+While still in development (i.e., no production database yet), any database schema we make go directly into this single file: `./db/migrations/20231205052550_init.sql`. See next section for updating the database schema.
+
+#### Updating the database schema
+
+You've updated the `sql` schema in `./db/migrations/20231205052550_init.sql` and want to reflect that in the database container and update the TypeScript types. Run:
+> [!NOTE]
+> Make sure you're not connected to the database through any GUI or client while running this command. Otherwise you will get `Error: pq: database "efp" is being accessed by other users`.
+
+```bash
+bun database:reset
+```
+
+This:
+- runs `dbmate drop` which nukes the `efp` database, then
+- runs `dbmate up` which creates the database and runs migrations (aka the single migration file we have in `./db/migrations`), then
+- runs `kysely-codegen --dialect='postgres' --type-only-imports --log-level='error'` which generates TypeScript types for the database schema and writes them to `./src/database/`.
 
 ____
 TODO: Continue documentation

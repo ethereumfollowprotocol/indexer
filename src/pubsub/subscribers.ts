@@ -5,7 +5,7 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
-import { database, type ContractsRow, type EventsRow, type ListNFTsRow } from '#/database'
+import { database, type Row } from '#/database'
 import { logger } from '#/logger'
 import type { Abi } from 'viem'
 import type { Event } from './event'
@@ -116,7 +116,7 @@ export class DatabaseUploader implements EventSubscriber {
     }
 
     const eventName: string = event.eventParameters.eventName
-    const row: EventsRow = {
+    const row: Row<'events'> = {
       transaction_hash: event.transactionHash,
       block_number: event.blockNumber,
       contract_address: event.contractAddress,
@@ -145,7 +145,7 @@ export class DatabaseUploader implements EventSubscriber {
     const to: string = event.eventParameters.args['to']
     if (from === '0x0000000000000000000000000000000000000000') {
       // insert as new row
-      const row: ListNFTsRow = {
+      const row: Row<'list_nfts'> = {
         chain_id: 1,
         address: event.contractAddress,
         token_id: event.eventParameters.args['tokenId'],
@@ -177,7 +177,7 @@ export class DatabaseUploader implements EventSubscriber {
     const previousOwner = event.eventParameters.args['previousOwner']
     const newOwner = event.eventParameters.args['newOwner']
     if (previousOwner === '0x0000000000000000000000000000000000000000') {
-      const contractsRow: ContractsRow = {
+      const contractsRow: Row<'contracts'> = {
         chain_id: 1,
         address: event.contractAddress,
         name: event.contractName,

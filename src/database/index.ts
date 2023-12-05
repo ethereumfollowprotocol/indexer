@@ -1,12 +1,10 @@
-import { Kysely, PostgresDialect, type InsertObject } from 'kysely'
-import type { DB } from 'kysely-codegen'
 import { Pool } from 'pg'
+import { Kysely, PostgresDialect, type InsertObject } from 'kysely'
 
 import { env } from '#/env.ts'
+import type { DB } from './generated/index.ts'
 
-export type EventsRow = InsertObject<DB, 'events'>
-export type ContractsRow = InsertObject<DB, 'contracts'>
-export type ListNFTsRow = InsertObject<DB, 'list_nfts'>
+export type Row<T extends keyof DB> = InsertObject<DB, T>
 
 export const database = new Kysely<DB>({
   dialect: new PostgresDialect({

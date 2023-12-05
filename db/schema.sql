@@ -104,6 +104,19 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: contracts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.contracts (
+    id text DEFAULT public.generate_ulid() NOT NULL,
+    chain_id bigint NOT NULL,
+    address character varying(42) NOT NULL,
+    name character varying(255) NOT NULL,
+    owner character varying(42) NOT NULL
+);
+
+
+--
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -137,6 +150,18 @@ CREATE SEQUENCE public.events_id_seq
 --
 
 ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
+
+
+--
+-- Name: list_nfts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.list_nfts (
+    chain_id bigint NOT NULL,
+    address character varying(42) NOT NULL,
+    token_id bigint NOT NULL,
+    owner character varying(42) NOT NULL
+);
 
 
 --
