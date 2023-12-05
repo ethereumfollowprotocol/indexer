@@ -112,11 +112,27 @@ CREATE TABLE public.contracts (
     owner character varying(42) NOT NULL
 );
 
+CREATE TABLE public.account_metadata (
+    chain_id bigint NOT NULL,
+    contract_address character varying(42) NOT NULL,
+    address character varying(42) NOT NULL,
+    key character varying(255) NOT NULL,
+    value character varying(255) NOT NULL
+);
+
 CREATE TABLE public.list_nfts (
     chain_id bigint NOT NULL,
     address character varying(42) NOT NULL,
     token_id bigint NOT NULL,
     owner character varying(42) NOT NULL
+);
+
+CREATE TABLE public.list_metadata (
+    chain_id bigint NOT NULL,
+    contract_address character varying(42) NOT NULL,
+    token_id bigint NOT NULL,
+    key character varying(255) NOT NULL,
+    value character varying(255) NOT NULL
 );
 
 CREATE TABLE public.list_ops (

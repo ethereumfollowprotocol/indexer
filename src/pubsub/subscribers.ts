@@ -5,13 +5,13 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
-import type { Abi } from 'viem'
-import { logger } from '#/logger'
-import type { Event } from './event'
-import { timestamp } from '#/utilities'
 import { database, type Row } from '#/database'
+import { logger } from '#/logger'
 import { decodeListOp, type ListOp } from '#/process/list-op'
 import { decodeListRecord, type ListRecord } from '#/process/list-record'
+import { timestamp } from '#/utilities'
+import type { Abi } from 'viem'
+import type { Event } from './event'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.
@@ -132,7 +132,75 @@ export class DatabaseUploader implements EventSubscriber {
       await this.onOwnershipTransferred(event)
     } else if (eventName === 'Transfer') {
       await this.onTransfer(event)
+    } else if (event.contractName === 'EFPAccountMetadata' && eventName === 'ValueSet') {
+      await this.onAccountMetadataValueSet(event)
+    } else if (event.contractName === 'EFPListMetadata' && eventName === 'ValueSet') {
+      await this.onListMetadataValueSet(event)
     }
+  }
+
+  //   CREATE TABLE public.account_metadata (
+  //     chain_id bigint NOT NULL,
+  //     contract_address character varying(42) NOT NULL,
+  //     address character varying(42) NOT NULL,
+  //     key character varying(255) NOT NULL,
+  //     value character varying(255) NOT NULL
+  // );
+  async onAccountMetadataValueSet(event: Event): Promise<void> {
+    if (
+      event.contractName !== 'EFPAccountMetadata' ||
+      event.eventParameters.eventName !== 'ValueSet'
+    ) {
+      return
+    }
+
+    const address: `0x${string}` = event.eventParameters.args['addr']
+    const key: string = event.eventParameters.args['key']
+    const value: string = event.eventParameters.args['value']
+
+    // insert or update
+    const row: Row<'account_metadata'> = {
+      chain_id: 1,
+      contract_address: event.contractAddress,
+      address: address,
+      key: key,
+      value: value
+    }
+    logger.log(`Account ${address} insert ${key}=${value} into \`account_metadata\` table`)
+    await database.insertInto('account_metadata').values([row]).executeTakeFirst()
+  }
+
+  // CREATE TABLE public.list_metadata (
+  //     chain_id bigint NOT NULL,
+  //     contract_address character varying(42) NOT NULL,
+  //     nonce bigint NOT NULL,
+  //     key character varying(255) NOT NULL,
+  //     value character varying(255) NOT NULL
+  // );
+  async onListMetadataValueSet(event: Event): Promise<void> {
+    if (
+      event.contractName !== 'EFPListMetadata' ||
+      event.eventParameters.eventName !== 'ValueSet'
+    ) {
+      return
+    }
+
+    const token_id: bigint = event.eventParameters.args['tokenId']
+    const key: string = event.eventParameters.args['key']
+    const value: string = event.eventParameters.args['value']
+
+    // insert or update
+    const row: Row<'list_metadata'> = {
+      chain_id: 1,
+      contract_address: event.contractAddress,
+      token_id: token_id,
+      key: key,
+      value: value
+    }
+    logger.log(
+      `\x1b[33mEFP List #${token_id} insert ${key}=${value} into \`list_metadata\` table\x1b[0m`
+    )
+    await database.insertInto('list_metadata').values([row]).executeTakeFirst()
   }
 
   async onListOperation(event: Event): Promise<void> {

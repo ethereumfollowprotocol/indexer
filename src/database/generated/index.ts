@@ -20,6 +20,14 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
+export interface AccountMetadata {
+  address: string
+  chain_id: Int8
+  contract_address: string
+  key: string
+  value: string
+}
+
 export interface Contracts {
   address: string
   chain_id: Int8
@@ -37,6 +45,14 @@ export interface Events {
   processed: Generated<string>
   timestamp: Timestamp
   transaction_hash: string
+}
+
+export interface ListMetadata {
+  chain_id: Int8
+  contract_address: string
+  key: string
+  token_id: Int8
+  value: string
 }
 
 export interface ListNfts {
@@ -73,8 +89,10 @@ export interface SchemaMigrations {
 }
 
 export interface DB {
+  account_metadata: AccountMetadata
   contracts: Contracts
   events: Events
+  list_metadata: ListMetadata
   list_nfts: ListNfts
   list_ops: ListOps
   list_records: ListRecords
