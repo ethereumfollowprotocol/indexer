@@ -24,11 +24,7 @@ export interface EventPublisher {
  * Concrete implementation of EventPublisher for handling contract events.
  */
 export class ContractEventPublisher implements EventPublisher {
-  private client: PublicClient
   private subscribers: EventSubscriber[] = []
-  public readonly contractName: string
-  public readonly abi: Abi
-  public readonly address: `0x${string}`
   private unwatch: () => void = () => {}
 
   /**
@@ -38,11 +34,12 @@ export class ContractEventPublisher implements EventPublisher {
    * @param abi - The ABI of the contract.
    * @param address - The Ethereum address of the contract.
    */
-  constructor(client: PublicClient, contractName: string, abi: any, address: `0x${string}`) {
-    this.client = client
-    this.contractName = contractName
-    this.abi = abi
-    this.address = address
+  constructor(
+    private client: PublicClient,
+    public readonly contractName: string,
+    public readonly abi: Abi,
+    public readonly address: `0x${string}`
+  ) {
     this.unwatch = () => {
       logger.warn('ContractEventPublisher unwatch function not yet implemented')
     }

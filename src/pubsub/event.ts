@@ -15,7 +15,7 @@ export function decodeLogtoEvent(contractName: string, abi: any, log: Log): Even
   // problem: we don't have ABI here
   // but I don't want to have to repeat this code for each contract
   const decodedTopics: { eventName: string; args: Record<string, any> } = decodeEventLog({
-    abi: abi,
+    abi,
     data,
     topics
   })
@@ -25,10 +25,10 @@ export function decodeLogtoEvent(contractName: string, abi: any, log: Log): Even
   }
 
   return {
-    transactionHash: transactionHash,
-    blockNumber: blockNumber,
+    transactionHash,
+    blockNumber,
     contractAddress: address,
-    contractName: contractName,
+    contractName,
     eventParameters: decodedTopics,
     data,
     topics

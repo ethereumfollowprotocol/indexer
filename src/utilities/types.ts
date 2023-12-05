@@ -1,3 +1,7 @@
+/**
+ * Utility types that are not domain specific and used in multiple places
+ */
+
 // @link https://x.com/mattpocockuk/status/1622730173446557697?s=20
 export type Pretty<T> = {
   [K in keyof T]: T[K]

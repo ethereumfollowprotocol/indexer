@@ -5,12 +5,13 @@ import {
   EFPListRecordsABI,
   EFPListRegistryABI
 } from '#/abi'
-import { database, type Row } from '#/database'
-import { logger } from '#/logger'
-import { decodeListOp, type ListOp } from '#/types/ListOp'
-import { decodeListRecord, type ListRecord } from '#/types/ListRecord'
 import type { Abi } from 'viem'
+import { logger } from '#/logger'
 import type { Event } from './event'
+import { timestamp } from '#/utilities'
+import { database, type Row } from '#/database'
+import { decodeListOp, type ListOp } from '#/process/list-op'
+import { decodeListRecord, type ListRecord } from '#/process/list-record'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.
@@ -26,26 +27,22 @@ export interface EventSubscriber {
  * contracts.
  */
 export abstract class ContractEventSubscriber implements EventSubscriber {
-  /** Contract name for easier identification. */
-  public readonly contractName: string
-
-  /** ABI of the contract for decoding event logs. */
-  public readonly abi: Abi
-
-  /** Ethereum address of the contract. */
-  public readonly address: `0x${string}`
-
   /**
    * Constructs an EventSubscriber.
    * @param contractName - The name of the contract, used for easier identification and logging.
    * @param abi - The ABI of the contract, used for decoding event logs.
    * @param address - The Ethereum address of the contract.
    */
-  constructor(contractName: string, abi: any, address: `0x${string}`) {
-    this.contractName = contractName
-    this.abi = abi
-    this.address = address
-  }
+  constructor(
+    /** Contract name for easier identification. */
+    public readonly contractName: string,
+
+    /** ABI of the contract for decoding event logs. */
+    public readonly abi: Abi,
+
+    /** Ethereum address of the contract. */
+    public readonly address: `0x${string}`
+  ) {}
 
   /**
    * Generic handler for log events. This function should be overridden by subclasses to process each log.
@@ -123,7 +120,7 @@ export class DatabaseUploader implements EventSubscriber {
       // problem: we don't have event name here
       event_name: event.eventParameters.eventName,
       event_parameters: JSON.stringify(serializableEventParameters),
-      timestamp: new Date().toISOString()
+      timestamp: timestamp()
     }
 
     logger.log(`Insert ${event.eventParameters.eventName} event into \`events\` table`)

@@ -45,6 +45,7 @@
     "rules": {
       "all": true,
       "style": {
+        "useConst": "off",
         "useBlockStatements": "off",
         "useSelfClosingElements": "off",
         "noUnusedTemplateLiteral": "off"
