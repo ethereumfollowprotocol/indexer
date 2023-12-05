@@ -38,3 +38,4 @@ yarn-error.log*
 data.sqld
 .data
 _
+drizzle/*.sql

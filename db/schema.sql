@@ -17,6 +17,20 @@ CREATE SCHEMA drizzle;
 
 
 --
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
 -- Name: action; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -409,4 +423,6 @@ ALTER TABLE ONLY public.activity
 
 INSERT INTO public.schema_migrations (version) VALUES
     ('20231205004227'),
-    ('20231205040738');
+    ('20231205040738'),
+    ('20231205041811'),
+    ('20231205043403');
