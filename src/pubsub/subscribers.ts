@@ -118,7 +118,7 @@ export class DatabaseUploader implements EventSubscriber {
 
     const row: Row = {
       transactionHash: event.transactionHash,
-      blockNumber: event.blockNumber.toString(),
+      blockNumber: Number(event.blockNumber.toString()),
       // problem: we don't have contract address here
       contractAddress: event.contractAddress,
       // problem: we don't have event name here

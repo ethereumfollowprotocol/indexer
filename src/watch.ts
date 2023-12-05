@@ -1,5 +1,5 @@
 import { env } from '#/env'
-import { type PublicClient } from 'viem'
+import type { PublicClient } from 'viem'
 import { logger } from './logger'
 import {
   EFPAccountMetadataPublisher,
