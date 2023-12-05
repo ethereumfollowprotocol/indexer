@@ -39,3 +39,4 @@ data.sqld
 .data
 _
 drizzle/*.sql
+drizzle/meta/

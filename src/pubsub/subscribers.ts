@@ -8,7 +8,7 @@ import {
 import { database } from '#/database'
 import { logger } from '#/logger'
 import type { Abi } from 'viem'
-import { events } from '~schema'
+import type { Events } from 'kysely-codegen'
 import type { Event } from './event'
 
 /**
@@ -103,7 +103,7 @@ export class DatabaseUploader implements EventSubscriber {
    * @param log - The log to process.
    */
   async onEvent(event: Event): Promise<void> {
-    type Row = typeof events.$inferInsert
+    type Row = Events
 
     // eventParameters will have an args field
     const serializableEventParameters: { eventName: string; args: Record<string, any> } = {
@@ -128,7 +128,7 @@ export class DatabaseUploader implements EventSubscriber {
     }
 
     logger.log('Inserting event into database:', row)
-    await database.insert(events).values(row)
+    await database.insertInto('events').values(row).executeTakeFirst()
     logger.log('Successfully inserted event into database')
   }
 }

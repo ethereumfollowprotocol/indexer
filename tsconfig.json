@@ -29,10 +29,9 @@
     "types": ["node", "bun-types"],
     "baseUrl": ".",
     "paths": {
-      "#/*": ["src/*"],
-      "~schema" :  ["./drizzle/schema.ts"]
+      "#/*": ["src/*"]
     },
   },
   "include": ["src", "scripts", "drizzle/**/*.ts"],
-  "files": ["environment.d.ts", "reset.d.ts", "drizzle.config.ts", "biome.json"]
+  "files": ["environment.d.ts", "reset.d.ts", "biome.json"]
 }

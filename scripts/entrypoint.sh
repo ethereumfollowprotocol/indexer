@@ -13,7 +13,7 @@ bunx dbmate up
 echo
 
 echo "Generating introspection..."
-bun database:introspect
+bun database:codegen
 bun format
 echo
 

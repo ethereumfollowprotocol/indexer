@@ -1,12 +1,13 @@
-import postgres from 'postgres'
-import { drizzle } from 'drizzle-orm/postgres-js'
+import { Pool } from 'pg'
+import type { DB } from 'kysely-codegen'
+import { Kysely, PostgresDialect } from 'kysely'
 
 import { env } from '#/env.ts'
-import * as schema from '~schema'
 
-const client = postgres(env.DATABASE_URL_POOLED)
-
-export const database = drizzle(client, {
-  schema,
-  logger: env.ENABLE_DATABASE_LOGGING === 'true'
+export const database = new Kysely<DB>({
+  dialect: new PostgresDialect({
+    pool: new Pool({
+      connectionString: env.DATABASE_URL_POOLED
+    })
+  })
 })
