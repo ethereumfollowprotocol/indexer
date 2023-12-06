@@ -1,6 +1,4 @@
-import type { Abi } from 'viem'
-
-export const EFPListRegistryABI: Abi = [
+export const EFPListRegistryABI = [
   {
     inputs: [],
     stateMutability: 'nonpayable',

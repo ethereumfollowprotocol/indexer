@@ -1,6 +1,4 @@
-import type { Abi } from 'viem'
-
-export const EFPListMinterABI: Abi = [
+export const EFPListMinterABI = [
   {
     inputs: [
       {

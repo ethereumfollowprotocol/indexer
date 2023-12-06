@@ -1,6 +1,4 @@
-import type { Abi } from 'viem'
-
-export const EFPListMetadataABI: Abi = [
+export const EFPListMetadataABI = [
   {
     anonymous: false,
     inputs: [

@@ -1,6 +1,4 @@
-import type { Abi } from 'viem'
-
-export const EFPListRecordsABI: Abi = [
+export const EFPListRecordsABI = [
   {
     anonymous: false,
     inputs: [
