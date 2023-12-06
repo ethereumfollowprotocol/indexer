@@ -1,4 +1,3 @@
-import { getAddress, type Hex } from 'viem'
 import { raise } from './utilities'
 
 export const env = Object.freeze({
@@ -13,17 +12,17 @@ export const env = Object.freeze({
   ETHEREUM_LOCAL_NODE_URL: getEnvVariable('ETHEREUM_LOCAL_NODE_URL'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
   DATABASE_URL_POOLED: getEnvVariable('DATABASE_URL_POOLED'),
-  ANVIL_ACCOUNT_PRIVATE_KEY: getEnvVariable('ANVIL_ACCOUNT_PRIVATE_KEY') as Hex,
-  CHAIN_ID: getEnvVariable('CHAIN_ID') as EnvironmentVariables['CHAIN_ID'],
+  ANVIL_ACCOUNT_PRIVATE_KEY: getEnvVariable('ANVIL_ACCOUNT_PRIVATE_KEY'),
+  CHAIN_ID: getEnvVariable('CHAIN_ID'),
   EFP_CONTRACTS: {
-    ACCOUNT_METADATA: getAddress(getEnvVariable('EFP_CONTRACT_ACCOUNT_METADATA')),
-    LIST_METADATA: getAddress(getEnvVariable('EFP_CONTRACT_LIST_METADATA')),
-    LIST_MINTER: getAddress(getEnvVariable('EFP_CONTRACT_LINT_MINTER')),
-    LIST_REGISTRY: getAddress(getEnvVariable('EFP_CONTRACT_LIST_REGISTRY')),
-    LIST_RECORDS: getAddress(getEnvVariable('EFP_CONTRACT_LIST_RECORDS'))
+    ACCOUNT_METADATA: getEnvVariable('EFP_CONTRACT_ACCOUNT_METADATA'),
+    LIST_METADATA: getEnvVariable('EFP_CONTRACT_LIST_METADATA'),
+    LIST_MINTER: getEnvVariable('EFP_CONTRACT_LINT_MINTER'),
+    LIST_REGISTRY: getEnvVariable('EFP_CONTRACT_LIST_REGISTRY'),
+    LIST_RECORDS: getEnvVariable('EFP_CONTRACT_LIST_RECORDS')
   }
 })
 
-function getEnvVariable(name: keyof EnvironmentVariables) {
+function getEnvVariable<T extends keyof EnvironmentVariables>(name: T) {
   return process.env[name] ?? raise(`environment variable ${name} not found`)
 }

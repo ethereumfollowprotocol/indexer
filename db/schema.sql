@@ -104,6 +104,19 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: account_metadata; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.account_metadata (
+    chain_id bigint NOT NULL,
+    contract_address character varying(42) NOT NULL,
+    address character varying(42) NOT NULL,
+    key character varying(255) NOT NULL,
+    value character varying(255) NOT NULL
+);
+
+
+--
 -- Name: contracts; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -150,6 +163,19 @@ CREATE SEQUENCE public.events_id_seq
 --
 
 ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
+
+
+--
+-- Name: list_metadata; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.list_metadata (
+    chain_id bigint NOT NULL,
+    contract_address character varying(42) NOT NULL,
+    token_id bigint NOT NULL,
+    key character varying(255) NOT NULL,
+    value character varying(255) NOT NULL
+);
 
 
 --

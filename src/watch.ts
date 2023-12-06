@@ -1,6 +1,5 @@
 import { env } from '#/env'
-import type { PublicClient } from 'viem'
-import { logger } from './logger'
+import { logger } from '#/logger'
 import {
   EFPAccountMetadataPublisher,
   EFPListMetadataPublisher,
@@ -17,8 +16,9 @@ import {
   EFPListRegistrySubscriber,
   type EventSubscriber
 } from './pubsub/subscribers'
+import type { EvmClient } from '#/clients'
 
-export async function watchAllEfpContractEvents({ client }: { client: PublicClient }) {
+export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   const efpAccountMetadataPublisher = new EFPAccountMetadataPublisher(
     client,
     env.EFP_CONTRACTS.ACCOUNT_METADATA

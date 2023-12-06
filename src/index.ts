@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
-import { evmClients } from '#/clients'
+import { env } from '#/env'
 import { logger } from '#/logger'
+import { evmClients } from '#/clients'
 import { watchAllEfpContractEvents } from '#/watch'
 import { asyncExitHook, gracefulExit } from 'exit-hook'
 
@@ -9,7 +10,7 @@ asyncExitHook(
   async signal => {
     logger.warn(`Exiting with signal ${signal}`)
   },
-  { wait: 2_000 }
+  { wait: 1_000 }
 )
 
 main().catch(error => {
@@ -19,10 +20,9 @@ main().catch(error => {
 
 async function main() {
   logger.success('Starting indexer…')
-  const client = evmClients['31337']()
+  const client = evmClients[env.CHAIN_ID]()
   try {
-    // @ts-expect-error
-    await watchAllEfpContractEvents({ client: client })
+    await watchAllEfpContractEvents({ client })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
     logger.error(errorMessage)

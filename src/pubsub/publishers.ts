@@ -6,7 +6,8 @@ import {
   EFPListRegistryABI
 } from '#/abi'
 import { logger } from '#/logger'
-import type { Abi, Log, PublicClient } from 'viem'
+import type { Abi, Log } from 'viem'
+import type { EvmClient } from '#/clients'
 import { decodeLogtoEvent, type Event } from './event'
 import { ContractEventSubscriber, type EventSubscriber } from './subscribers'
 
@@ -35,7 +36,7 @@ export class ContractEventPublisher implements EventPublisher {
    * @param address - The Ethereum address of the contract.
    */
   constructor(
-    private client: PublicClient,
+    private client: EvmClient,
     public readonly contractName: string,
     public readonly abi: Abi,
     public readonly address: `0x${string}`
@@ -129,31 +130,31 @@ export class ContractEventPublisher implements EventPublisher {
 // Each class sets the appropriate contract details (name, ABI, address) upon instantiation.
 
 export class EFPAccountMetadataPublisher extends ContractEventPublisher {
-  constructor(client: PublicClient, address: `0x${string}`) {
+  constructor(client: EvmClient, address: `0x${string}`) {
     super(client, 'EFPAccountMetadata', EFPAccountMetadataABI, address)
   }
 }
 
 export class EFPListMetadataPublisher extends ContractEventPublisher {
-  constructor(client: PublicClient, address: `0x${string}`) {
+  constructor(client: EvmClient, address: `0x${string}`) {
     super(client, 'EFPListMetadata', EFPListMetadataABI, address)
   }
 }
 
 export class EFPListRegistryPublisher extends ContractEventPublisher {
-  constructor(client: PublicClient, address: `0x${string}`) {
+  constructor(client: EvmClient, address: `0x${string}`) {
     super(client, 'EFPListRegistry', EFPListRegistryABI, address)
   }
 }
 
 export class EFPListRecordsPublisher extends ContractEventPublisher {
-  constructor(client: PublicClient, address: `0x${string}`) {
+  constructor(client: EvmClient, address: `0x${string}`) {
     super(client, 'EFPListRecords', EFPListRecordsABI, address)
   }
 }
 
 export class EFPListMinterPublisher extends ContractEventPublisher {
-  constructor(client: PublicClient, address: `0x${string}`) {
+  constructor(client: EvmClient, address: `0x${string}`) {
     super(client, 'EFPListMinter', EFPListMinterABI, address)
   }
 }

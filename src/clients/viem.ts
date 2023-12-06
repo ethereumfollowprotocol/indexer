@@ -1,13 +1,13 @@
-import { env } from '#/env.ts'
 import {
-  createPublicClient,
-  createTestClient,
-  fallback,
   http,
+  fallback,
+  webSocket,
   publicActions,
   walletActions,
-  webSocket
+  createTestClient,
+  createPublicClient
 } from 'viem'
+import { env } from '#/env.ts'
 import { privateKeyToAccount } from 'viem/accounts'
 import { foundry, mainnet, optimism, optimismSepolia, sepolia } from 'viem/chains'
 
@@ -44,7 +44,7 @@ export const evmClients = {
            * TODO: investigate why public actions hang when rank is enabled
            * @link https://discord.com/channels/1156791276818157609/1156791519089541241/1178111399839399937
            */
-          rank: false
+          rank: true
         }
       ),
       batch: { multicall: true }
@@ -100,3 +100,5 @@ export const evmClients = {
       batch: { multicall: true }
     }).extend(walletActions)
 }
+
+export type EvmClient = ReturnType<(typeof evmClients)[typeof env.CHAIN_ID]>
