@@ -7,33 +7,30 @@
   "git.enableCommitSigning": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports.biome": true,
+    "quickfix.biome": true,
     "source.fixAll.biome": true,
-    "quickfix.biome": true
+    "source.organizeImports.biome": true
   },
   "editor.defaultFormatter": "biomejs.biome",
-  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
-  "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
   "[json]": { "editor.defaultFormatter": "biomejs.biome" },
   "[jsonc]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
   "files.associations": {
     "biome.json": "jsonc",
     "settings.json": "jsonc"
   },
   "search.exclude": {
     "_": true,
-    "public/*.js": true,
-    "pnpm-lock.yaml": true,
-    "**/node_modules": true,
-    "drizzle/**": true,
-    "**/dist/**": true
+    "**/dist/**": true,
+    "**/node_modules": true
   },
   "files.exclude": {},
   "yaml.format.singleQuote": true,
   // disable various telemetry services
-  "docsYaml.telemetry.enableTelemetry": false,
   "redhat.telemetry.enabled": false,
   "gitlens.telemetry.enabled": false,
+  "docsYaml.telemetry.enableTelemetry": false,
   "database-client.telemetry.usesOnlineServices": false,
   "[sql]": {
     "editor.defaultFormatter": "cweijan.vscode-database-client2"

@@ -77,7 +77,7 @@ export class ContractEventPublisher implements EventPublisher {
    * It sets up a listener for contract events and dispatches them to all subscribers.
    */
   start(): void {
-    logger.log(`Starting ${this.contractName} (${this.address}) event publisher...`)
+    logger.info(`Starting ${this.contractName} (${this.address}) event publisher...`)
     // This Action will batch up all the event logs found within the pollingInterval, and invoke them via onLogs.
     this.unwatch = this.client.watchContractEvent({
       abi: this.abi,

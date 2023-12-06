@@ -2,10 +2,10 @@
 
 import { env } from '#/env'
 import { logger } from '#/logger'
-import { extractChain } from 'viem'
 import { evmClients } from '#/clients'
 import { watchAllEfpContractEvents } from '#/watch'
 import { asyncExitHook, gracefulExit } from 'exit-hook'
+
 asyncExitHook(
   async signal => {
     logger.warn(`Exiting with signal ${signal}`)
@@ -20,7 +20,7 @@ main().catch(error => {
 
 async function main() {
   const chainId = env.CHAIN_ID
-  logger.success(`Starting indexer with chain id ${chainId}…`)
+  logger.box(`Starting indexer with chain id ${chainId}`, '🔍')
   const client = evmClients['31337']()
   try {
     await watchAllEfpContractEvents({ client })

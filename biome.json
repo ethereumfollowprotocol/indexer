@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.1/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "root": ".",
     "enabled": true,
@@ -11,13 +11,12 @@
       "./**/*.js",
       "./**/*.cjs",
       "./**/*.mjs",
-      "./**/*.tsx",
       "./**/*.d.ts",
       "./**/*.json",
       "./**/*.jsonc"
     ],
     "ignoreUnknown": true,
-    "ignore": ["node_modules", "dist", "_", "./drizzle/meta"]
+    "ignore": ["node_modules", "dist", "_"]
   },
   "organizeImports": {
     "enabled": false
@@ -33,12 +32,11 @@
       "./**/*.js",
       "./**/*.cjs",
       "./**/*.mjs",
-      "./**/*.tsx",
       "./**/*.d.ts",
       "./**/*.json",
       "./**/*.jsonc"
     ],
-    "ignore": ["node_modules", "dist", "_", "./drizzle/meta"]
+    "ignore": ["node_modules", "dist", "_"]
   },
   "linter": {
     "enabled": true,

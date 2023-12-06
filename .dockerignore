@@ -6,9 +6,7 @@
 !bun.lockb
 !reset.d.ts
 !environment.d.ts
-!drizzle.config.ts
 .gitignore
 !scripts/
-!drizzle/
 !db/
 !src/
