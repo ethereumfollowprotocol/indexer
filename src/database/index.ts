@@ -9,6 +9,6 @@ export type Row<T extends keyof DB> = InsertObject<DB, T>
 
 export const database = new Kysely<DB>({
   dialect: new PostgresJSDialect({
-    postgres: postgres(env.DATABASE_URL_POOLED)
+    postgres: postgres(env.DATABASE_URL)
   })
 })

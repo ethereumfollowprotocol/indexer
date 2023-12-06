@@ -16,6 +16,16 @@ services:
     networks:
       - default
 
+  anvil:
+    container_name: efp-indexer-anvil
+    image: ghcr.io/foundry-rs/foundry:latest
+    platform: linux/amd64
+    restart: always
+    command: anvil --host 0.0.0.0
+    expose:
+      - 8545:8545
+    network_mode: host
+
   database:
     container_name: efp-database
     image: postgres:latest
@@ -44,8 +54,8 @@ services:
       args:
         - NODE_ENV=production
     environment:
-      - DATABASE_URL_POOLED=${DATABASE_URL_POOLED:-postgresql://postgres:postgres@efp-database:5432/efp?sslmode=disable}
       - NODE_ENV=${NODE_ENV:-production}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@efp-database:5432/efp?sslmode=disable}
       - ENABLE_DATABASE_LOGGING=${ENABLE_DATABASE_LOGGING:-true}
       - LLAMAFOLIO_ID=${LLAMAFOLIO_ID}
       - MAINNET_ALCHEMY_ID=${MAINNET_ALCHEMY_ID}
@@ -54,7 +64,6 @@ services:
       - SEPOLIA_ALCHEMY_ID=${SEPOLIA_ALCHEMY_ID}
       - OPTIMISM_ALCHEMY_ID=${OPTIMISM_ALCHEMY_ID}
       - ETHEREUM_LOCAL_NODE_URL=${ETHEREUM_LOCAL_NODE_URL:-http://host.docker.internal:8545}
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@efp-database:5432/efp?sslmode=disable}
       - ANVIL_ACCOUNT_PRIVATE_KEY=${ANVIL_ACCOUNT_PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}
       - CHAIN_ID=${CHAIN_ID:-31337}
       - EFP_CONTRACT_ACCOUNT_METADATA=${EFP_CONTRACT_ACCOUNT_METADATA:-0x5FbDB2315678afecb367f032d93F642f64180aa3}

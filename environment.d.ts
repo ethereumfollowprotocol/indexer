@@ -9,7 +9,6 @@ interface EnvironmentVariables {
   readonly SEPOLIA_ALCHEMY_ID: string
   readonly ETHEREUM_LOCAL_NODE_URL: string
   readonly DATABASE_URL: string
-  readonly DATABASE_URL_POOLED: string
   readonly ENABLE_DATABASE_LOGGING: string
   readonly ANVIL_ACCOUNT_PRIVATE_KEY: `0x${string}`
 
