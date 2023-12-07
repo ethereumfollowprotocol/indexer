@@ -164,7 +164,31 @@ export class DatabaseUploader implements EventSubscriber {
       value: value
     }
     logger.log(`Account ${address} insert ${key}=${value} into \`account_metadata\` table`)
-    await database.insertInto('account_metadata').values([row]).executeTakeFirst()
+
+    // check if value is already set for this chain_id/contract_address/address/key
+    const existing = await database
+      .selectFrom('account_metadata')
+      .where('chain_id', '=', '1')
+      .where('contract_address', '=', event.contractAddress)
+      .where('address', '=', address)
+      .where('key', '=', key)
+      .executeTakeFirst()
+    if (existing) {
+      // update
+      logger.log(`\x1b[95mUpdating account metadata ${address} ${key}=${value} in \`account_metadata\` table\x1b[0m`)
+      await database
+        .updateTable('account_metadata')
+        .set({ value: value })
+        .where('chain_id', '=', '1')
+        .where('contract_address', '=', event.contractAddress)
+        .where('address', '=', address)
+        .where('key', '=', key)
+        .executeTakeFirst()
+    } else {
+      // insert
+      logger.log(`\x1b[94mInsert account metadata ${address} ${key}=${value} into \`account_metadata\` table\x1b[0m`)
+      await database.insertInto('account_metadata').values([row]).executeTakeFirst()
+    }
   }
 
   // CREATE TABLE public.list_metadata (
