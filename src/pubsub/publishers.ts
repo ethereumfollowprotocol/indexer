@@ -67,9 +67,7 @@ export class ContractEventPublisher implements EventPublisher {
    * @param subscriber - The EventSubscriber to unsubscribe.
    */
   unsubscribe(subscriber: EventSubscriber): void {
-    this.subscribers = this.subscribers.filter(
-      existingSubscriber => existingSubscriber !== subscriber
-    )
+    this.subscribers = this.subscribers.filter(existingSubscriber => existingSubscriber !== subscriber)
   }
 
   /**

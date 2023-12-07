@@ -27,12 +27,8 @@ async function bumpDependencies() {
   const unstableDevDependenciesNames = getUnstableDependencies(devDependencies)
 
   // filter out packages whose version is beta or alpha
-  const dependenciesNames = Object.keys(dependencies).filter(
-    name => !Object.hasOwn(unstableDependenciesNames, name)
-  )
-  const latestDependenciesVersions = await Promise.all(
-    dependenciesNames.map(name => fetchPackageLatestVersion(name))
-  )
+  const dependenciesNames = Object.keys(dependencies).filter(name => !Object.hasOwn(unstableDependenciesNames, name))
+  const latestDependenciesVersions = await Promise.all(dependenciesNames.map(name => fetchPackageLatestVersion(name)))
 
   const updatedDependencies = Object.fromEntries(
     dependenciesNames.map((name, index) => [name, `^${latestDependenciesVersions[index]}`])

@@ -1,12 +1,4 @@
-import {
-  http,
-  fallback,
-  webSocket,
-  publicActions,
-  walletActions,
-  createTestClient,
-  createPublicClient
-} from 'viem'
+import { http, fallback, webSocket, publicActions, walletActions, createTestClient, createPublicClient } from 'viem'
 import { env } from '#/env.ts'
 import { privateKeyToAccount } from 'viem/accounts'
 import { foundry, mainnet, optimism, optimismSepolia, sepolia } from 'viem/chains'
@@ -18,8 +10,7 @@ export const evmClients = {
       mode: 'anvil',
       transport: http(env.ETHEREUM_LOCAL_NODE_URL),
       account: privateKeyToAccount(
-        env.ANVIL_ACCOUNT_PRIVATE_KEY ||
-          '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+        env.ANVIL_ACCOUNT_PRIVATE_KEY || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
       )
     })
       .extend(publicActions)

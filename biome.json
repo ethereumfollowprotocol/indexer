@@ -6,15 +6,7 @@
     "clientKind": "git"
   },
   "files": {
-    "include": [
-      "./**/*.ts",
-      "./**/*.js",
-      "./**/*.cjs",
-      "./**/*.mjs",
-      "./**/*.d.ts",
-      "./**/*.json",
-      "./**/*.jsonc"
-    ],
+    "include": ["./**/*.ts", "./**/*.js", "./**/*.cjs", "./**/*.mjs", "./**/*.d.ts", "./**/*.json", "./**/*.jsonc"],
     "ignoreUnknown": true,
     "ignore": ["node_modules", "dist", "_"]
   },
@@ -23,19 +15,11 @@
   },
   "formatter": {
     "enabled": true,
-    "lineWidth": 100,
+    "lineWidth": 120,
     "indentWidth": 2,
     "indentStyle": "space",
     "formatWithErrors": true,
-    "include": [
-      "./**/*.ts",
-      "./**/*.js",
-      "./**/*.cjs",
-      "./**/*.mjs",
-      "./**/*.d.ts",
-      "./**/*.json",
-      "./**/*.jsonc"
-    ],
+    "include": ["./**/*.ts", "./**/*.js", "./**/*.cjs", "./**/*.mjs", "./**/*.d.ts", "./**/*.json", "./**/*.jsonc"],
     "ignore": ["node_modules", "dist", "_"]
   },
   "linter": {
@@ -80,7 +64,7 @@
     },
     "formatter": {
       "enabled": true,
-      "lineWidth": 100,
+      "lineWidth": 120,
       "indentWidth": 2
     }
   },
@@ -90,7 +74,7 @@
     },
     "formatter": {
       "enabled": true,
-      "lineWidth": 100,
+      "lineWidth": 120,
       "indentWidth": 2,
       "indentStyle": "space",
       "quoteStyle": "single",

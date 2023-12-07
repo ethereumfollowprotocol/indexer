@@ -147,10 +147,7 @@ export class DatabaseUploader implements EventSubscriber {
   //     value character varying(255) NOT NULL
   // );
   async onAccountMetadataValueSet(event: Event): Promise<void> {
-    if (
-      event.contractName !== 'EFPAccountMetadata' ||
-      event.eventParameters.eventName !== 'ValueSet'
-    ) {
+    if (event.contractName !== 'EFPAccountMetadata' || event.eventParameters.eventName !== 'ValueSet') {
       return
     }
 
@@ -178,10 +175,7 @@ export class DatabaseUploader implements EventSubscriber {
   //     value character varying(255) NOT NULL
   // );
   async onListMetadataValueSet(event: Event): Promise<void> {
-    if (
-      event.contractName !== 'EFPListMetadata' ||
-      event.eventParameters.eventName !== 'ValueSet'
-    ) {
+    if (event.contractName !== 'EFPListMetadata' || event.eventParameters.eventName !== 'ValueSet') {
       return
     }
 
@@ -197,9 +191,7 @@ export class DatabaseUploader implements EventSubscriber {
       key: key,
       value: value
     }
-    logger.log(
-      `\x1b[33mEFP List #${token_id} insert ${key}=${value} into \`list_metadata\` table\x1b[0m`
-    )
+    logger.log(`\x1b[33mEFP List #${token_id} insert ${key}=${value} into \`list_metadata\` table\x1b[0m`)
     await database.insertInto('list_metadata').values([row]).executeTakeFirst()
   }
 
@@ -238,11 +230,7 @@ export class DatabaseUploader implements EventSubscriber {
     await this.processListOp(event.contractAddress, nonce, listOp)
   }
 
-  async processListOp(
-    contractAddress: `0x${string}`,
-    nonce: bigint,
-    listOp: ListOp
-  ): Promise<void> {
+  async processListOp(contractAddress: `0x${string}`, nonce: bigint, listOp: ListOp): Promise<void> {
     if (listOp.version !== 1) {
       throw new Error(`Unsupported list op version ${listOp.version}`)
     }
@@ -253,9 +241,7 @@ export class DatabaseUploader implements EventSubscriber {
       // insert
       const listRecordHexstring: `0x${string}` = `0x${Buffer.from(listOp.data).toString('hex')}`
       const listRecord: ListRecord = decodeListRecord(listOp.data)
-      const listRecordDataHexstring: `0x${string}` = `0x${Buffer.from(listRecord.data).toString(
-        'hex'
-      )}`
+      const listRecordDataHexstring: `0x${string}` = `0x${Buffer.from(listRecord.data).toString('hex')}`
 
       const row: Row<'list_records'> = {
         chain_id: 1,
@@ -267,17 +253,13 @@ export class DatabaseUploader implements EventSubscriber {
         data: listRecordDataHexstring
       }
       // green log
-      logger.log(
-        `\x1b[92mAdd list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`
-      )
+      logger.log(`\x1b[92mAdd list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`)
       await database.insertInto('list_records').values([row]).executeTakeFirst()
     } else if (listOp.code === 2) {
       // REMOVE LIST RECORD
 
       const listRecordHexstring: `0x${string}` = `0x${Buffer.from(listOp.data).toString('hex')}`
-      logger.log(
-        `\x1b[91mDelete list record ${listRecordHexstring} from list nonce ${nonce} in db\x1b[0m`
-      )
+      logger.log(`\x1b[91mDelete list record ${listRecordHexstring} from list nonce ${nonce} in db\x1b[0m`)
       const result = await database
         .deleteFrom('list_records')
         .where('chain_id', '=', '1')
@@ -340,9 +322,7 @@ export class DatabaseUploader implements EventSubscriber {
         owner: to
       }
 
-      logger.log(
-        `\x1b[94mInsert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`
-      )
+      logger.log(`\x1b[94mInsert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`)
       await database.insertInto('list_nfts').values([row]).executeTakeFirst()
     } else {
       // update existing row
