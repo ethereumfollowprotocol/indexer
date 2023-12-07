@@ -45,7 +45,7 @@ services:
     container_name: efp-indexer
     depends_on:
       - database
-    restart: always
+    restart: no
     networks:
       - default
     build:

@@ -8,10 +8,10 @@ WORKDIR /usr/src/app
 
 COPY bun.lockb package.json ./
 
-RUN bun install
+RUN bun install --production --frozen-lockfile
 
 COPY . .
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
-CMD bun --hot --watch ./src/index.ts
+CMD bun ./src/index.ts

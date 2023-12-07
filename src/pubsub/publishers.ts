@@ -6,6 +6,7 @@ import {
   EFPListRegistryABI
 } from '#/abi'
 import { logger } from '#/logger'
+import { raise } from '#/utilities'
 import type { Abi, Log } from 'viem'
 import type { EvmClient } from '#/clients'
 import { decodeLogtoEvent, type Event } from './event'
@@ -105,6 +106,7 @@ export class ContractEventPublisher implements EventPublisher {
       },
       onError: error => {
         logger.error(`${this.contractName} error:`, error)
+        raise(error)
       },
       // Default: false for WebSocket Clients, true for non-WebSocket Clients
       poll: undefined
