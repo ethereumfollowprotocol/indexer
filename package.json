@@ -36,11 +36,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
-    "@types/node": "^20.10.3",
-    "bun": "^1.0.15",
+    "@types/node": "^20.10.4",
+    "bun": "^1.0.16",
     "pg": "^8.11.3",
     "dbmate": "^2.8.0",
-    "bun-types": "^1.0.15",
+    "bun-types": "^1.0.16",
     "typescript": "^5.3.3",
     "kysely-codegen": "^0.11.0",
     "@total-typescript/ts-reset": "^0.5.1"
