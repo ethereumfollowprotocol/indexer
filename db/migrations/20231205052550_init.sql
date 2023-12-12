@@ -105,11 +105,11 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 CREATE TABLE public.contracts (
-    id text DEFAULT public.generate_ulid() NOT NULL,
     chain_id bigint NOT NULL,
     address character varying(42) NOT NULL,
     name character varying(255) NOT NULL,
-    owner character varying(42) NOT NULL
+    owner character varying(42) NOT NULL,
+    PRIMARY KEY (chain_id, address)
 );
 
 CREATE TABLE public.account_metadata (
@@ -117,7 +117,8 @@ CREATE TABLE public.account_metadata (
     contract_address character varying(42) NOT NULL,
     address character varying(42) NOT NULL,
     key character varying(255) NOT NULL,
-    value character varying(255) NOT NULL
+    value character varying(255) NOT NULL,
+    PRIMARY KEY (chain_id, contract_address, address, key)
 );
 
 CREATE TABLE public.list_nfts (
@@ -130,19 +131,20 @@ CREATE TABLE public.list_nfts (
     list_storage_location character varying(255),
     list_storage_location_chain_id BIGINT,
     list_storage_location_contract_address character varying(42),
-    list_storage_location_nonce bigint
+    list_storage_location_nonce bigint,
+    PRIMARY KEY (chain_id, contract_address, token_id)
 );
 
 CREATE TABLE public.list_metadata (
     chain_id bigint NOT NULL,
     contract_address character varying(42) NOT NULL,
-    token_id bigint NOT NULL,
+    nonce bigint NOT NULL,
     key character varying(255) NOT NULL,
-    value character varying(255) NOT NULL
+    value character varying(255) NOT NULL,
+    PRIMARY KEY (chain_id, contract_address, nonce, key)
 );
 
 CREATE TABLE public.list_ops (
-    id text DEFAULT public.generate_ulid() NOT NULL,
     chain_id bigint NOT NULL,
     contract_address character varying(42) NOT NULL,
     nonce bigint NOT NULL,
@@ -151,11 +153,11 @@ CREATE TABLE public.list_ops (
     CHECK (version >= 0 AND version <= 255),
     code smallint NOT NULL,
     CHECK (code >= 0 AND code <= 255),
-    data character varying(255) NOT NULL
+    data character varying(255) NOT NULL,
+    PRIMARY KEY (chain_id, contract_address, nonce, op)
 );
 
 CREATE TABLE public.list_records (
-    id text DEFAULT public.generate_ulid() NOT NULL,
     chain_id bigint NOT NULL,
     contract_address character varying(42) NOT NULL,
     nonce bigint NOT NULL,
@@ -164,7 +166,8 @@ CREATE TABLE public.list_records (
     CHECK (version >= 0 AND version <= 255),
     type smallint NOT NULL,
     CHECK (type >= 0 AND type <= 255),
-    data character varying(255) NOT NULL
+    data character varying(255) NOT NULL,
+    PRIMARY KEY (chain_id, contract_address, nonce, record)
 );
 
 --
