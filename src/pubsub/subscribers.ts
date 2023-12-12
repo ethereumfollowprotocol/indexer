@@ -111,7 +111,7 @@ export class EventsTableUploader implements EventSubscriber {
       timestamp: timestamp()
     }
 
-    logger.log(`Insert ${event.eventParameters.eventName} event into \`events\` table`)
+    logger.log(`(${event.eventParameters.eventName}) Insert event into \`events\` table`)
     await database.insertInto('events').values([row]).executeTakeFirst()
   }
 }

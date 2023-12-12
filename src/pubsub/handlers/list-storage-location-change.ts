@@ -4,10 +4,6 @@ import type { Event } from '../event'
 
 export class ListStorageLocationChangeHandler {
   async onListStorageLocationChange(event: Event): Promise<void> {
-    if (event.eventParameters.eventName !== 'ListStorageLocationChange') {
-      return
-    }
-
     const tokenId: bigint = event.eventParameters.args['tokenId']
     const listStorageLocation: `0x${string}` = event.eventParameters.args['listStorageLocation']
     const listStorageLocationBytes: Uint8Array = Buffer.from(listStorageLocation.slice(2), 'hex')

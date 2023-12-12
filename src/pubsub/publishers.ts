@@ -93,9 +93,9 @@ export class ContractEventPublisher implements EventPublisher {
             throw new Error('Log indexes are not sequential')
           }
           // print log in purple
-          logger.log(
-            `\x1b[35m${log.transactionHash} ${log.transactionIndex} ${log.logIndex} ${this.contractName}\x1b[0m`
-          )
+          // logger.log(
+          //   `\x1b[35m${log.transactionHash} ${log.transactionIndex} ${log.logIndex} ${this.contractName}\x1b[0m`
+          // )
           const event: Event = decodeLogtoEvent(this.chainId, this.contractName, this.abi, log)
           await Promise.all(this.subscribers.map(subscriber => subscriber.onEvent(event)))
         }

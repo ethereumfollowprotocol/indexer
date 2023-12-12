@@ -6,10 +6,6 @@ import type { Event } from '../event'
 
 export class ListOperationHandler {
   async onListOperation(event: Event): Promise<void> {
-    if (event.eventParameters.eventName !== 'ListOperation') {
-      return
-    }
-
     const nonce: bigint = event.eventParameters.args['nonce']
     const op: `0x${string}` = event.eventParameters.args['op']
     const opBytes: Uint8Array = Buffer.from(op.slice(2), 'hex')

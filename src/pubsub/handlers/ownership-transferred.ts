@@ -4,10 +4,6 @@ import type { Event } from '../event'
 
 export class OwnershipTransferredHandler {
   async onOwnershipTransferred(event: Event): Promise<void> {
-    if (event.eventParameters.eventName !== 'OwnershipTransferred') {
-      return
-    }
-
     // this was a new contract that got deployed and transferred
     // ownership to the owner
     const previousOwner = event.eventParameters.args['previousOwner']

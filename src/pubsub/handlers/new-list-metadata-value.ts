@@ -4,10 +4,6 @@ import type { Event } from '../event'
 
 export class NewListMetadataValueHandler {
   async onNewListMetadataValue(event: Event): Promise<void> {
-    if (event.contractName !== 'EFPListRecords' || event.eventParameters.eventName !== 'ValueSet') {
-      return
-    }
-
     const token_id: bigint = event.eventParameters.args['tokenId']
     const key: string = event.eventParameters.args['key']
     const value: string = event.eventParameters.args['value']

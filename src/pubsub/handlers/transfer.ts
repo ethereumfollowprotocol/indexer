@@ -4,10 +4,6 @@ import type { Event } from '../event'
 
 export class TransferHandler {
   async onTransfer(event: Event): Promise<void> {
-    if (event.eventParameters.eventName !== 'Transfer') {
-      return
-    }
-
     const from: string = event.eventParameters.args['from']
     const to: string = event.eventParameters.args['to']
     if (from === '0x0000000000000000000000000000000000000000') {
