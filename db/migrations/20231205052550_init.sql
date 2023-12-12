@@ -122,9 +122,15 @@ CREATE TABLE public.account_metadata (
 
 CREATE TABLE public.list_nfts (
     chain_id bigint NOT NULL,
-    address character varying(42) NOT NULL,
+    contract_address character varying(42) NOT NULL,
     token_id bigint NOT NULL,
-    owner character varying(42) NOT NULL
+    owner character varying(42) NOT NULL,
+    list_manager character varying(42),
+    list_user character varying(42),
+    list_storage_location character varying(255),
+    list_storage_location_chain_id BIGINT,
+    list_storage_location_contract_address character varying(42),
+    list_storage_location_nonce bigint
 );
 
 CREATE TABLE public.list_metadata (

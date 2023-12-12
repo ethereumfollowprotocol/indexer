@@ -14,15 +14,20 @@ import {
   EFPListRecordsSubscriber,
   EFPListRegistrySubscriber,
   type EventSubscriber
-} from '#/pubsub/subscribers'
+} from '#/pubsub/subscribers/subscribers'
 import { raise } from '#/utilities'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
-    const efpAccountMetadataPublisher = new EFPAccountMetadataPublisher(client, env.EFP_CONTRACTS.ACCOUNT_METADATA)
-    const efpListRegistryPublisher = new EFPListRegistryPublisher(client, env.EFP_CONTRACTS.LIST_REGISTRY)
-    const efpListRecordsPublisher = new EFPListRecordsPublisher(client, env.EFP_CONTRACTS.LIST_RECORDS)
-    const efpListMinterPublisher = new EFPListMinterPublisher(client, env.EFP_CONTRACTS.LIST_MINTER)
+    const chainId: bigint = BigInt(await client.getChainId())
+    const efpAccountMetadataPublisher = new EFPAccountMetadataPublisher(
+      client,
+      chainId,
+      env.EFP_CONTRACTS.ACCOUNT_METADATA
+    )
+    const efpListRegistryPublisher = new EFPListRegistryPublisher(client, chainId, env.EFP_CONTRACTS.LIST_REGISTRY)
+    const efpListRecordsPublisher = new EFPListRecordsPublisher(client, chainId, env.EFP_CONTRACTS.LIST_RECORDS)
+    const efpListMinterPublisher = new EFPListMinterPublisher(client, chainId, env.EFP_CONTRACTS.LIST_MINTER)
 
     const efpAccountMetadataSubscriber = new EFPAccountMetadataSubscriber(env.EFP_CONTRACTS.ACCOUNT_METADATA)
     const efpListRegistrySubscriber = new EFPListRegistrySubscriber(env.EFP_CONTRACTS.LIST_REGISTRY)

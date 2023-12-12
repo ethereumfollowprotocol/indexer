@@ -5,7 +5,8 @@ import { decodeListOp, type ListOp } from '#/process/list-op'
 import { decodeListRecord, type ListRecord } from '#/process/list-record'
 import { timestamp } from '#/utilities'
 import type { Abi } from 'viem'
-import type { Event } from './event'
+import type { Event } from '../event'
+import { TransferHandler } from './transfer'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.
@@ -119,12 +120,66 @@ export class DatabaseUploader implements EventSubscriber {
     } else if (eventName === 'OwnershipTransferred') {
       await this.onOwnershipTransferred(event)
     } else if (eventName === 'Transfer') {
-      await this.onTransfer(event)
+      await new TransferHandler().onTransfer(event)
+    } else if (eventName === 'ListStorageLocationChange') {
+      await this.onListStorageLocationChange(event)
     } else if (event.contractName === 'EFPAccountMetadata' && eventName === 'ValueSet') {
       await this.onAccountMetadataValueSet(event)
     } else if (event.contractName === 'EFPListRecords' && eventName === 'ValueSet') {
       await this.onListMetadataValueSet(event)
     }
+  }
+
+  async onListStorageLocationChange(event: Event): Promise<void> {
+    if (event.eventParameters.eventName !== 'ListStorageLocationChange') {
+      return
+    }
+
+    const tokenId: bigint = event.eventParameters.args['tokenId']
+    const listStorageLocation: `0x${string}` = event.eventParameters.args['listStorageLocation']
+    const listStorageLocationBytes: Uint8Array = Buffer.from(listStorageLocation.slice(2), 'hex')
+
+    // UPDATE list_nfts
+    // SET list_storage_location = $1,
+    //     list_storage_location_chain_id = $2,
+    //     list_storage_location_contract_address = $3,
+    //     list_storage_location_nonce = $4
+    // WHERE chain_id = $2
+    //       AND contract_address = $3
+    //       AND token_id = $4
+    let query = database.updateTable('list_nfts').set({ list_storage_location: listStorageLocation })
+    if (listStorageLocationBytes.length === 1 + 1 + 32 + 20 + 32) {
+      // [0] version byte should be 0x01
+      // [1] list storage location type byte should be 0x01
+      if (listStorageLocationBytes[0] === 0x01 && listStorageLocationBytes[1] === 0x01) {
+        // [2-33] chain id
+        const chainIdBytes: Uint8Array = listStorageLocationBytes.slice(2, 2 + 32)
+        const chainId: bigint = chainIdBytes.reduce((acc, cur) => acc * 256n + BigInt(cur), 0n)
+        // [34-53] contract address
+        const contractAddressBytes: Uint8Array = listStorageLocationBytes.slice(2 + 32, 2 + 32 + 20)
+        const contractAddress: `0x${string}` = `0x${Buffer.from(contractAddressBytes).toString('hex')}`
+        // [54-85] nonce
+        const nonceBytes: Uint8Array = listStorageLocationBytes.slice(2 + 32 + 20, 2 + 32 + 20 + 32)
+        const nonce: bigint = nonceBytes.reduce((acc, cur) => acc * 256n + BigInt(cur), 0n)
+        query = query.set({
+          list_storage_location_chain_id: chainId,
+          list_storage_location_contract_address: contractAddress,
+          list_storage_location_nonce: nonce
+        })
+      }
+    } else {
+      // log error in red
+      logger.log(
+        `\x1b[91mList storage location ${listStorageLocation} is ${listStorageLocationBytes.length} bytes instead of ${
+          1 + 1 + 32 + 20 + 32
+        } bytes\x1b[0m`
+      )
+    }
+    await query
+      .where('chain_id', '=', event.chainId.toString())
+      .where('contract_address', '=', event.contractAddress)
+      .where('token_id', '=', tokenId.toString())
+      .executeTakeFirst()
   }
 
   //   CREATE TABLE public.account_metadata (
@@ -145,7 +200,7 @@ export class DatabaseUploader implements EventSubscriber {
 
     // insert or update
     const row: Row<'account_metadata'> = {
-      chain_id: 1,
+      chain_id: event.chainId,
       contract_address: event.contractAddress,
       address: address,
       key: key,
@@ -156,7 +211,7 @@ export class DatabaseUploader implements EventSubscriber {
     // check if value is already set for this chain_id/contract_address/address/key
     const existing = await database
       .selectFrom('account_metadata')
-      .where('chain_id', '=', '1')
+      .where('chain_id', '=', event.chainId.toString())
       .where('contract_address', '=', event.contractAddress)
       .where('address', '=', address)
       .where('key', '=', key)
@@ -167,7 +222,7 @@ export class DatabaseUploader implements EventSubscriber {
       await database
         .updateTable('account_metadata')
         .set({ value: value })
-        .where('chain_id', '=', '1')
+        .where('chain_id', '=', event.chainId.toString())
         .where('contract_address', '=', event.contractAddress)
         .where('address', '=', address)
         .where('key', '=', key)
@@ -197,7 +252,7 @@ export class DatabaseUploader implements EventSubscriber {
 
     // insert or update
     const row: Row<'list_metadata'> = {
-      chain_id: 1,
+      chain_id: event.chainId,
       contract_address: event.contractAddress,
       token_id: token_id,
       key: key,
@@ -228,7 +283,7 @@ export class DatabaseUploader implements EventSubscriber {
 
     // insert
     const row: Row<'list_ops'> = {
-      chain_id: 1,
+      chain_id: event.chainId,
       contract_address: event.contractAddress,
       nonce: nonce,
       op: op,
@@ -239,10 +294,10 @@ export class DatabaseUploader implements EventSubscriber {
     logger.log(`\x1b[96mInsert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
     await database.insertInto('list_ops').values([row]).executeTakeFirst()
 
-    await this.processListOp(event.contractAddress, nonce, listOp)
+    await this.processListOp(event.chainId, event.contractAddress, nonce, listOp)
   }
 
-  async processListOp(contractAddress: `0x${string}`, nonce: bigint, listOp: ListOp): Promise<void> {
+  async processListOp(chainId: bigint, contractAddress: `0x${string}`, nonce: bigint, listOp: ListOp): Promise<void> {
     if (listOp.version !== 1) {
       throw new Error(`Unsupported list op version ${listOp.version}`)
     }
@@ -256,7 +311,7 @@ export class DatabaseUploader implements EventSubscriber {
       const listRecordDataHexstring: `0x${string}` = `0x${Buffer.from(listRecord.data).toString('hex')}`
 
       const row: Row<'list_records'> = {
-        chain_id: 1,
+        chain_id: chainId,
         contract_address: contractAddress,
         nonce: nonce,
         record: listRecordHexstring,
@@ -274,7 +329,7 @@ export class DatabaseUploader implements EventSubscriber {
       logger.log(`\x1b[91mDelete list record ${listRecordHexstring} from list nonce ${nonce} in db\x1b[0m`)
       const result = await database
         .deleteFrom('list_records')
-        .where('chain_id', '=', '1')
+        .where('chain_id', '=', chainId.toString())
         .where('contract_address', '=', contractAddress)
         .where('nonce', '=', nonce.toString())
         .where('record', '=', listRecordHexstring)
@@ -294,7 +349,7 @@ export class DatabaseUploader implements EventSubscriber {
     const newOwner = event.eventParameters.args['newOwner']
     if (previousOwner === '0x0000000000000000000000000000000000000000') {
       const contractsRow: Row<'contracts'> = {
-        chain_id: 1,
+        chain_id: event.chainId,
         address: event.contractAddress,
         name: event.contractName,
         owner: newOwner
@@ -312,39 +367,8 @@ export class DatabaseUploader implements EventSubscriber {
       await database
         .updateTable('contracts')
         .set({ owner: newOwner })
-        .where('chain_id', '=', '1')
+        .where('chain_id', '=', event.chainId.toString())
         .where('address', '=', event.contractAddress)
-        .executeTakeFirst()
-    }
-  }
-
-  async onTransfer(event: Event): Promise<void> {
-    if (event.eventParameters.eventName !== 'Transfer') {
-      return
-    }
-
-    const from: string = event.eventParameters.args['from']
-    const to: string = event.eventParameters.args['to']
-    if (from === '0x0000000000000000000000000000000000000000') {
-      // insert as new row
-      const row: Row<'list_nfts'> = {
-        chain_id: 1,
-        address: event.contractAddress,
-        token_id: event.eventParameters.args['tokenId'],
-        owner: to
-      }
-
-      logger.log(`\x1b[94mInsert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`)
-      await database.insertInto('list_nfts').values([row]).executeTakeFirst()
-    } else {
-      // update existing row
-      logger.log(`\x1b[93mUpdate ${event.eventParameters.eventName} event in db\x1b[0m`)
-      await database
-        .updateTable('list_nfts')
-        .set({ owner: to })
-        .where('chain_id', '=', '1')
-        .where('address', '=', event.contractAddress)
-        .where('token_id', '=', event.eventParameters.args['tokenId'])
         .executeTakeFirst()
     }
   }

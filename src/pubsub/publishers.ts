@@ -4,7 +4,7 @@ import { logger } from '#/logger'
 import { raise } from '#/utilities'
 import type { Abi, Log } from 'viem'
 import { decodeLogtoEvent, type Event } from './event'
-import { ContractEventSubscriber, type EventSubscriber } from './subscribers'
+import { ContractEventSubscriber, type EventSubscriber } from './subscribers/subscribers'
 
 /**
  * Interface defining the structure and methods for an EventPublisher.
@@ -26,12 +26,14 @@ export class ContractEventPublisher implements EventPublisher {
   /**
    * Creates an instance of ContractEventPublisher.
    * @param client - The PublicClient used to interact with the blockchain.
+   * @param chainId - The chain ID of the blockchain.
    * @param contractName - The name of the contract.
    * @param abi - The ABI of the contract.
    * @param address - The Ethereum address of the contract.
    */
   constructor(
     private client: EvmClient,
+    public readonly chainId: bigint,
     public readonly contractName: string,
     public readonly abi: Abi,
     public readonly address: `0x${string}`
@@ -94,7 +96,7 @@ export class ContractEventPublisher implements EventPublisher {
           logger.log(
             `\x1b[35m${log.transactionHash} ${log.transactionIndex} ${log.logIndex} ${this.contractName}\x1b[0m`
           )
-          const event: Event = decodeLogtoEvent(this.contractName, this.abi, log)
+          const event: Event = decodeLogtoEvent(this.chainId, this.contractName, this.abi, log)
           await Promise.all(this.subscribers.map(subscriber => subscriber.onEvent(event)))
         }
       },
@@ -124,25 +126,25 @@ export class ContractEventPublisher implements EventPublisher {
 // Each class sets the appropriate contract details (name, ABI, address) upon instantiation.
 
 export class EFPAccountMetadataPublisher extends ContractEventPublisher {
-  constructor(client: EvmClient, address: `0x${string}`) {
-    super(client, 'EFPAccountMetadata', EFPAccountMetadataABI, address)
+  constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
+    super(client, chainId, 'EFPAccountMetadata', EFPAccountMetadataABI, address)
   }
 }
 
 export class EFPListRegistryPublisher extends ContractEventPublisher {
-  constructor(client: EvmClient, address: `0x${string}`) {
-    super(client, 'EFPListRegistry', EFPListRegistryABI, address)
+  constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
+    super(client, chainId, 'EFPListRegistry', EFPListRegistryABI, address)
   }
 }
 
 export class EFPListRecordsPublisher extends ContractEventPublisher {
-  constructor(client: EvmClient, address: `0x${string}`) {
-    super(client, 'EFPListRecords', EFPListRecordsABI, address)
+  constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
+    super(client, chainId, 'EFPListRecords', EFPListRecordsABI, address)
   }
 }
 
 export class EFPListMinterPublisher extends ContractEventPublisher {
-  constructor(client: EvmClient, address: `0x${string}`) {
-    super(client, 'EFPListMinter', EFPListMinterABI, address)
+  constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
+    super(client, chainId, 'EFPListMinter', EFPListMinterABI, address)
   }
 }

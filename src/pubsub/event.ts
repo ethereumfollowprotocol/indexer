@@ -1,6 +1,7 @@
 import { decodeEventLog, type Log } from 'viem'
 
 export type Event = {
+  chainId: bigint
   transactionHash: `0x${string}`
   blockNumber: bigint
   contractAddress: `0x${string}`
@@ -10,7 +11,7 @@ export type Event = {
   topics: string[]
 }
 
-export function decodeLogtoEvent(contractName: string, abi: any, log: Log): Event {
+export function decodeLogtoEvent(chainId: bigint, contractName: string, abi: any, log: Log): Event {
   const { address, blockNumber, data, topics, transactionHash } = log
   // problem: we don't have ABI here
   // but I don't want to have to repeat this code for each contract
@@ -25,6 +26,7 @@ export function decodeLogtoEvent(contractName: string, abi: any, log: Log): Even
   }
 
   return {
+    chainId,
     transactionHash,
     blockNumber,
     contractAddress: address,
