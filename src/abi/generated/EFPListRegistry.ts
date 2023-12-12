@@ -1,733 +1,733 @@
 export const EFPListRegistryABI = [
   {
-    type: 'constructor',
-    inputs: [],
-    stateMutability: 'nonpayable'
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    type: 'function',
-    name: 'approve',
-    inputs: [
+    "inputs": [],
+    "name": "ApprovalCallerNotOwnerNorApproved",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ApprovalQueryForNonexistentToken",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BalanceQueryForZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MintERC2309QuantityExceedsLimit",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MintToZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MintZeroQuantity",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OwnerQueryForNonexistentToken",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OwnershipNotInitializedForExtraData",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferCallerNotOwnerNorApproved",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferFromIncorrectOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferToNonERC721ReceiverImplementer",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferToZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "URIQueryForNonexistentToken",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       },
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'balanceOf',
-    inputs: [
-      {
-        name: 'owner',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getApproved',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getListStorageLocation',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getMaxMintBatchSize',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getMintState',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'uint8',
-        internalType: 'enum IEFPListRegistry.MintState'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getPriceOracle',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'isApprovedForAll',
-    inputs: [
-      {
-        name: 'owner',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "address",
+        "name": "approved",
+        "type": "address"
       },
       {
-        name: 'operator',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-        internalType: 'bool'
-      }
-    ],
-    stateMutability: 'view'
+    "name": "Approval",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'mint',
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        name: 'listStorageLocation',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintBatch',
-    inputs: [
-      {
-        name: 'quantity',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintBatchTo',
-    inputs: [
-      {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       },
       {
-        name: 'quantity',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintTo',
-    inputs: [
-      {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
       },
       {
-        name: 'listStorageLocation',
-        type: 'bytes',
-        internalType: 'bytes'
+        "indexed": false,
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "ApprovalForAll",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'name',
-    inputs: [],
-    outputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        name: '',
-        type: 'string',
-        internalType: 'string'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'owner',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'ownerOf',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'renounceOwnership',
-    inputs: [],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'safeTransferFrom',
-    inputs: [
-      {
-        name: 'from',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "fromTokenId",
+        "type": "uint256"
       },
       {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "toTokenId",
+        "type": "uint256"
       },
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'safeTransferFrom',
-    inputs: [
-      {
-        name: 'from',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
       },
       {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      }
+    ],
+    "name": "ConsecutiveTransfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
       {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "listStorageLocation",
+        "type": "bytes"
+      }
+    ],
+    "name": "ListStorageLocationChange",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "maxMintBatchSize",
+        "type": "uint256"
+      }
+    ],
+    "name": "MaxMintBatchSizeChange",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "enum IEFPListRegistry.MintState",
+        "name": "mintState",
+        "type": "uint8"
+      }
+    ],
+    "name": "MintStateChange",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
       },
       {
-        name: '_data',
-        type: 'bytes',
-        internalType: 'bytes'
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'setApprovalForAll',
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        name: 'operator',
-        type: 'address',
-        internalType: 'address'
+        "indexed": false,
+        "internalType": "address",
+        "name": "priceOracle",
+        "type": "address"
+      }
+    ],
+    "name": "PriceOracleChange",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
       },
       {
-        name: 'approved',
-        type: 'bool',
-        internalType: 'bool'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setListStorageLocation',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        name: 'listStorageLocation',
-        type: 'bytes',
-        internalType: 'bytes'
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
+    "name": "Transfer",
+    "type": "event"
   },
   {
-    type: 'function',
-    name: 'setMaxMintBatchSize',
-    inputs: [
+    "inputs": [
       {
-        name: '_maxMintBatchSize',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setMintState',
-    inputs: [
-      {
-        name: '_mintState',
-        type: 'uint8',
-        internalType: 'enum IEFPListRegistry.MintState'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setPriceOracle',
-    inputs: [
-      {
-        name: 'priceOracle_',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'supportsInterface',
-    inputs: [
-      {
-        name: 'interfaceId',
-        type: 'bytes4',
-        internalType: 'bytes4'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-        internalType: 'bool'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'symbol',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'string',
-        internalType: 'string'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'tokenURI',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'string',
-        internalType: 'string'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'totalSupply',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'transferFrom',
-    inputs: [
-      {
-        name: 'from',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
-    outputs: [],
-    stateMutability: 'payable'
+    "name": "approve",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'function',
-    name: 'transferOwnership',
-    inputs: [
+    "inputs": [
       {
-        name: 'newOwner',
-        type: 'address',
-        internalType: 'address'
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       }
     ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'event',
-    name: 'Approval',
-    inputs: [
+    "name": "balanceOf",
+    "outputs": [
       {
-        name: 'owner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'approved',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        indexed: true,
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    anonymous: false
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'event',
-    name: 'ApprovalForAll',
-    inputs: [
+    "inputs": [
       {
-        name: 'owner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'operator',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'approved',
-        type: 'bool',
-        indexed: false,
-        internalType: 'bool'
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'ConsecutiveTransfer',
-    inputs: [
+    "name": "getApproved",
+    "outputs": [
       {
-        name: 'fromTokenId',
-        type: 'uint256',
-        indexed: true,
-        internalType: 'uint256'
-      },
-      {
-        name: 'toTokenId',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256'
-      },
-      {
-        name: 'from',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'to',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    anonymous: false
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'event',
-    name: 'ListStorageLocationChange',
-    inputs: [
+    "inputs": [
       {
-        name: 'tokenId',
-        type: 'uint256',
-        indexed: true,
-        internalType: 'uint256'
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getListStorageLocation",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMaxMintBatchSize",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMintState",
+    "outputs": [
+      {
+        "internalType": "enum IEFPListRegistry.MintState",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPriceOracle",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       },
       {
-        name: 'listStorageLocation',
-        type: 'bytes',
-        indexed: false,
-        internalType: 'bytes'
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
       }
     ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'MaxMintBatchSizeChange',
-    inputs: [
+    "name": "isApprovedForAll",
+    "outputs": [
       {
-        name: 'maxMintBatchSize',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256'
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
-    anonymous: false
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'event',
-    name: 'MintStateChange',
-    inputs: [
+    "inputs": [
       {
-        name: 'mintState',
-        type: 'uint8',
-        indexed: false,
-        internalType: 'enum IEFPListRegistry.MintState'
+        "internalType": "bytes",
+        "name": "listStorageLocation",
+        "type": "bytes"
       }
     ],
-    anonymous: false
+    "name": "mint",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'event',
-    name: 'OwnershipTransferred',
-    inputs: [
+    "inputs": [
       {
-        name: 'previousOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      }
+    ],
+    "name": "mintBatch",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        name: 'newOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
       }
     ],
-    anonymous: false
+    "name": "mintBatchTo",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'event',
-    name: 'PriceOracleChange',
-    inputs: [
+    "inputs": [
       {
-        name: 'priceOracle',
-        type: 'address',
-        indexed: false,
-        internalType: 'address'
-      }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'Transfer',
-    inputs: [
-      {
-        name: 'from',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        name: 'to',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
-      },
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        indexed: true,
-        internalType: 'uint256'
+        "internalType": "bytes",
+        "name": "listStorageLocation",
+        "type": "bytes"
       }
     ],
-    anonymous: false
+    "name": "mintTo",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'ApprovalCallerNotOwnerNorApproved',
-    inputs: []
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'ApprovalQueryForNonexistentToken',
-    inputs: []
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'BalanceQueryForZeroAddress',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ownerOf",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'MintERC2309QuantityExceedsLimit',
-    inputs: []
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'MintToZeroAddress',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "safeTransferFrom",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'MintZeroQuantity',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_data",
+        "type": "bytes"
+      }
+    ],
+    "name": "safeTransferFrom",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'OwnerQueryForNonexistentToken',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+      }
+    ],
+    "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'OwnershipNotInitializedForExtraData',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "listStorageLocation",
+        "type": "bytes"
+      }
+    ],
+    "name": "setListStorageLocation",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'TransferCallerNotOwnerNorApproved',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_maxMintBatchSize",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMaxMintBatchSize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'TransferFromIncorrectOwner',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "enum IEFPListRegistry.MintState",
+        "name": "_mintState",
+        "type": "uint8"
+      }
+    ],
+    "name": "setMintState",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'TransferToNonERC721ReceiverImplementer',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "priceOracle_",
+        "type": "address"
+      }
+    ],
+    "name": "setPriceOracle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'TransferToZeroAddress',
-    inputs: []
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    type: 'error',
-    name: 'URIQueryForNonexistentToken',
-    inputs: []
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ] as const
