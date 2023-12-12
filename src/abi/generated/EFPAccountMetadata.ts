@@ -1,294 +1,294 @@
 export const EFPAccountMetadataABI = [
   {
-    type: 'function',
-    name: 'addProxy',
+    anonymous: false,
     inputs: [
       {
-        name: 'proxy',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'getValue',
-    inputs: [
-      {
-        name: 'addr',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'key',
-        type: 'string',
-        internalType: 'string'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'getValues',
-    inputs: [
-      {
-        name: 'addr',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'keys',
-        type: 'string[]',
-        internalType: 'string[]'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'bytes[]',
-        internalType: 'bytes[]'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'isProxy',
-    inputs: [
-      {
-        name: 'proxy',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-        internalType: 'bool'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'owner',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'removeProxy',
-    inputs: [
-      {
-        name: 'proxy',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'renounceOwnership',
-    inputs: [],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setValue',
-    inputs: [
-      {
-        name: 'key',
-        type: 'string',
-        internalType: 'string'
-      },
-      {
-        name: 'value',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setValueForAddress',
-    inputs: [
-      {
-        name: 'addr',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'key',
-        type: 'string',
-        internalType: 'string'
-      },
-      {
-        name: 'value',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setValues',
-    inputs: [
-      {
-        name: 'records',
-        type: 'tuple[]',
-        internalType: 'struct IEFPAccountMetadata.KeyValue[]',
-        components: [
-          {
-            name: 'key',
-            type: 'string',
-            internalType: 'string'
-          },
-          {
-            name: 'value',
-            type: 'bytes',
-            internalType: 'bytes'
-          }
-        ]
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'setValuesForAddress',
-    inputs: [
-      {
-        name: 'addr',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'records',
-        type: 'tuple[]',
-        internalType: 'struct IEFPAccountMetadata.KeyValue[]',
-        components: [
-          {
-            name: 'key',
-            type: 'string',
-            internalType: 'string'
-          },
-          {
-            name: 'value',
-            type: 'bytes',
-            internalType: 'bytes'
-          }
-        ]
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'transferOwnership',
-    inputs: [
-      {
-        name: 'newOwner',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'event',
-    name: 'OwnershipTransferred',
-    inputs: [
-      {
+        indexed: true,
+        internalType: 'address',
         name: 'previousOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        type: 'address'
       },
       {
+        indexed: true,
+        internalType: 'address',
         name: 'newOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        type: 'address'
       }
     ],
-    anonymous: false
+    name: 'OwnershipTransferred',
+    type: 'event'
   },
   {
-    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'proxy',
+        type: 'address'
+      }
+    ],
     name: 'ProxyAdded',
-    inputs: [
-      {
-        name: 'proxy',
-        type: 'address',
-        indexed: false,
-        internalType: 'address'
-      }
-    ],
-    anonymous: false
+    type: 'event'
   },
   {
-    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'proxy',
+        type: 'address'
+      }
+    ],
     name: 'ProxyRemoved',
-    inputs: [
-      {
-        name: 'proxy',
-        type: 'address',
-        indexed: false,
-        internalType: 'address'
-      }
-    ],
-    anonymous: false
+    type: 'event'
   },
   {
-    type: 'event',
-    name: 'ValueSet',
+    anonymous: false,
     inputs: [
       {
-        name: 'addr',
-        type: 'address',
         indexed: true,
-        internalType: 'address'
+        internalType: 'address',
+        name: 'addr',
+        type: 'address'
       },
       {
+        indexed: false,
+        internalType: 'string',
         name: 'key',
-        type: 'string',
-        indexed: false,
-        internalType: 'string'
+        type: 'string'
       },
       {
-        name: 'value',
-        type: 'bytes',
         indexed: false,
-        internalType: 'bytes'
+        internalType: 'bytes',
+        name: 'value',
+        type: 'bytes'
       }
     ],
-    anonymous: false
+    name: 'ValueSet',
+    type: 'event'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'proxy',
+        type: 'address'
+      }
+    ],
+    name: 'addProxy',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address'
+      },
+      {
+        internalType: 'string',
+        name: 'key',
+        type: 'string'
+      }
+    ],
+    name: 'getValue',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address'
+      },
+      {
+        internalType: 'string[]',
+        name: 'keys',
+        type: 'string[]'
+      }
+    ],
+    name: 'getValues',
+    outputs: [
+      {
+        internalType: 'bytes[]',
+        name: '',
+        type: 'bytes[]'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'proxy',
+        type: 'address'
+      }
+    ],
+    name: 'isProxy',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'proxy',
+        type: 'address'
+      }
+    ],
+    name: 'removeProxy',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'key',
+        type: 'string'
+      },
+      {
+        internalType: 'bytes',
+        name: 'value',
+        type: 'bytes'
+      }
+    ],
+    name: 'setValue',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address'
+      },
+      {
+        internalType: 'string',
+        name: 'key',
+        type: 'string'
+      },
+      {
+        internalType: 'bytes',
+        name: 'value',
+        type: 'bytes'
+      }
+    ],
+    name: 'setValueForAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'key',
+            type: 'string'
+          },
+          {
+            internalType: 'bytes',
+            name: 'value',
+            type: 'bytes'
+          }
+        ],
+        internalType: 'struct IEFPAccountMetadata.KeyValue[]',
+        name: 'records',
+        type: 'tuple[]'
+      }
+    ],
+    name: 'setValues',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address'
+      },
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'key',
+            type: 'string'
+          },
+          {
+            internalType: 'bytes',
+            name: 'value',
+            type: 'bytes'
+          }
+        ],
+        internalType: 'struct IEFPAccountMetadata.KeyValue[]',
+        name: 'records',
+        type: 'tuple[]'
+      }
+    ],
+    name: 'setValuesForAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
+      }
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as const

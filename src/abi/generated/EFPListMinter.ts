@@ -1,145 +1,145 @@
 export const EFPListMinterABI = [
   {
-    type: 'constructor',
     inputs: [
       {
+        internalType: 'address',
         name: '_registryAddress',
-        type: 'address',
-        internalType: 'address'
+        type: 'address'
       },
       {
+        internalType: 'address',
         name: '_accountMetadataAddress',
-        type: 'address',
-        internalType: 'address'
+        type: 'address'
       },
       {
+        internalType: 'address',
         name: '_listRecordsL1',
-        type: 'address',
-        internalType: 'address'
+        type: 'address'
       }
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
+    type: 'constructor'
   },
   {
-    type: 'function',
-    name: 'accountMetadata',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPAccountMetadata'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'listRecordsL1',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPListRecords'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'mintAndSetAsDefaultList',
+    anonymous: false,
     inputs: [
       {
-        name: 'listStorageLocation',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintToAndSetAsDefaultList',
-    inputs: [
-      {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'listStorageLocation',
-        type: 'bytes',
-        internalType: 'bytes'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'owner',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'registry',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPListRegistry_ERC721'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    name: 'renounceOwnership',
-    inputs: [],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    name: 'transferOwnership',
-    inputs: [
-      {
-        name: 'newOwner',
-        type: 'address',
-        internalType: 'address'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'event',
-    name: 'OwnershipTransferred',
-    inputs: [
-      {
+        indexed: true,
+        internalType: 'address',
         name: 'previousOwner',
-        type: 'address',
-        indexed: true,
-        internalType: 'address'
+        type: 'address'
       },
       {
-        name: 'newOwner',
-        type: 'address',
         indexed: true,
-        internalType: 'address'
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
       }
     ],
-    anonymous: false
+    name: 'OwnershipTransferred',
+    type: 'event'
+  },
+  {
+    inputs: [],
+    name: 'accountMetadata',
+    outputs: [
+      {
+        internalType: 'contract IEFPAccountMetadata',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'listRecordsL1',
+    outputs: [
+      {
+        internalType: 'contract IEFPListRecords',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'listStorageLocation',
+        type: 'bytes'
+      }
+    ],
+    name: 'mintAndSetAsDefaultList',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address'
+      },
+      {
+        internalType: 'bytes',
+        name: 'listStorageLocation',
+        type: 'bytes'
+      }
+    ],
+    name: 'mintToAndSetAsDefaultList',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'registry',
+    outputs: [
+      {
+        internalType: 'contract IEFPListRegistry_ERC721',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
+      }
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as const
