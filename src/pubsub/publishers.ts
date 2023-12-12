@@ -1,14 +1,8 @@
-import {
-  EFPAccountMetadataABI,
-  EFPListMetadataABI,
-  EFPListMinterABI,
-  EFPListRecordsABI,
-  EFPListRegistryABI
-} from '#/abi'
+import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
+import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
 import { raise } from '#/utilities'
 import type { Abi, Log } from 'viem'
-import type { EvmClient } from '#/clients'
 import { decodeLogtoEvent, type Event } from './event'
 import { ContractEventSubscriber, type EventSubscriber } from './subscribers'
 
@@ -91,7 +85,7 @@ export class ContractEventPublisher implements EventPublisher {
         })
 
         // check if log indexes are sequential
-        let logIndex = -1
+        const logIndex = -1
         for (const log of logs) {
           if (log.logIndex === null || logIndex >= log.logIndex) {
             throw new Error('Log indexes are not sequential')
@@ -132,12 +126,6 @@ export class ContractEventPublisher implements EventPublisher {
 export class EFPAccountMetadataPublisher extends ContractEventPublisher {
   constructor(client: EvmClient, address: `0x${string}`) {
     super(client, 'EFPAccountMetadata', EFPAccountMetadataABI, address)
-  }
-}
-
-export class EFPListMetadataPublisher extends ContractEventPublisher {
-  constructor(client: EvmClient, address: `0x${string}`) {
-    super(client, 'EFPListMetadata', EFPListMetadataABI, address)
   }
 }
 

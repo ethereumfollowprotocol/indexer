@@ -1,10 +1,4 @@
-import {
-  EFPAccountMetadataABI,
-  EFPListMetadataABI,
-  EFPListMinterABI,
-  EFPListRecordsABI,
-  EFPListRegistryABI
-} from '#/abi'
+import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
 import { database, type Row } from '#/database'
 import { logger } from '#/logger'
 import { decodeListOp, type ListOp } from '#/process/list-op'
@@ -71,12 +65,6 @@ export class EFPAccountMetadataSubscriber extends ContractEventSubscriber {
   }
 }
 
-export class EFPListMetadataSubscriber extends ContractEventSubscriber {
-  constructor(address: `0x${string}`) {
-    super('EFPListMetadata', EFPListMetadataABI, address)
-  }
-}
-
 export class EFPListRegistrySubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
     super('EFPListRegistry', EFPListRegistryABI, address)
@@ -134,7 +122,7 @@ export class DatabaseUploader implements EventSubscriber {
       await this.onTransfer(event)
     } else if (event.contractName === 'EFPAccountMetadata' && eventName === 'ValueSet') {
       await this.onAccountMetadataValueSet(event)
-    } else if (event.contractName === 'EFPListMetadata' && eventName === 'ValueSet') {
+    } else if (event.contractName === 'EFPListRecords' && eventName === 'ValueSet') {
       await this.onListMetadataValueSet(event)
     }
   }
@@ -199,7 +187,7 @@ export class DatabaseUploader implements EventSubscriber {
   //     value character varying(255) NOT NULL
   // );
   async onListMetadataValueSet(event: Event): Promise<void> {
-    if (event.contractName !== 'EFPListMetadata' || event.eventParameters.eventName !== 'ValueSet') {
+    if (event.contractName !== 'EFPListRecords' || event.eventParameters.eventName !== 'ValueSet') {
       return
     }
 
