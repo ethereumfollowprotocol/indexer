@@ -17,7 +17,6 @@ import {
 } from '#/pubsub/subscribers'
 import { raise } from '#/utilities'
 
-// biome-ignore lint/nursery/useAwait: <explanation>
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
     const efpAccountMetadataPublisher = new EFPAccountMetadataPublisher(client, env.EFP_CONTRACTS.ACCOUNT_METADATA)

@@ -32,7 +32,7 @@
     "kysely": "^0.26.3",
     "kysely-postgres-js": "^2.0.0",
     "postgres": "^3.4.3",
-    "viem": "2.0.0-beta.11"
+    "viem": "2.0.0-beta.15"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
