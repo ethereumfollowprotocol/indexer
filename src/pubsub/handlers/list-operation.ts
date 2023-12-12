@@ -76,6 +76,51 @@ export class ListOperationHandler {
         .where('record', '=', listRecordHexstring)
         .executeTakeFirst()
       logger.log(result)
+    } else if (listOp.code === 3) {
+      // ADD LIST RECORD TAG
+
+      if (listOp.version !== 1) {
+        throw new Error(`Unsupported list op version ${listOp.version}`)
+      }
+      const listRecordBytes: Uint8Array = listOp.data.slice(0, 1 + 1 + 20) // version, code, list record
+      const listRecord: string = `0x${Buffer.from(listRecordBytes).toString('hex')}`
+      const tagBytes: Uint8Array = listOp.data.slice(1 + 1 + 20) // tag
+      const tag: string = Buffer.from(tagBytes).toString('utf-8')
+
+      const row: Row<'list_record_tags'> = {
+        chain_id: chainId,
+        contract_address: contractAddress,
+        nonce: nonce,
+        record: listRecord,
+        tag: tag
+      }
+      // green log
+      logger.log(`\x1b[92m(ListOperation) Add tag "${tag}" to list record ${listRecord} in db\x1b[0m`)
+      await database.insertInto('list_record_tags').values([row]).executeTakeFirst()
+    } else if (listOp.code === 4) {
+      // REMOVE LIST RECORD TAG
+
+      if (listOp.version !== 1) {
+        throw new Error(`Unsupported list op version ${listOp.version}`)
+      }
+      const listRecordBytes: Uint8Array = listOp.data.slice(0, 1 + 1 + 20) // version, code, list record
+      const listRecord: string = `0x${Buffer.from(listRecordBytes).toString('hex')}`
+      const tagBytes: Uint8Array = listOp.data.slice(1 + 1 + 20) // tag
+      const tag: string = Buffer.from(tagBytes).toString('utf-8')
+
+      logger.log(`\x1b[91m(ListOperation) Delete tag "${tag}" from list record ${listRecord} in db\x1b[0m`)
+      const result = await database
+        .deleteFrom('list_record_tags')
+        .where('chain_id', '=', chainId.toString())
+        .where('contract_address', '=', contractAddress)
+        .where('nonce', '=', nonce.toString())
+        .where('record', '=', listRecord)
+        .where('tag', '=', tag)
+        .executeTakeFirst()
+      logger.log(result)
+    } else {
+      // unknown list op code
+      throw new Error(`Unsupported list op code ${listOp.code}`)
     }
   }
 }
