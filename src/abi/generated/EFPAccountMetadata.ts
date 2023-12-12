@@ -5,6 +5,31 @@ export const EFPAccountMetadataABI = [
       {
         indexed: true,
         internalType: 'address',
+        name: 'addr',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'key',
+        type: 'string'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes',
+        name: 'value',
+        type: 'bytes'
+      }
+    ],
+    name: 'NewAccountMetadataValue',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
         name: 'previousOwner',
         type: 'address'
       },
@@ -42,31 +67,6 @@ export const EFPAccountMetadataABI = [
       }
     ],
     name: 'ProxyRemoved',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'addr',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'key',
-        type: 'string'
-      },
-      {
-        indexed: false,
-        internalType: 'bytes',
-        name: 'value',
-        type: 'bytes'
-      }
-    ],
-    name: 'ValueSet',
     type: 'event'
   },
   {

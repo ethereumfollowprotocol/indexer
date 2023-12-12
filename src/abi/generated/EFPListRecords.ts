@@ -42,25 +42,6 @@ export const EFPListRecordsABI = [
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address'
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address'
-      }
-    ],
-    name: 'OwnershipTransferred',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
         internalType: 'uint256',
         name: 'nonce',
         type: 'uint256'
@@ -78,7 +59,26 @@ export const EFPListRecordsABI = [
         type: 'bytes'
       }
     ],
-    name: 'ValueSet',
+    name: 'NewListMetadataValue',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address'
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
+      }
+    ],
+    name: 'OwnershipTransferred',
     type: 'event'
   },
   {
