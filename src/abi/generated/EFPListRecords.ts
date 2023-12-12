@@ -178,6 +178,54 @@ export const EFPListRecordsABI = [
   },
   {
     type: 'function',
+    name: 'getMetadataValue',
+    inputs: [
+      {
+        name: 'tokenId',
+        type: 'uint256',
+        internalType: 'uint256'
+      },
+      {
+        name: 'key',
+        type: 'string',
+        internalType: 'string'
+      }
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    name: 'getMetadataValues',
+    inputs: [
+      {
+        name: 'tokenId',
+        type: 'uint256',
+        internalType: 'uint256'
+      },
+      {
+        name: 'keys',
+        type: 'string[]',
+        internalType: 'string[]'
+      }
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bytes[]',
+        internalType: 'bytes[]'
+      }
+    ],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
     name: 'listOps',
     inputs: [
       {
@@ -259,6 +307,59 @@ export const EFPListRecordsABI = [
   },
   {
     type: 'function',
+    name: 'setMetadataValue',
+    inputs: [
+      {
+        name: 'nonce',
+        type: 'uint256',
+        internalType: 'uint256'
+      },
+      {
+        name: 'key',
+        type: 'string',
+        internalType: 'string'
+      },
+      {
+        name: 'value',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    name: 'setMetadataValues',
+    inputs: [
+      {
+        name: 'nonce',
+        type: 'uint256',
+        internalType: 'uint256'
+      },
+      {
+        name: 'records',
+        type: 'tuple[]',
+        internalType: 'struct IEFPListMetadata.KeyValue[]',
+        components: [
+          {
+            name: 'key',
+            type: 'string',
+            internalType: 'string'
+          },
+          {
+            name: 'value',
+            type: 'bytes',
+            internalType: 'bytes'
+          }
+        ]
+      }
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
     name: 'transferOwnership',
     inputs: [
       {
@@ -323,6 +424,31 @@ export const EFPListRecordsABI = [
         type: 'address',
         indexed: true,
         internalType: 'address'
+      }
+    ],
+    anonymous: false
+  },
+  {
+    type: 'event',
+    name: 'ValueSet',
+    inputs: [
+      {
+        name: 'nonce',
+        type: 'uint256',
+        indexed: true,
+        internalType: 'uint256'
+      },
+      {
+        name: 'key',
+        type: 'string',
+        indexed: false,
+        internalType: 'string'
+      },
+      {
+        name: 'value',
+        type: 'bytes',
+        indexed: false,
+        internalType: 'bytes'
       }
     ],
     anonymous: false

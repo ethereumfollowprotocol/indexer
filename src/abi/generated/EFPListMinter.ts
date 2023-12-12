@@ -13,11 +13,6 @@ export const EFPListMinterABI = [
         internalType: 'address'
       },
       {
-        name: '_listMetadataAddress',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
         name: '_listRecordsL1',
         type: 'address',
         internalType: 'address'
@@ -40,19 +35,6 @@ export const EFPListMinterABI = [
   },
   {
     type: 'function',
-    name: 'listMetadata',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'contract IEFPListMetadata'
-      }
-    ],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
     name: 'listRecordsL1',
     inputs: [],
     outputs: [
@@ -66,7 +48,20 @@ export const EFPListMinterABI = [
   },
   {
     type: 'function',
-    name: 'mintToWithListLocationOnL1AndSetAsDefaultList',
+    name: 'mintAndSetAsDefaultList',
+    inputs: [
+      {
+        name: 'listStorageLocation',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
+    outputs: [],
+    stateMutability: 'payable'
+  },
+  {
+    type: 'function',
+    name: 'mintToAndSetAsDefaultList',
     inputs: [
       {
         name: 'to',
@@ -74,73 +69,9 @@ export const EFPListMinterABI = [
         internalType: 'address'
       },
       {
-        name: 'nonceL1',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintToWithListLocationOnL2AndSetAsDefaultList',
-    inputs: [
-      {
-        name: 'to',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'chainId',
-        type: 'uint256',
-        internalType: 'uint256'
-      },
-      {
-        name: 'addressL2',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'nonceL2',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintWithListLocationOnL1AndSetAsDefaultList',
-    inputs: [
-      {
-        name: 'nonceL1',
-        type: 'uint256',
-        internalType: 'uint256'
-      }
-    ],
-    outputs: [],
-    stateMutability: 'payable'
-  },
-  {
-    type: 'function',
-    name: 'mintWithListLocationOnL2AndSetAsDefaultList',
-    inputs: [
-      {
-        name: 'chainId',
-        type: 'uint256',
-        internalType: 'uint256'
-      },
-      {
-        name: 'addressL2',
-        type: 'address',
-        internalType: 'address'
-      },
-      {
-        name: 'nonceL2',
-        type: 'uint256',
-        internalType: 'uint256'
+        name: 'listStorageLocation',
+        type: 'bytes',
+        internalType: 'bytes'
       }
     ],
     outputs: [],
@@ -167,7 +98,7 @@ export const EFPListMinterABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'contract IEFPListRegistry_'
+        internalType: 'contract IEFPListRegistry_ERC721'
       }
     ],
     stateMutability: 'view'
