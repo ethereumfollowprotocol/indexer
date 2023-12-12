@@ -10,6 +10,7 @@ import { TransferHandler } from '#/pubsub/handlers/transfer'
 import { timestamp } from '#/utilities'
 import type { Abi } from 'viem'
 import type { Event } from './event'
+import { ListManagerChangeHandler } from './handlers/list-manager-change'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.
@@ -120,6 +121,9 @@ export class EventDispatcher implements EventSubscriber {
     const eventName: string = event.eventParameters.eventName
 
     switch (eventName) {
+      case 'ListManagerChange':
+        await new ListManagerChangeHandler().onListManagerChange(event)
+        break
       case 'ListOperation':
         await new ListOperationHandler().onListOperation(event)
         break

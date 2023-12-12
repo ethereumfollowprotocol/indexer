@@ -3,13 +3,6 @@ import { logger } from '#/logger'
 import type { Event } from '../event'
 
 export class NewAccountMetadataValueHandler {
-  //   CREATE TABLE public.account_metadata (
-  //     chain_id bigint NOT NULL,
-  //     contract_address character varying(42) NOT NULL,
-  //     address character varying(42) NOT NULL,
-  //     key character varying(255) NOT NULL,
-  //     value character varying(255) NOT NULL
-  // );
   async onNewAccountMetadataValue(event: Event): Promise<void> {
     if (event.contractName !== 'EFPAccountMetadata' || event.eventParameters.eventName !== 'ValueSet') {
       return

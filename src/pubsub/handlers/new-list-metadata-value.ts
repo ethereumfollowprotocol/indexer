@@ -3,13 +3,6 @@ import { logger } from '#/logger'
 import type { Event } from '../event'
 
 export class NewListMetadataValueHandler {
-  // CREATE TABLE public.list_metadata (
-  //     chain_id bigint NOT NULL,
-  //     contract_address character varying(42) NOT NULL,
-  //     nonce bigint NOT NULL,
-  //     key character varying(255) NOT NULL,
-  //     value character varying(255) NOT NULL
-  // );
   async onNewListMetadataValue(event: Event): Promise<void> {
     if (event.contractName !== 'EFPListRecords' || event.eventParameters.eventName !== 'ValueSet') {
       return
