@@ -62,6 +62,25 @@ export const EFPListRegistryABI = [
   },
   {
     type: 'function',
+    name: 'getListStorageLocation',
+    inputs: [
+      {
+        name: 'tokenId',
+        type: 'uint256',
+        internalType: 'uint256'
+      }
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
     name: 'getMaxMintBatchSize',
     inputs: [],
     outputs: [
@@ -126,7 +145,13 @@ export const EFPListRegistryABI = [
   {
     type: 'function',
     name: 'mint',
-    inputs: [],
+    inputs: [
+      {
+        name: 'listStorageLocation',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
     outputs: [],
     stateMutability: 'payable'
   },
@@ -169,6 +194,11 @@ export const EFPListRegistryABI = [
         name: 'to',
         type: 'address',
         internalType: 'address'
+      },
+      {
+        name: 'listStorageLocation',
+        type: 'bytes',
+        internalType: 'bytes'
       }
     ],
     outputs: [],
@@ -290,6 +320,24 @@ export const EFPListRegistryABI = [
         name: 'approved',
         type: 'bool',
         internalType: 'bool'
+      }
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    name: 'setListStorageLocation',
+    inputs: [
+      {
+        name: 'tokenId',
+        type: 'uint256',
+        internalType: 'uint256'
+      },
+      {
+        name: 'listStorageLocation',
+        type: 'bytes',
+        internalType: 'bytes'
       }
     ],
     outputs: [],
@@ -527,45 +575,9 @@ export const EFPListRegistryABI = [
       },
       {
         name: 'listStorageLocation',
-        type: 'tuple',
+        type: 'bytes',
         indexed: false,
-        internalType: 'struct ListStorageLocation',
-        components: [
-          {
-            name: 'version',
-            type: 'uint8',
-            internalType: 'uint8'
-          },
-          {
-            name: 'locationType',
-            type: 'uint8',
-            internalType: 'uint8'
-          },
-          {
-            name: 'data',
-            type: 'bytes',
-            internalType: 'bytes'
-          }
-        ]
-      }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'ListUserChange',
-    inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-        indexed: true,
-        internalType: 'uint256'
-      },
-      {
-        name: 'listUser',
-        type: 'address',
-        indexed: false,
-        internalType: 'address'
+        internalType: 'bytes'
       }
     ],
     anonymous: false
