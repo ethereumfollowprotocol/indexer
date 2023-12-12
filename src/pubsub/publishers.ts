@@ -1,10 +1,10 @@
 import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
+import { ContractEventSubscriber, type EventSubscriber } from '#/pubsub/subscribers'
 import { raise } from '#/utilities'
 import type { Abi, Log } from 'viem'
 import { decodeLogtoEvent, type Event } from './event'
-import { ContractEventSubscriber, type EventSubscriber } from './subscribers/subscribers'
 
 /**
  * Interface defining the structure and methods for an EventPublisher.

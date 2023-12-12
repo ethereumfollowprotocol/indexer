@@ -16,20 +16,20 @@ export class TransferHandler {
         chain_id: event.chainId,
         contract_address: event.contractAddress,
         token_id: event.eventParameters.args['tokenId'],
-        owner: to
+        owner: to,
         // list_manager: '',
-        // list_user: '',
+        list_user: to
         // list_storage_location: '',
         // list_storage_location_chain_id: 0n,
         // list_storage_location_contract_address: ''
         // list_storage_location_nonce: 0n,
       }
 
-      logger.log(`\x1b[94mInsert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`)
+      logger.log(`\x1b[94m(Transfer) Insert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`)
       await database.insertInto('list_nfts').values([row]).executeTakeFirst()
     } else {
       // update existing row
-      logger.log(`\x1b[93mUpdate ${event.eventParameters.eventName} event in db\x1b[0m`)
+      logger.log(`\x1b[93m(Transfer) Update ${event.eventParameters.eventName} event in db\x1b[0m`)
       await database
         .updateTable('list_nfts')
         .set({ owner: to })

@@ -8,13 +8,14 @@ import {
   EFPListRegistryPublisher
 } from '#/pubsub/publishers'
 import {
-  DatabaseUploader,
   EFPAccountMetadataSubscriber,
   EFPListMinterSubscriber,
   EFPListRecordsSubscriber,
   EFPListRegistrySubscriber,
+  EventDispatcher as EventProcessor,
+  EventsTableUploader,
   type EventSubscriber
-} from '#/pubsub/subscribers/subscribers'
+} from '#/pubsub/subscribers'
 import { raise } from '#/utilities'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
@@ -39,11 +40,17 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     efpListRecordsPublisher.subscribe(efpListRecordsSubscriber)
     efpListMinterPublisher.subscribe(efpListMinterSubscriber)
 
-    const dbUploader: EventSubscriber = new DatabaseUploader()
-    efpAccountMetadataPublisher.subscribe(dbUploader)
-    efpListRegistryPublisher.subscribe(dbUploader)
-    efpListRecordsPublisher.subscribe(dbUploader)
-    efpListMinterPublisher.subscribe(dbUploader)
+    const eventsTableUploader: EventSubscriber = new EventsTableUploader()
+    efpAccountMetadataPublisher.subscribe(eventsTableUploader)
+    efpListRegistryPublisher.subscribe(eventsTableUploader)
+    efpListRecordsPublisher.subscribe(eventsTableUploader)
+    efpListMinterPublisher.subscribe(eventsTableUploader)
+
+    const eventProcessor: EventSubscriber = new EventProcessor()
+    efpAccountMetadataPublisher.subscribe(eventProcessor)
+    efpListRegistryPublisher.subscribe(eventProcessor)
+    efpListRecordsPublisher.subscribe(eventProcessor)
+    efpListMinterPublisher.subscribe(eventProcessor)
 
     efpAccountMetadataPublisher.start()
     efpListRegistryPublisher.start()
