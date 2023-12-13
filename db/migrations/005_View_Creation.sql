@@ -1,4 +1,5 @@
 -- migrate:up
+-- View Creation: Define all necessary views
 CREATE VIEW public.list_nfts_view AS
 SELECT
     nfts.*,

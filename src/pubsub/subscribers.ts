@@ -8,7 +8,6 @@ import { NewAccountMetadataValueHandler } from '#/pubsub/handlers/new-account-me
 import { NewListMetadataValueHandler } from '#/pubsub/handlers/new-list-metadata-value'
 import { OwnershipTransferredHandler } from '#/pubsub/handlers/ownership-transferred'
 import { TransferHandler } from '#/pubsub/handlers/transfer'
-import { timestamp } from '#/utilities'
 import type { Abi } from 'viem'
 import type { Event } from './event'
 
@@ -107,8 +106,7 @@ export class EventsTableUploader implements EventSubscriber {
       contract_address: event.contractAddress,
       // problem: we don't have event name here
       event_name: event.eventParameters.eventName,
-      event_parameters: JSON.stringify(serializableEventParameters),
-      timestamp: timestamp()
+      event_parameters: JSON.stringify(serializableEventParameters)
     }
 
     logger.log(`(${event.eventParameters.eventName}) Insert event into \`events\` table`)
