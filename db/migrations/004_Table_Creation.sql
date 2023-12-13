@@ -51,7 +51,7 @@ CREATE TABLE
         token_id bigint NOT NULL,
         owner character varying(42) NOT NULL,
         list_manager character varying(42),
-        list_user character varying(42),
+        -- list_user character varying(42),
         list_storage_location character varying(255),
         list_storage_location_chain_id BIGINT,
         list_storage_location_contract_address character varying(42),
@@ -77,6 +77,22 @@ CREATE TABLE
             key
         )
     );
+
+CREATE VIEW
+    public.list_nfts_view AS -- list_nfts JOIN ed with list_metadata WHERE key ="user"
+SELECT
+    nfts.chain_id,
+    nfts.contract_address,
+    nfts.token_id,
+    nfts.owner,
+    nfts.list_manager,
+    nfts.list_storage_location,
+    nfts.list_storage_location_chain_id,
+    nfts.list_storage_location_contract_address,
+    nfts.list_storage_location_nonce,
+    metadata.value AS list_user
+FROM public.list_nfts AS nfts
+    LEFT JOIN public.list_metadata AS metadata ON metadata.chain_id = nfts.list_storage_location_chain_id AND metadata.contract_address = nfts.list_storage_location_contract_address AND metadata.nonce = nfts.list_storage_location_nonce AND metadata.key = 'user';
 
 CREATE TABLE
     public.list_ops (
@@ -151,7 +167,10 @@ SELECT
     contract_address,
     nonce,
     record,
-    array_agg(tag) AS tags
+    array_agg(tag) AS tags,
+    -- tests whether "block" is among the tags
+    bool_or(tag = 'block') AS block,
+    bool_or(tag = 'mute') AS mute
 FROM public.list_record_tags
     INNER JOIN public.list_records USING (
         chain_id, contract_address, nonce, record

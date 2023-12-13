@@ -12,9 +12,9 @@ export class TransferHandler {
         chain_id: event.chainId,
         contract_address: event.contractAddress,
         token_id: event.eventParameters.args['tokenId'],
-        owner: to,
+        owner: to
         // list_manager: '',
-        list_user: to
+        // list_user: to
         // list_storage_location: '',
         // list_storage_location_chain_id: 0n,
         // list_storage_location_contract_address: ''
