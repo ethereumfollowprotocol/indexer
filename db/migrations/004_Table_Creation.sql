@@ -164,7 +164,7 @@ SELECT
     records.version,
     records.type,
     records.data,
-    array_agg(tags.tag) AS array_tags
+    array_agg(tags.tag) AS tags
 FROM
     public.list_records AS records
     LEFT JOIN public.list_record_tags AS tags ON tags.chain_id = records.chain_id
@@ -183,23 +183,28 @@ GROUP BY
 CREATE VIEW
     public.list_records_tags_extended_view AS
 SELECT
-    v.chain_id,
-    v.contract_address,
-    v.nonce,
+    nft.token_id,
+    nft.list_user,
+    nft.list_storage_location_chain_id,
+    nft.list_storage_location_contract_address,
+    nft.list_storage_location_nonce,
     v.record,
     v.version,
     v.type,
     v.data,
-    v.array_tags,
+    v.tags,
     CASE
-        WHEN 'block' = ANY(v.array_tags) THEN TRUE
+        WHEN 'block' = ANY(v.tags) THEN TRUE
         ELSE FALSE
     END AS has_block_tag,
     CASE
-        WHEN 'mute' = ANY(v.array_tags) THEN TRUE
+        WHEN 'mute' = ANY(v.tags) THEN TRUE
         ELSE FALSE
     END AS has_mute_tag
 FROM
-    public.list_records_tags_view AS v;
+    public.list_records_tags_view AS v
+    LEFT JOIN public.list_nfts_view AS nft ON nft.list_storage_location_chain_id = v.chain_id
+    AND nft.list_storage_location_contract_address = v.contract_address
+    AND nft.list_storage_location_nonce = v.nonce;
 
 -- migrate:down
