@@ -164,7 +164,6 @@ SELECT
     records.version,
     records.type,
     records.data,
-    jsonb_agg(tags.tag) AS json_tags,
     array_agg(tags.tag) AS array_tags
 FROM
     public.list_records AS records
@@ -180,5 +179,27 @@ GROUP BY
     records.version,
     records.type,
     records.data;
+
+CREATE VIEW
+    public.list_records_tags_extended_view AS
+SELECT
+    v.chain_id,
+    v.contract_address,
+    v.nonce,
+    v.record,
+    v.version,
+    v.type,
+    v.data,
+    v.array_tags,
+    CASE
+        WHEN 'block' = ANY(v.array_tags) THEN TRUE
+        ELSE FALSE
+    END AS has_block_tag,
+    CASE
+        WHEN 'mute' = ANY(v.array_tags) THEN TRUE
+        ELSE FALSE
+    END AS has_mute_tag
+FROM
+    public.list_records_tags_view AS v;
 
 -- migrate:down
