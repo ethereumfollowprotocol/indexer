@@ -154,4 +154,31 @@ CREATE TABLE
         )
     );
 
+CREATE VIEW
+    public.list_records_tags_view AS
+SELECT
+    records.chain_id,
+    records.contract_address,
+    records.nonce,
+    records.record,
+    records.version,
+    records.type,
+    records.data,
+    jsonb_agg(tags.tag) AS json_tags,
+    array_agg(tags.tag) AS array_tags
+FROM
+    public.list_records AS records
+    LEFT JOIN public.list_record_tags AS tags ON tags.chain_id = records.chain_id
+    AND tags.contract_address = records.contract_address
+    AND tags.nonce = records.nonce
+    AND tags.record = records.record
+GROUP BY
+    records.chain_id,
+    records.contract_address,
+    records.nonce,
+    records.record,
+    records.version,
+    records.type,
+    records.data;
+
 -- migrate:down
