@@ -1,5 +1,10 @@
-version: 2.23.3
+version: '3.8'
+
 name: efp-indexer
+
+networks:
+  default:
+    driver: bridge
 
 services:
   ping:
@@ -19,12 +24,14 @@ services:
   anvil:
     container_name: efp-indexer-anvil
     image: ghcr.io/foundry-rs/foundry:latest
-    platform: linux/amd64
-    restart: always
-    command: anvil --host 0.0.0.0
-    expose:
+    command: anvil
+    tty: true
+    environment:
+      - ANVIL_IP_ADDR=0.0.0.0
+    ports:
       - 8545:8545
-    network_mode: host
+    networks:
+      - default
 
   database:
     container_name: efp-database
@@ -75,7 +82,3 @@ services:
 
 volumes:
   database:
-
-networks:
-  default:
-    driver: bridge
