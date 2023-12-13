@@ -4,6 +4,7 @@ import { env } from '#/env'
 import { logger } from '#/logger'
 import { pingRpc } from '#/utilities/ping'
 import { watchAllEfpContractEvents } from '#/watch'
+import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
 import { gracefulExit } from 'exit-hook'
 
 const GREEN = '\x1b[32m'
@@ -24,9 +25,51 @@ async function waitForPingSuccess(client: EvmClient): Promise<void> {
   await tryAttempt(1)
 }
 
+async function runDbmateCommand(command: string): Promise<void> {
+  return new Promise<void>((resolve: () => void, reject: (reason?: any) => void) => {
+    const cmd = 'bunx'
+    const args = ['dbmate', command]
+    const cmdWithArgs: string = [cmd, ...args].join(' ')
+    const dbmate: ChildProcessWithoutNullStreams = spawn(cmd, args)
+
+    dbmate.stdout.on('data', (data: Buffer) => {
+      console.log(data.toString())
+    })
+
+    dbmate.stderr.on('data', (data: Buffer) => {
+      console.error(data.toString())
+    })
+
+    dbmate.on('close', (code: number) => {
+      if (code === 0) {
+        resolve()
+        console.log(`${cmdWithArgs} process exited with code ${code}`)
+      } else {
+        reject(new Error(`${cmdWithArgs} process exited with code ${code}`))
+      }
+    })
+  })
+}
+
 async function main() {
   try {
     logger.log(`Process ID: ${process.pid}`)
+    // wait for db to be up
+    while (true) {
+      try {
+        logger.log(`dbmate up`, `🗄️`)
+        await runDbmateCommand('status')
+        break
+      } catch (error) {
+        // logger.warn(error)
+        await new Promise(resolve => setTimeout(resolve, 1_000))
+      }
+    }
+    logger.box(`🗄️`, `dbmate up`)
+    await runDbmateCommand('up')
+    logger.box(`🗄️`, `dbmate status`)
+    await runDbmateCommand('status')
+
     const chainId = env.CHAIN_ID
     const client = evmClients[chainId]()
     await waitForPingSuccess(client)

@@ -12,6 +12,4 @@ RUN bun install --production --frozen-lockfile
 
 COPY . .
 
-ENTRYPOINT ["./scripts/entrypoint.sh"]
-
 CMD ["bun", "./src/index.ts"]

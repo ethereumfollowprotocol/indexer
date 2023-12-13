@@ -66,12 +66,20 @@ $$;
 
 -- health(): Returns 'ok' if the database is healthy
 
-CREATE FUNCTION public.health() RETURNS text
+CREATE OR REPLACE FUNCTION public.health() RETURNS text
     LANGUAGE plpgsql STABLE
     AS $$
 BEGIN
    RETURN 'ok';
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 -- migrate:down

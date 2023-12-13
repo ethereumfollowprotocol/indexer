@@ -18,12 +18,13 @@
     "down": "docker compose --file='compose.yml' --project-name='efp' down --remove-orphans",
     "drop": "bun down && docker volume rm --force efp_database",
     "indexer": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans indexer",
-    "up": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans --always-recreate-deps database indexer",
-    "upd": "docker compose --file='compose.yml' --project-name='efp' up --build --detach --force-recreate --remove-orphans --always-recreate-deps database indexer",
     "ping": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans ping",
     "lint": "biome check --apply .",
     "format": "biome format . --write",
+    "reup": "bun drop && bun up",
     "typecheck": "tsc --project tsconfig.json --noEmit",
+    "up": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans --always-recreate-deps database indexer",
+    "upd": "docker compose --file='compose.yml' --project-name='efp' up --build --detach --force-recreate --remove-orphans --always-recreate-deps database indexer",
     "update-dependencies": "bun ./scripts/update-dependencies.ts"
   },
   "dependencies": {
