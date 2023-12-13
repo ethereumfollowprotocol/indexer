@@ -1,6 +1,7 @@
 import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
 import { database, type Row } from '#/database'
 import { logger } from '#/logger'
+import { ListManagerChangeHandler } from '#/pubsub/handlers/list-manager-change'
 import { ListOperationHandler } from '#/pubsub/handlers/list-operation'
 import { ListStorageLocationChangeHandler } from '#/pubsub/handlers/list-storage-location-change'
 import { NewAccountMetadataValueHandler } from '#/pubsub/handlers/new-account-metadata-value'
@@ -10,7 +11,6 @@ import { TransferHandler } from '#/pubsub/handlers/transfer'
 import { timestamp } from '#/utilities'
 import type { Abi } from 'viem'
 import type { Event } from './event'
-import { ListManagerChangeHandler } from './handlers/list-manager-change'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.

@@ -16,7 +16,7 @@ export class NewAccountMetadataValueHandler {
     const row: Row<'account_metadata'> = {
       chain_id: event.chainId,
       contract_address: event.contractAddress,
-      address: address,
+      address: address.toLowerCase(),
       key: key,
       value: value
     }

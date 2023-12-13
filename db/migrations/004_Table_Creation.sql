@@ -78,21 +78,15 @@ CREATE TABLE
         )
     );
 
+-- combine list_nfts with "user" metadata
+
 CREATE VIEW
     public.list_nfts_view AS -- list_nfts JOIN ed with list_metadata WHERE key ="user"
 SELECT
-    nfts.chain_id,
-    nfts.contract_address,
-    nfts.token_id,
-    nfts.owner,
-    nfts.list_manager,
-    nfts.list_storage_location,
-    nfts.list_storage_location_chain_id,
-    nfts.list_storage_location_contract_address,
-    nfts.list_storage_location_nonce,
-    metadata.value AS list_user
+    nfts.*,
+    lm.value AS list_user
 FROM public.list_nfts AS nfts
-    LEFT JOIN public.list_metadata AS metadata ON metadata.chain_id = nfts.list_storage_location_chain_id AND metadata.contract_address = nfts.list_storage_location_contract_address AND metadata.nonce = nfts.list_storage_location_nonce AND metadata.key = 'user';
+    LEFT JOIN public.list_metadata AS lm ON lm.chain_id = nfts.list_storage_location_chain_id AND lm.contract_address = nfts.list_storage_location_contract_address AND lm.nonce = nfts.list_storage_location_nonce AND lm.key = 'user';
 
 CREATE TABLE
     public.list_ops (
@@ -159,55 +153,5 @@ CREATE TABLE
             tag
         )
     );
-
-CREATE VIEW
-    public.list_records_view AS
-SELECT
-    chain_id,
-    contract_address,
-    nonce,
-    record,
-    array_agg(tag) AS tags,
-    -- tests whether "block" is among the tags
-    bool_or(tag = 'block') AS block,
-    bool_or(tag = 'mute') AS mute
-FROM public.list_record_tags
-    INNER JOIN public.list_records USING (
-        chain_id, contract_address, nonce, record
-    )
-GROUP BY
-    chain_id,
-    contract_address,
-    nonce,
-    record;
-
-CREATE SEQUENCE
-    public.events_id_seq AS integer START
-WITH
-    1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
-
-ALTER TABLE ONLY public.events
-ADD
-    CONSTRAINT events_pkey PRIMARY KEY (id);
-
-CREATE INDEX
-    idx_block_number ON public.events USING btree (block_number);
-
-CREATE INDEX
-    idx_contract_address ON public.events USING btree (contract_address);
-
-CREATE INDEX
-    idx_event_name ON public.events USING btree (event_name);
-
---
-
--- Name: idx_transaction_hash; Type: INDEX; Schema: public; Owner: -
-
---
-
-CREATE INDEX
-    idx_transaction_hash ON public.events USING btree (transaction_hash);
 
 -- migrate:down
