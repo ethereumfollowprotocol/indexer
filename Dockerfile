@@ -14,4 +14,4 @@ COPY . .
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
-CMD bun ./src/index.ts
+CMD ["bun", "./src/index.ts"]

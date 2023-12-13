@@ -48,6 +48,8 @@ services:
     restart: no
     networks:
       - default
+    stdin_open: true # Keep stdin open
+    tty: true        # Allocate a pseudo-TTY
     build:
       context: .
       dockerfile: Dockerfile

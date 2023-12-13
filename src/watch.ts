@@ -17,6 +17,7 @@ import {
   type EventSubscriber
 } from '#/pubsub/subscribers'
 import { raise } from '#/utilities'
+import { asyncExitHook } from 'exit-hook'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
@@ -52,12 +53,37 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     efpListRecordsPublisher.subscribe(eventProcessor)
     efpListMinterPublisher.subscribe(eventProcessor)
 
-    efpAccountMetadataPublisher.start()
-    efpListRegistryPublisher.start()
-    efpListRecordsPublisher.start()
-    efpListMinterPublisher.start()
+    const publishers = [
+      efpAccountMetadataPublisher,
+      efpListRegistryPublisher,
+      efpListRecordsPublisher,
+      efpListMinterPublisher
+    ]
+
+    // Start all publishers
+    for (const publisher of publishers) {
+      publisher.start()
+    }
+
+    asyncExitHook(
+      // biome-ignore lint/nursery/useAwait: <explanation>
+      async signal => {
+        logger.log(`Exiting with signal ${signal}`)
+        logger.log(`begin publisher shutdown`)
+        for (const publisher of publishers) {
+          publisher.stop()
+        }
+        logger.log(`end publisher shutdown`)
+        logger.log(`exit`)
+      },
+      { wait: 500 }
+    )
 
     logger.log('Watching EFP contracts for events...')
+    while (true) {
+      logger.log('Waiting for events...')
+      await new Promise(resolve => setTimeout(resolve, 1_000))
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
     logger.error(watchAllEfpContractEvents.name, errorMessage)
