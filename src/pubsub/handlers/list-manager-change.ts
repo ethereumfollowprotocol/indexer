@@ -7,8 +7,8 @@ const ENDC = '\x1b[0m'
 
 export class ListManagerChangeHandler {
   async onListManagerChange(event: Event): Promise<void> {
-    const nonce: bigint = event.eventParameters.args['nonce']
-    const manager: `0x${string}` = event.eventParameters.args['manager']
+    const nonce: bigint = event.eventParameters.args['nonce'] as bigint
+    const manager: `0x${string}` = event.eventParameters.args['manager'].toLowerCase() as `0x${string}`
     logger.log(`${ORANGE}(ListManagerChange) nonce: ${nonce}, manager: ${manager}${ENDC}`)
 
     // find the token id which matches this nonce
@@ -16,7 +16,7 @@ export class ListManagerChangeHandler {
       .selectFrom('list_nfts')
       .select('token_id')
       .where('list_storage_location_chain_id', '=', event.chainId.toString())
-      .where('list_storage_location_contract_address', '=', event.contractAddress)
+      .where('list_storage_location_contract_address', '=', event.contractAddress.toLowerCase())
       .where('list_storage_location_nonce', '=', nonce.toString())
     let tokenIdResult: { token_id: string }[] = await query.execute()
     let tokenIds: string[] = tokenIdResult.map(({ token_id }) => token_id)

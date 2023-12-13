@@ -10,7 +10,7 @@ export class TransferHandler {
       // insert as new row
       const row: Row<'list_nfts'> = {
         chain_id: event.chainId,
-        contract_address: event.contractAddress,
+        contract_address: event.contractAddress.toLowerCase(),
         token_id: event.eventParameters.args['tokenId'],
         owner: to.toLowerCase()
         // list_manager: '',

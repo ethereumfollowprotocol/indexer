@@ -11,9 +11,9 @@ export class OwnershipTransferredHandler {
     if (previousOwner === '0x0000000000000000000000000000000000000000') {
       const contractsRow: Row<'contracts'> = {
         chain_id: event.chainId,
-        address: event.contractAddress,
+        address: event.contractAddress.toLowerCase(),
         name: event.contractName,
-        owner: newOwner
+        owner: newOwner.toLowerCase()
       }
       logger.log(`\x1b[96m(OwnershipTransferred) Insert ${event.contractName} contract into \`contracts\` table\x1b[0m`)
       await database.insertInto('contracts').values([contractsRow]).executeTakeFirst()
@@ -29,7 +29,7 @@ export class OwnershipTransferredHandler {
         .updateTable('contracts')
         .set({ owner: newOwner })
         .where('chain_id', '=', event.chainId.toString())
-        .where('address', '=', event.contractAddress)
+        .where('address', '=', event.contractAddress.toLowerCase())
         .executeTakeFirst()
     }
   }

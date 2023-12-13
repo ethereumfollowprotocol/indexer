@@ -19,6 +19,7 @@ export class NewListMetadataValueHandler {
     logger.log(
       `\x1b[33m(NewListMetadataValue) EFP List w/ nonce: ${nonce} insert ${key}=${value} into \`list_metadata\` table\x1b[0m`
     )
+    // TODO: insert or update if already exists
     await database.insertInto('list_metadata').values([row]).executeTakeFirst()
   }
 }

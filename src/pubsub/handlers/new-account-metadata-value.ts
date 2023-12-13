@@ -15,40 +15,46 @@ export class NewAccountMetadataValueHandler {
     // insert or update
     const row: Row<'account_metadata'> = {
       chain_id: event.chainId,
-      contract_address: event.contractAddress,
+      contract_address: event.contractAddress.toLowerCase(),
       address: address.toLowerCase(),
       key: key,
       value: value
     }
-    logger.log(`(NewAccountMetadataValue) Account ${address} insert ${key}=${value} into \`account_metadata\` table`)
 
     // check if value is already set for this chain_id/contract_address/address/key
-    const existing = await database
+
+    const query = database
       .selectFrom('account_metadata')
+      .select('value')
       .where('chain_id', '=', event.chainId.toString())
-      .where('contract_address', '=', event.contractAddress)
-      .where('address', '=', address)
+      .where('contract_address', '=', event.contractAddress.toLowerCase())
+      .where('address', '=', address.toLowerCase())
       .where('key', '=', key)
-      .executeTakeFirst()
-    if (existing) {
+    // print
+    const existing: { value: string } | undefined = await query.executeTakeFirst()
+    if (existing === undefined) {
+      // insert
+      logger.log(
+        `${LIGHT_BLUE}(NewAccountMetadataValue) Insert account metadata chain_id=${event.chainId.toString()} contract_address=${event.contractAddress.toLowerCase()} address=${address.toLowerCase()} ${key}=${value} into \`account_metadata\` table${ENDC}`
+      )
+      await database.insertInto('account_metadata').values([row]).executeTakeFirst()
+    } else if (existing.value !== value) {
       // update
       logger.log(
-        `${LIGHT_MAGENTA}(NewAccountMetadataValue) Updating account metadata ${address} ${key}=${value} in \`account_metadata\` table${ENDC}`
+        `${LIGHT_MAGENTA}(NewAccountMetadataValue) Updating account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} in \`account_metadata\` table${ENDC}`
       )
       await database
         .updateTable('account_metadata')
         .set({ value: value })
         .where('chain_id', '=', event.chainId.toString())
-        .where('contract_address', '=', event.contractAddress)
-        .where('address', '=', address)
+        .where('contract_address', '=', event.contractAddress.toLowerCase())
+        .where('address', '=', address.toLowerCase())
         .where('key', '=', key)
         .executeTakeFirst()
     } else {
-      // insert
       logger.log(
-        `${LIGHT_BLUE}(NewAccountMetadataValue) Insert account metadata ${address} ${key}=${value} into \`account_metadata\` table${ENDC}`
+        `${LIGHT_BLUE}(NewAccountMetadataValue) Account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} already exists in \`account_metadata\` table${ENDC}`
       )
-      await database.insertInto('account_metadata').values([row]).executeTakeFirst()
     }
   }
 }

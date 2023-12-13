@@ -46,7 +46,7 @@ export class ListStorageLocationChangeHandler {
     }
     await query
       .where('chain_id', '=', event.chainId.toString())
-      .where('contract_address', '=', event.contractAddress)
+      .where('contract_address', '=', event.contractAddress.toLowerCase())
       .where('token_id', '=', tokenId.toString())
       .executeTakeFirst()
   }

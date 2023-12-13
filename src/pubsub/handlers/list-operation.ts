@@ -23,7 +23,7 @@ export class ListOperationHandler {
     // insert
     const row: Row<'list_ops'> = {
       chain_id: event.chainId,
-      contract_address: event.contractAddress,
+      contract_address: event.contractAddress.toLowerCase(),
       nonce: nonce,
       op: op,
       version: opVersion,
@@ -33,7 +33,7 @@ export class ListOperationHandler {
     logger.log(`\x1b[96m(ListOperation) Insert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
     await database.insertInto('list_ops').values([row]).executeTakeFirst()
 
-    await this.processListOp(event.chainId, event.contractAddress, nonce, listOp)
+    await this.processListOp(event.chainId, event.contractAddress.toLowerCase() as `0x${string}`, nonce, listOp)
   }
 
   async processListOp(chainId: bigint, contractAddress: `0x${string}`, nonce: bigint, listOp: ListOp): Promise<void> {
@@ -51,7 +51,7 @@ export class ListOperationHandler {
 
       const row: Row<'list_records'> = {
         chain_id: chainId,
-        contract_address: contractAddress,
+        contract_address: contractAddress.toLowerCase(),
         nonce: nonce,
         record: listRecordHexstring,
         version: listRecord.version,
@@ -71,7 +71,7 @@ export class ListOperationHandler {
       const result = await database
         .deleteFrom('list_records')
         .where('chain_id', '=', chainId.toString())
-        .where('contract_address', '=', contractAddress)
+        .where('contract_address', '=', contractAddress.toLowerCase())
         .where('nonce', '=', nonce.toString())
         .where('record', '=', listRecordHexstring)
         .executeTakeFirst()
@@ -89,7 +89,7 @@ export class ListOperationHandler {
 
       const row: Row<'list_record_tags'> = {
         chain_id: chainId,
-        contract_address: contractAddress,
+        contract_address: contractAddress.toLowerCase(),
         nonce: nonce,
         record: listRecord,
         tag: tag
@@ -112,7 +112,7 @@ export class ListOperationHandler {
       const result = await database
         .deleteFrom('list_record_tags')
         .where('chain_id', '=', chainId.toString())
-        .where('contract_address', '=', contractAddress)
+        .where('contract_address', '=', contractAddress.toLowerCase())
         .where('nonce', '=', nonce.toString())
         .where('record', '=', listRecord)
         .where('tag', '=', tag)
