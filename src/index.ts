@@ -4,6 +4,7 @@ import { gracefulExit } from 'exit-hook'
 import { type EvmClient, evmClients } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
+import { sleep } from '#/utilities'
 import { colors } from '#/utilities/colors'
 import { pingRpc } from '#/utilities/ping'
 import { watchAllEfpContractEvents } from '#/watch'
@@ -15,7 +16,7 @@ async function waitForPingSuccess(client: EvmClient): Promise<void> {
       console.log(`${colors.GREEN}Successfully connected to RPC${colors.ENDC}`)
     } catch (error) {
       logger.warn(`${colors.YELLOW}(Attempt: ${attempt}) Failed to connect to RPC${colors.ENDC}`, error)
-      await new Promise(resolve => setTimeout(resolve, 1_000))
+      await sleep(1_000)
       await tryAttempt(attempt + 1)
     }
   }
@@ -59,7 +60,7 @@ async function main() {
         break
       } catch (error) {
         // logger.warn(error)
-        await new Promise(resolve => setTimeout(resolve, 1_000))
+        await sleep(1_000)
       }
     }
     logger.box(`🗄️`, `dbmate up`)

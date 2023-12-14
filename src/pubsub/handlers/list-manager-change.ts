@@ -1,5 +1,6 @@
 import { database } from '#/database'
 import { logger } from '#/logger'
+import { sleep } from '#/utilities'
 import { colors } from '#/utilities/colors'
 import type { Event } from '../event'
 
@@ -21,7 +22,7 @@ export class ListManagerChangeHandler {
 
     if (tokenIds.length === 0) {
       // wait 3 seconds and try one more time
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      await sleep(3_000)
       tokenIdResult = await query.execute()
       tokenIds = tokenIdResult.map(({ token_id }) => token_id)
       if (tokenIds.length === 0) {
