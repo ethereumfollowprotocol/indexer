@@ -1,5 +1,4 @@
 import type { EvmClient } from '#/clients'
-import { logger } from '#/logger'
 import { raise } from '#/utilities'
 
 /**

@@ -1,15 +1,13 @@
 import { database } from '#/database'
 import { logger } from '#/logger'
+import { colors } from '#/utilities/colors'
 import type { Event } from '../event'
-
-const ORANGE = '\x1b[33m'
-const ENDC = '\x1b[0m'
 
 export class ListManagerChangeHandler {
   async onListManagerChange(event: Event): Promise<void> {
     const nonce: bigint = event.eventParameters.args['nonce'] as bigint
     const manager: `0x${string}` = event.eventParameters.args['manager'].toLowerCase() as `0x${string}`
-    logger.log(`${ORANGE}(ListManagerChange) nonce: ${nonce}, manager: ${manager}${ENDC}`)
+    logger.log(`${colors.ORANGE}(ListManagerChange) nonce: ${nonce}, manager: ${manager}${colors.ENDC}`)
 
     // find the token id which matches this nonce
     const query = database
@@ -32,7 +30,9 @@ export class ListManagerChangeHandler {
         return
       }
     }
-    logger.log(`${ORANGE}(ListManagerChange) nonce: ${nonce}, manager: ${manager} tokenIds: ${tokenIds}${ENDC}`)
+    logger.log(
+      `${colors.ORANGE}(ListManagerChange) nonce: ${nonce}, manager: ${manager} tokenIds: ${tokenIds}${colors.ENDC}`
+    )
 
     // update list_nfts.list_manager WHERE list_nfts.token_id IN tokenIdResult.token_id
     const result = await database
@@ -41,7 +41,7 @@ export class ListManagerChangeHandler {
       .where('token_id', 'in', tokenIds)
       .executeTakeFirst()
     logger.log(
-      `${ORANGE}(ListManagerChange) Updated ${result.numChangedRows} rows in \`list_nfts\` table with manager ${manager}${ENDC}`
+      `${colors.ORANGE}(ListManagerChange) Updated ${result.numChangedRows} rows in \`list_nfts\` table with manager ${manager}${colors.ENDC}`
     )
   }
 }

@@ -1,7 +1,7 @@
-import { http, fallback, webSocket, publicActions, walletActions, createTestClient, createPublicClient } from 'viem'
-import { env } from '#/env.ts'
+import { http, createPublicClient, createTestClient, fallback, publicActions, walletActions, webSocket } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { foundry, mainnet, optimism, optimismSepolia, sepolia } from 'viem/chains'
+import { env } from '#/env.ts'
 
 export const evmClients = {
   '31337': () =>

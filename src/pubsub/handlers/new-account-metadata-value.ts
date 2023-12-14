@@ -1,10 +1,7 @@
-import { database, type Row } from '#/database'
+import { type Row, database } from '#/database'
 import { logger } from '#/logger'
+import { colors } from '#/utilities/colors'
 import type { Event } from '../event'
-
-const LIGHT_BLUE = '\x1b[94m'
-const LIGHT_MAGENTA = '\x1b[95m'
-const ENDC = '\x1b[0m'
 
 export class NewAccountMetadataValueHandler {
   async onNewAccountMetadataValue(event: Event): Promise<void> {
@@ -35,13 +32,21 @@ export class NewAccountMetadataValueHandler {
     if (existing === undefined) {
       // insert
       logger.log(
-        `${LIGHT_BLUE}(NewAccountMetadataValue) Insert account metadata chain_id=${event.chainId.toString()} contract_address=${event.contractAddress.toLowerCase()} address=${address.toLowerCase()} ${key}=${value} into \`account_metadata\` table${ENDC}`
+        `${
+          colors.LIGHT_BLUE
+        }(NewAccountMetadataValue) Insert account metadata chain_id=${event.chainId.toString()} contract_address=${event.contractAddress.toLowerCase()} address=${address.toLowerCase()} ${key}=${value} into \`account_metadata\` table${
+          colors.ENDC
+        }`
       )
       await database.insertInto('account_metadata').values([row]).executeTakeFirst()
     } else if (existing.value !== value) {
       // update
       logger.log(
-        `${LIGHT_MAGENTA}(NewAccountMetadataValue) Updating account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} in \`account_metadata\` table${ENDC}`
+        `${
+          colors.LIGHT_MAGENTA
+        }(NewAccountMetadataValue) Updating account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} in \`account_metadata\` table${
+          colors.ENDC
+        }`
       )
       await database
         .updateTable('account_metadata')
@@ -53,7 +58,11 @@ export class NewAccountMetadataValueHandler {
         .executeTakeFirst()
     } else {
       logger.log(
-        `${LIGHT_BLUE}(NewAccountMetadataValue) Account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} already exists in \`account_metadata\` table${ENDC}`
+        `${
+          colors.LIGHT_BLUE
+        }(NewAccountMetadataValue) Account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} already exists in \`account_metadata\` table${
+          colors.ENDC
+        }`
       )
     }
   }

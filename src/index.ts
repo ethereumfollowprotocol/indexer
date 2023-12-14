@@ -1,23 +1,20 @@
 #!/usr/bin/env bun
-import { evmClients, type EvmClient } from '#/clients'
+import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
+import { gracefulExit } from 'exit-hook'
+import { type EvmClient, evmClients } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
+import { colors } from '#/utilities/colors'
 import { pingRpc } from '#/utilities/ping'
 import { watchAllEfpContractEvents } from '#/watch'
-import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
-import { gracefulExit } from 'exit-hook'
-
-const GREEN = '\x1b[32m'
-const YELLOW = '\x1b[33m'
-const ENDC = '\x1b[0m'
 
 async function waitForPingSuccess(client: EvmClient): Promise<void> {
   async function tryAttempt(attempt: number): Promise<void> {
     try {
       await pingRpc({ client })
-      console.log(`${GREEN}Successfully connected to RPC${ENDC}`)
+      console.log(`${colors.GREEN}Successfully connected to RPC${colors.ENDC}`)
     } catch (error) {
-      logger.warn(`${YELLOW}(Attempt: ${attempt}) Failed to connect to RPC${ENDC}`, error)
+      logger.warn(`${colors.YELLOW}(Attempt: ${attempt}) Failed to connect to RPC${colors.ENDC}`, error)
       await new Promise(resolve => setTimeout(resolve, 1_000))
       await tryAttempt(attempt + 1)
     }

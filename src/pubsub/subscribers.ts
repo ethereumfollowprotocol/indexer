@@ -1,5 +1,6 @@
+import type { Abi } from 'viem'
 import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
-import { database, type Row } from '#/database'
+import { type Row, database } from '#/database'
 import { logger } from '#/logger'
 import { ListManagerChangeHandler } from '#/pubsub/handlers/list-manager-change'
 import { ListOperationHandler } from '#/pubsub/handlers/list-operation'
@@ -8,7 +9,6 @@ import { NewAccountMetadataValueHandler } from '#/pubsub/handlers/new-account-me
 import { NewListMetadataValueHandler } from '#/pubsub/handlers/new-list-metadata-value'
 import { OwnershipTransferredHandler } from '#/pubsub/handlers/ownership-transferred'
 import { TransferHandler } from '#/pubsub/handlers/transfer'
-import type { Abi } from 'viem'
 import type { Event } from './event'
 
 /**

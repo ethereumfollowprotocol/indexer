@@ -1,3 +1,4 @@
+import { asyncExitHook } from 'exit-hook'
 import type { EvmClient } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
@@ -13,11 +14,10 @@ import {
   EFPListRecordsSubscriber,
   EFPListRegistrySubscriber,
   EventDispatcher as EventProcessor,
-  EventsTableUploader,
-  type EventSubscriber
+  type EventSubscriber,
+  EventsTableUploader
 } from '#/pubsub/subscribers'
-import { raise } from '#/utilities'
-import { asyncExitHook } from 'exit-hook'
+import { raise, sleep } from '#/utilities'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
@@ -81,7 +81,7 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     logger.log('Watching EFP contracts for events...')
     while (true) {
       logger.log('Waiting for events...')
-      await new Promise(resolve => setTimeout(resolve, 1_000))
+      await sleep(1_000)
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error

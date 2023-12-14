@@ -6,6 +6,10 @@ export function raise(error: unknown): never {
   throw typeof error === 'string' ? new Error(error) : error
 }
 
+export async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 /**
  * TODO:
  * not implemented

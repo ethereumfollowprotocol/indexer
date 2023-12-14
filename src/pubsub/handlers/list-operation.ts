@@ -1,7 +1,7 @@
-import { database, type Row } from '#/database'
+import { type Row, database } from '#/database'
 import { logger } from '#/logger'
-import { decodeListOp, type ListOp } from '#/process/list-op'
-import { decodeListRecord, type ListRecord } from '#/process/list-record'
+import { type ListOp, decodeListOp } from '#/process/list-op'
+import { type ListRecord, decodeListRecord } from '#/process/list-record'
 import type { Event } from '../event'
 
 export class ListOperationHandler {

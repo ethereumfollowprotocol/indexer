@@ -1,4 +1,4 @@
-import { database, type Row } from '#/database'
+import { type Row, database } from '#/database'
 import { logger } from '#/logger'
 import type { Event } from '../event'
 

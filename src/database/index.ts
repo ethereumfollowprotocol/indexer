@@ -1,6 +1,6 @@
-import postgres from 'postgres'
-import { Kysely, type InsertObject } from 'kysely'
+import { type InsertObject, Kysely } from 'kysely'
 import { PostgresJSDialect } from 'kysely-postgres-js'
+import postgres from 'postgres'
 
 import { env } from '#/env.ts'
 import type { DB } from './generated/index.ts'
