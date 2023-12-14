@@ -33,6 +33,6 @@
   "docsYaml.telemetry.enableTelemetry": false,
   "database-client.telemetry.usesOnlineServices": false,
   "[sql]": {
-    "editor.defaultFormatter": "cweijan.vscode-database-client2"
+    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
   }
 }

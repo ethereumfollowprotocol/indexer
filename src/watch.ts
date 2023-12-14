@@ -66,7 +66,6 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     }
 
     asyncExitHook(
-      // biome-ignore lint/nursery/useAwait: <explanation>
       async signal => {
         logger.log(`Exiting with signal ${signal}`)
         logger.log(`begin publisher shutdown`)

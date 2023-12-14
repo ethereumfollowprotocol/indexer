@@ -3,8 +3,8 @@
     "biomejs.biome",
     "mikestead.dotenv",
     "EditorConfig.EditorConfig",
+    "adpyke.vscode-sql-formatter",
     "cweijan.vscode-database-client2",
-    "ms-vscode.remote-explorer",
     "ms-vscode-remote.vscode-remote-extensionpack"
   ],
   "unwantedRecommendations": [
