@@ -4,8 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
   push:
-    # since `deploy.yml` runs in main and does the same checks
-    branches-ignore: [main, develop]
+    branches-ignore: [develop]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
