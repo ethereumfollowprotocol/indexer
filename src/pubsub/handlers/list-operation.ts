@@ -1,7 +1,7 @@
-import { type Row, database } from '#/database'
+import { database, type Row } from '#/database'
 import { logger } from '#/logger'
-import { type ListOp, decodeListOp } from '#/process/list-op'
-import { type ListRecord, decodeListRecord } from '#/process/list-record'
+import { decodeListOp, type ListOp } from '#/process/list-op'
+import { decodeListRecord, type ListRecord } from '#/process/list-record'
 import type { Event } from '../event'
 
 export class ListOperationHandler {
@@ -41,7 +41,7 @@ export class ListOperationHandler {
       throw new Error(`Unsupported list op version ${listOp.version}`)
     }
 
-    if (listOp.code === 1) {
+    if (listOp.opcode === 1) {
       // ADD LIST RECORD
 
       // insert
@@ -61,7 +61,7 @@ export class ListOperationHandler {
       // green log
       logger.log(`\x1b[92m(ListOperation) Add list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`)
       await database.insertInto('list_records').values([row]).executeTakeFirst()
-    } else if (listOp.code === 2) {
+    } else if (listOp.opcode === 2) {
       // REMOVE LIST RECORD
 
       const listRecordHexstring: `0x${string}` = `0x${Buffer.from(listOp.data).toString('hex')}`
@@ -76,7 +76,7 @@ export class ListOperationHandler {
         .where('record', '=', listRecordHexstring)
         .executeTakeFirst()
       logger.log(result)
-    } else if (listOp.code === 3) {
+    } else if (listOp.opcode === 3) {
       // ADD LIST RECORD TAG
 
       if (listOp.version !== 1) {
@@ -97,7 +97,7 @@ export class ListOperationHandler {
       // green log
       logger.log(`\x1b[92m(ListOperation) Add tag "${tag}" to list record ${listRecord} in db\x1b[0m`)
       await database.insertInto('list_record_tags').values([row]).executeTakeFirst()
-    } else if (listOp.code === 4) {
+    } else if (listOp.opcode === 4) {
       // REMOVE LIST RECORD TAG
 
       if (listOp.version !== 1) {
@@ -120,7 +120,7 @@ export class ListOperationHandler {
       logger.log(result)
     } else {
       // unknown list op code
-      throw new Error(`Unsupported list op code ${listOp.code}`)
+      throw new Error(`Unsupported list op code ${listOp.opcode}`)
     }
   }
 }
