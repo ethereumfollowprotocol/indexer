@@ -33,15 +33,15 @@
     "kysely": "^0.26.3",
     "kysely-postgres-js": "^2.0.0",
     "postgres": "^3.4.3",
-    "viem": "2.0.0-beta.15"
+    "viem": "2.0.0-beta.16"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.10.5",
     "bun": "^1.0.18",
     "pg": "^8.11.3",
     "dbmate": "^2.9.0",
-    "bun-types": "^1.0.18",
+    "bun-types": "^1.0.18-1",
     "typescript": "^5.3.3",
     "kysely-codegen": "^0.11.0",
     "@total-typescript/ts-reset": "^0.5.1"
