@@ -6,11 +6,11 @@ export const EFPAccountMetadataABI = [
       {
         name: 'proxy',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -19,22 +19,22 @@ export const EFPAccountMetadataABI = [
       {
         name: 'addr',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'key',
         type: 'string',
-        internalType: 'string',
-      },
+        internalType: 'string'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -43,22 +43,22 @@ export const EFPAccountMetadataABI = [
       {
         name: 'addr',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'keys',
         type: 'string[]',
-        internalType: 'string[]',
-      },
+        internalType: 'string[]'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes[]',
-        internalType: 'bytes[]',
-      },
+        internalType: 'bytes[]'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -67,17 +67,17 @@ export const EFPAccountMetadataABI = [
       {
         name: 'proxy',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
-      },
+        internalType: 'bool'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -87,10 +87,10 @@ export const EFPAccountMetadataABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -99,18 +99,18 @@ export const EFPAccountMetadataABI = [
       {
         name: 'proxy',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
     name: 'renounceOwnership',
     inputs: [],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -119,16 +119,16 @@ export const EFPAccountMetadataABI = [
       {
         name: 'key',
         type: 'string',
-        internalType: 'string',
+        internalType: 'string'
       },
       {
         name: 'value',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -137,21 +137,21 @@ export const EFPAccountMetadataABI = [
       {
         name: 'addr',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'key',
         type: 'string',
-        internalType: 'string',
+        internalType: 'string'
       },
       {
         name: 'value',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -165,18 +165,18 @@ export const EFPAccountMetadataABI = [
           {
             name: 'key',
             type: 'string',
-            internalType: 'string',
+            internalType: 'string'
           },
           {
             name: 'value',
             type: 'bytes',
-            internalType: 'bytes',
-          },
-        ],
-      },
+            internalType: 'bytes'
+          }
+        ]
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -185,7 +185,7 @@ export const EFPAccountMetadataABI = [
       {
         name: 'addr',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'records',
@@ -195,18 +195,18 @@ export const EFPAccountMetadataABI = [
           {
             name: 'key',
             type: 'string',
-            internalType: 'string',
+            internalType: 'string'
           },
           {
             name: 'value',
             type: 'bytes',
-            internalType: 'bytes',
-          },
-        ],
-      },
+            internalType: 'bytes'
+          }
+        ]
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -215,11 +215,11 @@ export const EFPAccountMetadataABI = [
       {
         name: 'newOwner',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'event',
@@ -229,22 +229,22 @@ export const EFPAccountMetadataABI = [
         name: 'addr',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'key',
         type: 'string',
         indexed: false,
-        internalType: 'string',
+        internalType: 'string'
       },
       {
         name: 'value',
         type: 'bytes',
         indexed: false,
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -254,16 +254,16 @@ export const EFPAccountMetadataABI = [
         name: 'previousOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'newOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -273,10 +273,10 @@ export const EFPAccountMetadataABI = [
         name: 'proxy',
         type: 'address',
         indexed: false,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -286,9 +286,9 @@ export const EFPAccountMetadataABI = [
         name: 'proxy',
         type: 'address',
         indexed: false,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
-  },
+    anonymous: false
+  }
 ] as const

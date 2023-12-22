@@ -6,16 +6,16 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'op',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -24,16 +24,16 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'ops',
         type: 'bytes[]',
-        internalType: 'bytes[]',
-      },
+        internalType: 'bytes[]'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -42,11 +42,11 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -55,16 +55,16 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'manager',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -73,17 +73,17 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes[]',
-        internalType: 'bytes[]',
-      },
+        internalType: 'bytes[]'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -92,17 +92,17 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -111,22 +111,22 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'index',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -135,17 +135,17 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -154,27 +154,27 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'start',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'end',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes[]',
-        internalType: 'bytes[]',
-      },
+        internalType: 'bytes[]'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -183,22 +183,22 @@ export const EFPListRecordsABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'key',
         type: 'string',
-        internalType: 'string',
-      },
+        internalType: 'string'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -207,22 +207,22 @@ export const EFPListRecordsABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'keys',
         type: 'string[]',
-        internalType: 'string[]',
-      },
+        internalType: 'string[]'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes[]',
-        internalType: 'bytes[]',
-      },
+        internalType: 'bytes[]'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -231,22 +231,22 @@ export const EFPListRecordsABI = [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -255,17 +255,17 @@ export const EFPListRecordsABI = [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -275,17 +275,17 @@ export const EFPListRecordsABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
     name: 'renounceOwnership',
     inputs: [],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -294,16 +294,16 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'manager',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -312,21 +312,21 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'key',
         type: 'string',
-        internalType: 'string',
+        internalType: 'string'
       },
       {
         name: 'value',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -335,7 +335,7 @@ export const EFPListRecordsABI = [
       {
         name: 'nonce',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'records',
@@ -345,18 +345,18 @@ export const EFPListRecordsABI = [
           {
             name: 'key',
             type: 'string',
-            internalType: 'string',
+            internalType: 'string'
           },
           {
             name: 'value',
             type: 'bytes',
-            internalType: 'bytes',
-          },
-        ],
-      },
+            internalType: 'bytes'
+          }
+        ]
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -365,11 +365,11 @@ export const EFPListRecordsABI = [
       {
         name: 'newOwner',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'event',
@@ -379,16 +379,16 @@ export const EFPListRecordsABI = [
         name: 'nonce',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'manager',
         type: 'address',
         indexed: false,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -398,16 +398,16 @@ export const EFPListRecordsABI = [
         name: 'nonce',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'op',
         type: 'bytes',
         indexed: false,
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -417,22 +417,22 @@ export const EFPListRecordsABI = [
         name: 'nonce',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'key',
         type: 'string',
         indexed: false,
-        internalType: 'string',
+        internalType: 'string'
       },
       {
         name: 'value',
         type: 'bytes',
         indexed: false,
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -442,15 +442,15 @@ export const EFPListRecordsABI = [
         name: 'previousOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'newOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
-  },
+    anonymous: false
+  }
 ] as const

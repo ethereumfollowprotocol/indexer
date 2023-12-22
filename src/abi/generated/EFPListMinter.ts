@@ -5,20 +5,20 @@ export const EFPListMinterABI = [
       {
         name: '_registryAddress',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: '_accountMetadataAddress',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: '_listRecordsL1',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -28,10 +28,10 @@ export const EFPListMinterABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'contract IEFPAccountMetadata',
-      },
+        internalType: 'contract IEFPAccountMetadata'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -41,10 +41,10 @@ export const EFPListMinterABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'contract IEFPListRecords',
-      },
+        internalType: 'contract IEFPListRecords'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -53,11 +53,11 @@ export const EFPListMinterABI = [
       {
         name: 'listStorageLocation',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -66,16 +66,16 @@ export const EFPListMinterABI = [
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'listStorageLocation',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -85,10 +85,10 @@ export const EFPListMinterABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -98,17 +98,17 @@ export const EFPListMinterABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'contract IEFPListRegistry_ERC721',
-      },
+        internalType: 'contract IEFPListRegistry_ERC721'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
     name: 'renounceOwnership',
     inputs: [],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -117,11 +117,11 @@ export const EFPListMinterABI = [
       {
         name: 'newOwner',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'event',
@@ -131,15 +131,15 @@ export const EFPListMinterABI = [
         name: 'previousOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'newOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
-  },
+    anonymous: false
+  }
 ] as const

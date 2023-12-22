@@ -2,7 +2,7 @@ export const EFPListRegistryABI = [
   {
     type: 'constructor',
     inputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -11,16 +11,16 @@ export const EFPListRegistryABI = [
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -29,17 +29,17 @@ export const EFPListRegistryABI = [
       {
         name: 'owner',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -48,17 +48,17 @@ export const EFPListRegistryABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -67,17 +67,17 @@ export const EFPListRegistryABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -87,10 +87,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -100,10 +100,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'uint8',
-        internalType: 'enum IEFPListRegistry.MintState',
-      },
+        internalType: 'enum IEFPListRegistry.MintState'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -113,10 +113,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -125,22 +125,22 @@ export const EFPListRegistryABI = [
       {
         name: 'owner',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'operator',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
-      },
+        internalType: 'bool'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -149,11 +149,11 @@ export const EFPListRegistryABI = [
       {
         name: 'listStorageLocation',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -162,11 +162,11 @@ export const EFPListRegistryABI = [
       {
         name: 'quantity',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -175,16 +175,16 @@ export const EFPListRegistryABI = [
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'quantity',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -193,16 +193,16 @@ export const EFPListRegistryABI = [
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'listStorageLocation',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -212,10 +212,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'string',
-        internalType: 'string',
-      },
+        internalType: 'string'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -225,10 +225,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -237,24 +237,24 @@ export const EFPListRegistryABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
     name: 'renounceOwnership',
     inputs: [],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -263,21 +263,21 @@ export const EFPListRegistryABI = [
       {
         name: 'from',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -286,26 +286,26 @@ export const EFPListRegistryABI = [
       {
         name: 'from',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: '_data',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -314,16 +314,16 @@ export const EFPListRegistryABI = [
       {
         name: 'operator',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'approved',
         type: 'bool',
-        internalType: 'bool',
-      },
+        internalType: 'bool'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -332,16 +332,16 @@ export const EFPListRegistryABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'listStorageLocation',
         type: 'bytes',
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -350,11 +350,11 @@ export const EFPListRegistryABI = [
       {
         name: '_maxMintBatchSize',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -363,11 +363,11 @@ export const EFPListRegistryABI = [
       {
         name: '_mintState',
         type: 'uint8',
-        internalType: 'enum IEFPListRegistry.MintState',
-      },
+        internalType: 'enum IEFPListRegistry.MintState'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -376,11 +376,11 @@ export const EFPListRegistryABI = [
       {
         name: 'priceOracle_',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'function',
@@ -389,17 +389,17 @@ export const EFPListRegistryABI = [
       {
         name: 'interfaceId',
         type: 'bytes4',
-        internalType: 'bytes4',
-      },
+        internalType: 'bytes4'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
-      },
+        internalType: 'bool'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -409,10 +409,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'string',
-        internalType: 'string',
-      },
+        internalType: 'string'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -421,17 +421,17 @@ export const EFPListRegistryABI = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [
       {
         name: '',
         type: 'string',
-        internalType: 'string',
-      },
+        internalType: 'string'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -441,10 +441,10 @@ export const EFPListRegistryABI = [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    stateMutability: 'view',
+    stateMutability: 'view'
   },
   {
     type: 'function',
@@ -453,21 +453,21 @@ export const EFPListRegistryABI = [
       {
         name: 'from',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'to',
         type: 'address',
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'payable'
   },
   {
     type: 'function',
@@ -476,11 +476,11 @@ export const EFPListRegistryABI = [
       {
         name: 'newOwner',
         type: 'address',
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'nonpayable'
   },
   {
     type: 'event',
@@ -490,22 +490,22 @@ export const EFPListRegistryABI = [
         name: 'owner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'approved',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'tokenId',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -515,22 +515,22 @@ export const EFPListRegistryABI = [
         name: 'owner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'operator',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'approved',
         type: 'bool',
         indexed: false,
-        internalType: 'bool',
-      },
+        internalType: 'bool'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -540,28 +540,28 @@ export const EFPListRegistryABI = [
         name: 'fromTokenId',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'toTokenId',
         type: 'uint256',
         indexed: false,
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'from',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'to',
         type: 'address',
         indexed: true,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -571,16 +571,16 @@ export const EFPListRegistryABI = [
         name: 'tokenId',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'uint256'
       },
       {
         name: 'listStorageLocation',
         type: 'bytes',
         indexed: false,
-        internalType: 'bytes',
-      },
+        internalType: 'bytes'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -590,10 +590,10 @@ export const EFPListRegistryABI = [
         name: 'maxMintBatchSize',
         type: 'uint256',
         indexed: false,
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -603,10 +603,10 @@ export const EFPListRegistryABI = [
         name: 'mintState',
         type: 'uint8',
         indexed: false,
-        internalType: 'enum IEFPListRegistry.MintState',
-      },
+        internalType: 'enum IEFPListRegistry.MintState'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -616,16 +616,16 @@ export const EFPListRegistryABI = [
         name: 'previousOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'newOwner',
         type: 'address',
         indexed: true,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -635,10 +635,10 @@ export const EFPListRegistryABI = [
         name: 'priceOracle',
         type: 'address',
         indexed: false,
-        internalType: 'address',
-      },
+        internalType: 'address'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'event',
@@ -648,86 +648,86 @@ export const EFPListRegistryABI = [
         name: 'from',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'to',
         type: 'address',
         indexed: true,
-        internalType: 'address',
+        internalType: 'address'
       },
       {
         name: 'tokenId',
         type: 'uint256',
         indexed: true,
-        internalType: 'uint256',
-      },
+        internalType: 'uint256'
+      }
     ],
-    anonymous: false,
+    anonymous: false
   },
   {
     type: 'error',
     name: 'ApprovalCallerNotOwnerNorApproved',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'ApprovalQueryForNonexistentToken',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'BalanceQueryForZeroAddress',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'MintERC2309QuantityExceedsLimit',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'MintToZeroAddress',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'MintZeroQuantity',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'OwnerQueryForNonexistentToken',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'OwnershipNotInitializedForExtraData',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'TransferCallerNotOwnerNorApproved',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'TransferFromIncorrectOwner',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'TransferToNonERC721ReceiverImplementer',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'TransferToZeroAddress',
-    inputs: [],
+    inputs: []
   },
   {
     type: 'error',
     name: 'URIQueryForNonexistentToken',
-    inputs: [],
-  },
+    inputs: []
+  }
 ] as const
