@@ -48,9 +48,10 @@
     "@total-typescript/ts-reset": "^0.5.1"
   },
   "repository": "github:ethereumfollowprotocol/indexer",
+  "homepage": "github:ethereumfollowprotocol/indexer#README.md",
   "contributors": [
-    "Omar <omar@ethfollow.xyz>",
-    "Cory <cory@ethfollow.xyz>"
+    "Cory Gabrielsen <cory@ethfollow.xyz> cory.eth",
+    "Omar Aziz <omar@ethfollow.xyz> esm.eth"
   ],
   "sideEffects": false
 }
