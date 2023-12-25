@@ -38,4 +38,4 @@ yarn-error.log*
 data.sqld
 .data
 _
-
+db/schema.sql

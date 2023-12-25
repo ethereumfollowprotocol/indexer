@@ -41,18 +41,23 @@
         "noEmptyBlockStatements": "off"
       },
       "complexity": {
+        "all": true,
         "noForEach": "off",
         "useLiteralKeys": "off",
         "noUselessEmptyExport": "off"
       },
       "correctness": {
+        "all": true,
         "noUndeclaredVariables": "off"
       },
       "performance": {
+        "all": true,
         "noAccumulatingSpread": "off"
       },
       "suspicious": {
+        "all": true,
         "noRedeclare": "off",
+        "noConsoleLog": "off",
         "noExplicitAny": "off",
         "noEmptyInterface": "off"
       }

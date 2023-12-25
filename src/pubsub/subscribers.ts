@@ -46,7 +46,7 @@ export abstract class ContractEventSubscriber implements EventSubscriber {
    * Generic handler for log events. This function should be overridden by subclasses to process each log.
    * @param log - The log to process.
    */
-  async onEvent(event: Event): Promise<void> {
+  async onEvent(_event: Event): Promise<void> {
     // this.log(event)
   }
 

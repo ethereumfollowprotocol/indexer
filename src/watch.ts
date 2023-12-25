@@ -66,7 +66,7 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     }
 
     asyncExitHook(
-      async signal => {
+      signal => {
         logger.log(`Exiting with signal ${signal}`)
         logger.log(`begin publisher shutdown`)
         for (const publisher of publishers) {
@@ -79,8 +79,8 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     )
 
     logger.log('Watching EFP contracts for events...')
-    while (true) {
-      logger.log('Waiting for events...')
+    for (;;) {
+      logger.info('Waiting for events...')
       await sleep(1_000)
     }
   } catch (error) {

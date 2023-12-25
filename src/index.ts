@@ -58,7 +58,7 @@ async function main() {
         logger.log(`dbmate up`, `🗄️`)
         await runDbmateCommand('status')
         break
-      } catch (error) {
+      } catch {
         // logger.warn(error)
         await sleep(1_000)
       }
