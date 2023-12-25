@@ -1,5 +1,5 @@
 import type { Abi } from 'viem'
-import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
+import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
 import { type Row, database } from '#/database'
 import { logger } from '#/logger'
 import { ListManagerChangeHandler } from '#/pubsub/handlers/list-manager-change'
@@ -65,25 +65,25 @@ export abstract class ContractEventSubscriber implements EventSubscriber {
 
 export class EFPAccountMetadataSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
-    super('EFPAccountMetadata', EFPAccountMetadataABI, address)
+    super('EFPAccountMetadata', efpAccountMetadataAbi, address)
   }
 }
 
 export class EFPListRegistrySubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
-    super('EFPListRegistry', EFPListRegistryABI, address)
+    super('EFPListRegistry', efpListRegistryAbi, address)
   }
 }
 
 export class EFPListRecordsSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
-    super('EFPListRecords', EFPListRecordsABI, address)
+    super('EFPListRecords', efpListRecordsAbi, address)
   }
 }
 
 export class EFPListMinterSubscriber extends ContractEventSubscriber {
   constructor(address: `0x${string}`) {
-    super('EFPListMinter', EFPListMinterABI, address)
+    super('EFPListMinter', efpListMinterAbi, address)
   }
 }
 

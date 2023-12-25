@@ -1,5 +1,5 @@
 import type { Abi, Log } from 'viem'
-import { EFPAccountMetadataABI, EFPListMinterABI, EFPListRecordsABI, EFPListRegistryABI } from '#/abi'
+import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
 import { ContractEventSubscriber, type EventSubscriber } from '#/pubsub/subscribers'
@@ -127,24 +127,24 @@ export class ContractEventPublisher implements EventPublisher {
 
 export class EFPAccountMetadataPublisher extends ContractEventPublisher {
   constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
-    super(client, chainId, 'EFPAccountMetadata', EFPAccountMetadataABI, address)
+    super(client, chainId, 'EFPAccountMetadata', efpAccountMetadataAbi, address)
   }
 }
 
 export class EFPListRegistryPublisher extends ContractEventPublisher {
   constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
-    super(client, chainId, 'EFPListRegistry', EFPListRegistryABI, address)
+    super(client, chainId, 'EFPListRegistry', efpListRegistryAbi, address)
   }
 }
 
 export class EFPListRecordsPublisher extends ContractEventPublisher {
   constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
-    super(client, chainId, 'EFPListRecords', EFPListRecordsABI, address)
+    super(client, chainId, 'EFPListRecords', efpListRecordsAbi, address)
   }
 }
 
 export class EFPListMinterPublisher extends ContractEventPublisher {
   constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
-    super(client, chainId, 'EFPListMinter', EFPListMinterABI, address)
+    super(client, chainId, 'EFPListMinter', efpListMinterAbi, address)
   }
 }

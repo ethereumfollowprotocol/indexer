@@ -1,1 +1,1 @@
-export * from '#/abi/generated'
+export * from './generated'
