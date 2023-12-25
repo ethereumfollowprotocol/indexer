@@ -1,12 +1,15 @@
 -- migrate:up
 
+-------------------------------------------------------------------------------
 -- Function: get_followers
--- Description: Retrieves a list of followers based on the provided address.
+-- Description: Retrieves a list of followers for a specified address from the
+--              list_record_tags_extended_view. It filters tokens by version and
+--              type, excluding blocked or muted relationships.
 -- Parameters:
---   - address (text): The address to filter the followers.
--- Returns:
---   - A table containing chain_id, contract_address, nonce, token_id, and list_user.
-
+--   - address (text): Address used to identify and filter followers.
+-- Returns: A table with 'token_id' (bigint) and 'list_user' (varchar(255)),
+--          representing the relationship identifier and the follower's name.
+-------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_followers(address text)
 RETURNS TABLE(token_id bigint, list_user character varying(255))
 LANGUAGE plpgsql
@@ -18,10 +21,6 @@ BEGIN
         lrtev.token_id,
         -- the list user of the EFP List that follows the <address>
         lrtev.list_user
-        -- where the list is stored
-        -- lrtev.list_storage_location_chain_id,
-        -- lrtev.list_storage_location_contract_address,
-        -- lrtev.list_storage_location_nonce
     FROM
         list_record_tags_extended_view AS lrtev
     WHERE
@@ -33,10 +32,43 @@ BEGIN
         lrtev.has_block_tag = FALSE AND
         -- NOT muted
         lrtev.has_mute_tag = FALSE AND
-        -- who follow the address (the "data" of the address record is the address that is followed)
+        -- who follow the address
+        -- (the "data" of the address record is the address that is followed)
         lrtev.data = address
     ORDER BY
         lrtev.token_id ASC;
+END;
+$$;
+
+
+-------------------------------------------------------------------------------
+-- Function: get_unique_followers
+-- Description: Retrieves a distinct list of followers for a specified address,
+--              de-duplicating by 'list_user'. This ensures each follower is
+--              listed once, even if associated with multiple tokens.
+-- Parameters:
+--   - address (text): Address used to identify and filter followers.
+-- Returns: A table with 'list_user' (varchar(255)), representing unique names
+--          or identifiers of the followers.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.get_unique_followers(address text)
+RETURNS TABLE(list_user character varying(255))
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT DISTINCT
+        lrtev.list_user
+    FROM
+        list_record_tags_extended_view AS lrtev
+    WHERE
+        lrtev.version = 1 AND
+        lrtev.type = 1 AND
+        lrtev.has_block_tag = FALSE AND
+        lrtev.has_mute_tag = FALSE AND
+        lrtev.data = address
+    ORDER BY
+        lrtev.list_user ASC;
 END;
 $$;
 
