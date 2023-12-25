@@ -68,8 +68,9 @@ $$ LANGUAGE plpgsql;
 --          relationship identifier. Returns empty table if no primary list is
 --          found.
 -------------------------------------------------------------------------------
+DROP FUNCTION IF EXISTS public.get_following(character varying(42));
 CREATE OR REPLACE FUNCTION public.get_following(address character varying(42))
-RETURNS TABLE(token_id bigint, followed_address character varying(255))
+RETURNS TABLE(token_id bigint, version smallint, record_type smallint, data character varying(42))
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -97,7 +98,9 @@ BEGIN
     WITH primary_list AS (
         SELECT
             lrtev.token_id,
-            lrtev.data AS followed_address
+            lrtev.version,
+            lrtev.record_type,
+            lrtev.data
         FROM
             list_record_tags_extended_view AS lrtev
         WHERE
@@ -112,7 +115,9 @@ BEGIN
     SELECT * FROM primary_list
     ORDER BY
         token_id ASC,
-        followed_address ASC;
+        version ASC,
+        record_type ASC,
+        data ASC;
 END;
 $$;
 
