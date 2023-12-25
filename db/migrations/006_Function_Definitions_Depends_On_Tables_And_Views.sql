@@ -8,34 +8,35 @@
 --   - A table containing chain_id, contract_address, nonce, token_id, and list_user.
 
 CREATE OR REPLACE FUNCTION public.get_followers(address text)
-RETURNS TABLE(chain_id bigint, contract_address character varying(42), nonce bigint, token_id bigint, list_user character varying(255))
+RETURNS TABLE(token_id bigint, list_user character varying(255))
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Return query that fetches followers
     RETURN QUERY
     SELECT
-        lr.chain_id,
-        lr.contract_address,
-        lr.nonce,
-        nft.token_id,
-        nft.list_user
+        -- the token id that follows the <address>
+        lrtev.token_id,
+        -- the list user of the EFP List that follows the <address>
+        lrtev.list_user
+        -- where the list is stored
+        -- lrtev.list_storage_location_chain_id,
+        -- lrtev.list_storage_location_contract_address,
+        -- lrtev.list_storage_location_nonce
     FROM
-        list_records AS lr
-    INNER JOIN
-        list_nfts_view AS nft
-    ON
-        -- Joining conditions
-        lr.chain_id = nft.list_storage_location_chain_id AND
-        lr.contract_address = nft.list_storage_location_contract_address AND
-        lr.nonce = nft.list_storage_location_nonce
+        list_record_tags_extended_view AS lrtev
     WHERE
-        -- Filtering conditions
-        lr.version = 1 AND
-        lr.type = 1 AND
-        lr.data = address
+        -- only version 1
+        lrtev.version = 1 AND
+        -- only type 1 ("address record")
+        lrtev.type = 1 AND
+        -- NOT blocked
+        lrtev.has_block_tag = FALSE AND
+        -- NOT muted
+        lrtev.has_mute_tag = FALSE AND
+        -- who follow the address (the "data" of the address record is the address that is followed)
+        lrtev.data = address
     ORDER BY
-        nft.token_id ASC;
+        lrtev.token_id ASC;
 END;
 $$;
 
