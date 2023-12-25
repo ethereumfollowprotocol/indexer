@@ -72,4 +72,44 @@ BEGIN
 END;
 $$;
 
+
+
+-------------------------------------------------------------------------------
+-- Function: count_unique_followers_by_address
+-- Description: Counts the unique followers for each address in the
+--              list_record_tags_extended_view, groups the results by address,
+--              and orders them by the number of unique followers in descending
+--              order. Includes a LIMIT parameter to control the number of
+--              returned rows. The function filters by version and type,
+--              excluding blocked or muted relationships.
+-- Parameters:
+--   - limit_count (bigint): The maximum number of rows to return.
+-- Returns: A table with 'address' (text) and 'follower_count' (bigint),
+--          representing each address and its count of unique followers.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.count_unique_followers_by_address(limit_count bigint)
+RETURNS TABLE(address character varying(255), followers_count bigint)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        lrtev.data AS address,
+        COUNT(DISTINCT lrtev.list_user) AS followers_count
+    FROM
+        list_record_tags_extended_view AS lrtev
+    WHERE
+        lrtev.version = 1 AND
+        lrtev.type = 1 AND
+        lrtev.has_block_tag = FALSE AND
+        lrtev.has_mute_tag = FALSE
+    GROUP BY
+        lrtev.data
+    ORDER BY
+        followers_count DESC,
+        lrtev.data ASC
+    LIMIT limit_count;
+END;
+$$;
+
 -- migrate:down
