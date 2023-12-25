@@ -123,7 +123,7 @@ BEGIN
 
     RETURN result;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 
 -------------------------------------------------------------------------------
@@ -139,6 +139,38 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION public.is_valid_address(address text) RETURNS boolean AS $$
 BEGIN
     RETURN address ~ '^0x[a-f0-9]{40}$';
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+
+-------------------------------------------------------------------------------
+-- Function: is_hexstring
+-- Description: Validates that the given string is a valid hexadecimal string.
+--              The string must start with '0x' and contain an even number of
+--              hexadecimal characters.
+--              The function uses a regular expression to validate the format.
+-- Parameters:
+--   - hexstring (text): The hexadecimal string to be validated.
+-- Returns: TRUE if the string is valid, FALSE otherwise.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.is_hexstring(hexstring text) RETURNS boolean AS $$
+BEGIN
+    RETURN hexstring ~ '^0x([a-f0-9]{2})+$';
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+
+
+-------------------------------------------------------------------------------
+-- Function: is_uint8
+-- Description: Validates that the given smallint is [0, 255].
+-- Parameters:
+--   - value (smallint): The value to be validated.
+-- Returns: TRUE if the value is between 0 and 255, FALSE otherwise.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.is_uint8(value smallint) RETURNS boolean AS $$
+BEGIN
+    RETURN value >= 0 AND value <= 255;
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 

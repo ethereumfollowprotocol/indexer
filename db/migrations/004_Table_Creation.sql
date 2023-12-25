@@ -82,6 +82,7 @@ CREATE TABLE public.list_nfts (
   CHECK (public.is_valid_address(list_manager)),
   -- list_user character varying(42),
   list_storage_location character varying(255),
+  CHECK (public.is_hexstring(list_storage_location)),
   list_storage_location_chain_id BIGINT,
   list_storage_location_contract_address character varying(42),
   CHECK (
@@ -134,17 +135,13 @@ CREATE TABLE public.list_ops (
   CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
   op character varying(255) NOT NULL,
+  CHECK (public.is_hexstring(op)),
   version smallint NOT NULL,
-  CHECK (
-    version >= 0
-    AND version <= 255
-  ),
+  CHECK (public.is_uint8(version)),
   opcode smallint NOT NULL,
-  CHECK (
-    opcode >= 0
-    AND opcode <= 255
-  ),
+  CHECK (public.is_uint8(opcode)),
   data character varying(255) NOT NULL,
+  CHECK (public.is_hexstring(data)),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -168,17 +165,13 @@ CREATE TABLE public.list_records (
   CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
   record character varying(255) NOT NULL,
+  CHECK (public.is_hexstring(record)),
   version smallint NOT NULL,
-  CHECK (
-    version >= 0
-    AND version <= 255
-  ),
+  CHECK (public.is_uint8(version)),
   record_type smallint NOT NULL,
-  CHECK (
-    record_type >= 0
-    AND record_type <= 255
-  ),
+  CHECK (public.is_uint8(record_type)),
   data character varying(255) NOT NULL,
+  CHECK (public.is_hexstring(data)),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -202,6 +195,7 @@ CREATE TABLE public.list_record_tags (
   CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
   record character varying(255) NOT NULL,
+  CHECK (public.is_hexstring(record)),
   tag character varying(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
