@@ -18,7 +18,7 @@ SELECT
   records.nonce,
   records.record,
   records.version,
-  records.type,
+  records.record_type,
   records.data,
   array_agg(tags.tag) AS tags
 FROM
@@ -33,7 +33,7 @@ GROUP BY
   records.nonce,
   records.record,
   records.version,
-  records.type,
+  records.record_type,
   records.data;
 
 CREATE VIEW public.list_record_tags_extended_view AS
@@ -45,7 +45,7 @@ SELECT
   nft.list_storage_location_nonce,
   v.record,
   v.version,
-  v.type,
+  v.record_type,
   v.data,
   v.tags,
   CASE

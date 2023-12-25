@@ -60,8 +60,8 @@ BEGIN
     WHERE
         -- only version 1
         lrtev.version = 1 AND
-        -- address record type
-        lrtev.type = 1 AND
+        -- address record type (1)
+        lrtev.record_type = 1 AND
         -- NOT blocked
         lrtev.has_block_tag = FALSE AND
         -- NOT muted
@@ -104,8 +104,8 @@ BEGIN
     WHERE
         -- only version 1
         lrtev.version = 1 AND
-        -- address record type
-        lrtev.type = 1 AND
+        -- address record type (1)
+        lrtev.record_type = 1 AND
         -- NOT blocked
         lrtev.has_block_tag = FALSE AND
         -- NOT muted

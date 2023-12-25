@@ -24,10 +24,10 @@ BEGIN
     FROM
         list_record_tags_extended_view AS lrtev
     WHERE
-        -- only version 1
+        -- only list record version 1
         lrtev.version = 1 AND
-        -- only type 1 ("address record")
-        lrtev.type = 1 AND
+        -- address record type (1)
+        lrtev.record_type = 1 AND
         -- valid address format
         lrtev.data ~ '^0x[a-f0-9]{40}$' AND
         -- NOT blocked
@@ -64,10 +64,10 @@ BEGIN
     FROM
         list_record_tags_extended_view AS lrtev
     WHERE
-        -- only version 1
+        -- only list record version 1
         lrtev.version = 1 AND
-        -- address record type
-        lrtev.type = 1 AND
+        -- address record type (1)
+        lrtev.record_type = 1 AND
         -- valid address format
         lrtev.data ~ '^0x[a-f0-9]{40}$' AND
         -- NOT blocked
@@ -108,10 +108,10 @@ BEGIN
     FROM
         list_record_tags_extended_view AS lrtev
     WHERE
-        -- only version 1
+        -- only list record version 1
         lrtev.version = 1 AND
-        -- address record type
-        lrtev.type = 1 AND
+        -- address record type (1)
+        lrtev.record_type = 1 AND
         -- valid address format
         lrtev.data ~ '^0x[a-f0-9]{40}$' AND
         -- NOT blocked

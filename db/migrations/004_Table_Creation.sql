@@ -4,7 +4,7 @@ SET
   default_tablespace = '';
 
 SET
-  default_table_access_method = heap;
+  default_table_access_method = HEAP;
 
 -------------------------------------------------------------------------------
 -- Table: contracts
@@ -12,8 +12,10 @@ SET
 CREATE TABLE public.contracts (
   chain_id bigint NOT NULL,
   address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(address)),
   name character varying(255) NOT NULL,
   owner character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(owner)),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (chain_id, address)
@@ -31,6 +33,7 @@ CREATE TABLE public.events (
   transaction_hash character varying(66) NOT NULL,
   block_number bigint NOT NULL,
   contract_address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(contract_address)),
   event_name character varying(255) NOT NULL,
   event_parameters jsonb NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -47,8 +50,10 @@ UPDATE
 CREATE TABLE public.account_metadata (
   chain_id bigint NOT NULL,
   contract_address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(contract_address)),
   address character varying(42) NOT NULL,
-  key character varying(255) NOT NULL,
+  CHECK (public.is_valid_address(address)),
+  "key" character varying(255) NOT NULL,
   value character varying(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +61,7 @@ CREATE TABLE public.account_metadata (
     chain_id,
     contract_address,
     address,
-    key
+    "key"
   )
 );
 
@@ -69,14 +74,19 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_nfts (
   chain_id bigint NOT NULL,
-  contract_address character varying(42) NOT NULL,
+  contract_address character varying(42) NOT NULL CHECK (public.is_valid_address(contract_address)),
   token_id bigint NOT NULL,
   owner character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(owner)),
   list_manager character varying(42),
+  CHECK (public.is_valid_address(list_manager)),
   -- list_user character varying(42),
   list_storage_location character varying(255),
   list_storage_location_chain_id BIGINT,
   list_storage_location_contract_address character varying(42),
+  CHECK (
+    public.is_valid_address(list_storage_location_contract_address)
+  ),
   list_storage_location_nonce bigint,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -97,8 +107,9 @@ UPDATE
 CREATE TABLE public.list_metadata (
   chain_id bigint NOT NULL,
   contract_address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
-  key character varying(255) NOT NULL,
+  "key" character varying(255) NOT NULL,
   value character varying(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -106,7 +117,7 @@ CREATE TABLE public.list_metadata (
     chain_id,
     contract_address,
     nonce,
-    key
+    "key"
   )
 );
 
@@ -120,6 +131,7 @@ UPDATE
 CREATE TABLE public.list_ops (
   chain_id bigint NOT NULL,
   contract_address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
   op character varying(255) NOT NULL,
   version smallint NOT NULL,
@@ -127,10 +139,10 @@ CREATE TABLE public.list_ops (
     version >= 0
     AND version <= 255
   ),
-  code smallint NOT NULL,
+  opcode smallint NOT NULL,
   CHECK (
-    code >= 0
-    AND code <= 255
+    opcode >= 0
+    AND opcode <= 255
   ),
   data character varying(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -153,6 +165,7 @@ UPDATE
 CREATE TABLE public.list_records (
   chain_id bigint NOT NULL,
   contract_address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
   record character varying(255) NOT NULL,
   version smallint NOT NULL,
@@ -160,10 +173,10 @@ CREATE TABLE public.list_records (
     version >= 0
     AND version <= 255
   ),
-  type smallint NOT NULL,
+  record_type smallint NOT NULL,
   CHECK (
-    type >= 0
-    AND type <= 255
+    record_type >= 0
+    AND record_type <= 255
   ),
   data character varying(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -186,6 +199,7 @@ UPDATE
 CREATE TABLE public.list_record_tags (
   chain_id bigint NOT NULL,
   contract_address character varying(42) NOT NULL,
+  CHECK (public.is_valid_address(contract_address)),
   nonce bigint NOT NULL,
   record character varying(255) NOT NULL,
   tag character varying(255) NOT NULL,

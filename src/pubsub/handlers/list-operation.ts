@@ -27,7 +27,7 @@ export class ListOperationHandler {
       nonce: nonce,
       op: op,
       version: opVersion,
-      code: opCode,
+      opcode: opCode,
       data: opDataHexstring
     }
     logger.log(`\x1b[96m(ListOperation) Insert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
@@ -55,7 +55,7 @@ export class ListOperationHandler {
         nonce: nonce,
         record: listRecordHexstring,
         version: listRecord.version,
-        type: listRecord.recordType,
+        record_type: listRecord.recordType,
         data: listRecordDataHexstring
       }
       // green log

@@ -125,4 +125,21 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+-------------------------------------------------------------------------------
+-- Function: is_valid_address
+-- Description: Validates that the given string is a valid Ethereum address.
+--              The address must start with '0x' and contain 40 lowercase
+--              hexadecimal characters.
+--              The function uses a regular expression to validate the format.
+-- Parameters:
+--   - address (text): The address to be validated.
+-- Returns: TRUE if the address is valid, FALSE otherwise.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.is_valid_address(address text) RETURNS boolean AS $$
+BEGIN
+    RETURN address ~ '^0x[a-f0-9]{40}$';
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
 -- migrate:down
