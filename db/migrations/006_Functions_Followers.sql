@@ -11,10 +11,20 @@
 --          representing the relationship identifier and the follower's name.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_followers(address character varying(42))
-RETURNS TABLE(token_id bigint, list_user character varying(255))
+RETURNS TABLE(token_id bigint, list_user character varying(42))
 LANGUAGE plpgsql
 AS $$
+DECLARE
+    normalized_addr character varying(42);
 BEGIN
+    -- Normalize the input address to lowercase
+    normalized_addr := LOWER(address);
+
+    -- Validate the input address format
+    IF NOT (public.is_valid_address(normalized_addr)) THEN
+        RAISE EXCEPTION 'Invalid address format';
+    END IF;
+
     RETURN QUERY
     SELECT
         -- the token id that follows the <address>
@@ -29,14 +39,14 @@ BEGIN
         -- address record type (1)
         lrtev.record_type = 1 AND
         -- valid address format
-        lrtev.data ~ '^0x[a-f0-9]{40}$' AND
+        public.is_valid_address(lrtev.data) AND
         -- NOT blocked
         lrtev.has_block_tag = FALSE AND
         -- NOT muted
         lrtev.has_mute_tag = FALSE AND
         -- who follow the address
         -- (the "data" of the address record is the address that is followed)
-        lrtev.data = LOWER(address)
+        lrtev.data = normalized_addr
     ORDER BY
         lrtev.token_id ASC;
 END;
@@ -54,10 +64,20 @@ $$;
 --          or identifiers of the followers.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_unique_followers(address character varying(42))
-RETURNS TABLE(list_user character varying(255))
+RETURNS TABLE(list_user character varying(42))
 LANGUAGE plpgsql
 AS $$
+DECLARE
+    normalized_addr character varying(42);
 BEGIN
+    -- Normalize the input address to lowercase
+    normalized_addr := LOWER(address);
+
+    -- Validate the input address format
+    IF NOT (public.is_valid_address(normalized_addr)) THEN
+        RAISE EXCEPTION 'Invalid address format';
+    END IF;
+
     RETURN QUERY
     SELECT DISTINCT
         lrtev.list_user
@@ -69,13 +89,13 @@ BEGIN
         -- address record type (1)
         lrtev.record_type = 1 AND
         -- valid address format
-        lrtev.data ~ '^0x[a-f0-9]{40}$' AND
+        public.is_valid_address(lrtev.data) AND
         -- NOT blocked
         lrtev.has_block_tag = FALSE AND
         -- NOT muted
         lrtev.has_mute_tag = FALSE AND
         -- match the address parameter
-        lrtev.data = LOWER(address)
+        lrtev.data = normalized_addr
     ORDER BY
         lrtev.list_user ASC;
 END;
@@ -97,7 +117,7 @@ $$;
 --          representing each address and its count of unique followers.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.count_unique_followers_by_address(limit_count bigint)
-RETURNS TABLE(address character varying(255), followers_count bigint)
+RETURNS TABLE(address character varying(42), followers_count bigint)
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -113,7 +133,7 @@ BEGIN
         -- address record type (1)
         lrtev.record_type = 1 AND
         -- valid address format
-        lrtev.data ~ '^0x[a-f0-9]{40}$' AND
+        public.is_valid_address(lrtev.data) AND
         -- NOT blocked
         lrtev.has_block_tag = FALSE AND
         -- NOT muted

@@ -2,12 +2,17 @@
 
 -- Function Definitions
 
--- generate_ulid(): Generates a ULID (Universally Unique Lexicographically Sortable Identifier)
-
-
-CREATE OR REPLACE FUNCTION public.generate_ulid() RETURNS text
-    LANGUAGE plpgsql
-    AS $$
+-------------------------------------------------------------------------------
+-- Function: generate_ulid
+-- Description: Generates a ULID (Universally Unique Lexicographically Sortable
+--              Identifier).
+-- Parameters: None
+-- Returns: A ULID as a text string.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.generate_ulid()
+RETURNS text
+LANGUAGE plpgsql VOLATILE
+AS $$
 DECLARE
   -- Crockford's Base32
   encoding   BYTEA = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
@@ -64,23 +69,40 @@ END
 $$;
 
 
--- health(): Returns 'ok' if the database is healthy
 
-CREATE OR REPLACE FUNCTION public.health() RETURNS text
-    LANGUAGE plpgsql STABLE
-    AS $$
+-------------------------------------------------------------------------------
+-- Function: health
+-- Description: Returns 'ok' if the database is healthy
+-- Parameters: None
+-- Returns: 'ok'
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.health()
+RETURNS text
+LANGUAGE plpgsql IMMUTABLE
+AS $$
 BEGIN
    RETURN 'ok';
 END;
 $$;
 
+
+
+-------------------------------------------------------------------------------
+-- Function: update_updated_at_column
+-- Description: Updates the 'updated_at' column of a table to the current
+--              timestamp.
+-- Parameters: None
+-- Returns: The updated row.
+-------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql VOLATILE
+AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 
 
@@ -96,7 +118,9 @@ $$ LANGUAGE plpgsql;
 --          input is invalid or the result exceeds MAX_SAFE_INTEGER.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.convert_hex_to_bigint(hexstring text)
-RETURNS bigint AS $$
+RETURNS bigint
+LANGUAGE plpgsql IMMUTABLE
+AS $$
 DECLARE
     trimmed_hex text;
     result bigint := 0;
@@ -123,7 +147,7 @@ BEGIN
 
     RETURN result;
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$;
 
 
 -------------------------------------------------------------------------------
@@ -136,11 +160,14 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 --   - address (text): The address to be validated.
 -- Returns: TRUE if the address is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_valid_address(address text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION public.is_valid_address(address text)
+RETURNS boolean
+LANGUAGE plpgsql IMMUTABLE
+AS $$
 BEGIN
     RETURN address ~ '^0x[a-f0-9]{40}$';
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$;
 
 
 -------------------------------------------------------------------------------
@@ -153,11 +180,14 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 --   - hexstring (text): The hexadecimal string to be validated.
 -- Returns: TRUE if the string is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_hexstring(hexstring text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION public.is_hexstring(hexstring text)
+RETURNS boolean
+LANGUAGE plpgsql IMMUTABLE
+AS $$
 BEGIN
     RETURN hexstring ~ '^0x([a-f0-9]{2})+$';
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$;
 
 
 
@@ -168,10 +198,13 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 --   - value (smallint): The value to be validated.
 -- Returns: TRUE if the value is between 0 and 255, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_uint8(value smallint) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION public.is_uint8(value smallint)
+RETURNS boolean
+LANGUAGE plpgsql IMMUTABLE
+AS $$
 BEGIN
     RETURN value >= 0 AND value <= 255;
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$;
 
 -- migrate:down

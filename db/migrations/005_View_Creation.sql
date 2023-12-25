@@ -9,7 +9,8 @@ FROM
   LEFT JOIN public.list_metadata AS lm ON lm.chain_id = nfts.list_storage_location_chain_id
   AND lm.contract_address = nfts.list_storage_location_contract_address
   AND lm.nonce = nfts.list_storage_location_nonce
-  AND lm.key = 'user';
+  AND lm.key = 'user'
+  AND public.is_valid_address(lm.value);
 
 CREATE VIEW public.list_record_tags_view AS
 SELECT
