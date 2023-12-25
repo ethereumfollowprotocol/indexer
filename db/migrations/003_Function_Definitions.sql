@@ -150,24 +150,23 @@ END;
 $$;
 
 
+
 -------------------------------------------------------------------------------
--- Function: is_valid_address
--- Description: Validates that the given string is a valid Ethereum address.
---              The address must start with '0x' and contain 40 lowercase
---              hexadecimal characters.
---              The function uses a regular expression to validate the format.
+-- Function: is_uint8
+-- Description: Validates that the given smallint is [0, 255].
 -- Parameters:
---   - address (text): The address to be validated.
--- Returns: TRUE if the address is valid, FALSE otherwise.
+--   - value (smallint): The value to be validated.
+-- Returns: TRUE if the value is between 0 and 255, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_valid_address(address text)
+CREATE OR REPLACE FUNCTION public.is_uint8(value smallint)
 RETURNS boolean
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 BEGIN
-    RETURN address ~ '^0x[a-f0-9]{40}$';
+    RETURN value >= 0 AND value <= 255;
 END;
 $$;
+
 
 
 -------------------------------------------------------------------------------
@@ -192,19 +191,106 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: is_uint8
--- Description: Validates that the given smallint is [0, 255].
+-- Function: is_valid_address
+-- Description: Validates that the given string is a valid Ethereum address.
+--              The address must start with '0x' and contain 40 lowercase
+--              hexadecimal characters.
+--              The function uses a regular expression to validate the format.
 -- Parameters:
---   - value (smallint): The value to be validated.
--- Returns: TRUE if the value is between 0 and 255, FALSE otherwise.
+--   - address (text): The address to be validated.
+-- Returns: TRUE if the address is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_uint8(value smallint)
+CREATE OR REPLACE FUNCTION public.is_valid_address(address text)
 RETURNS boolean
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 BEGIN
-    RETURN value >= 0 AND value <= 255;
+    RETURN address ~ '^0x[a-f0-9]{40}$';
 END;
 $$;
+
+
+
+-------------------------------------------------------------------------------
+-- Function: is_list_location_hexstring
+-- Description: Validates that the given string is a valid list location
+--              hexadecimal string. The string must start with '0x' and contain
+--              168 hexadecimal characters. The function uses a regular
+--              expression to validate the format.
+-- Parameters:
+--   - hexstring (text): The hexadecimal string to be validated.
+-- Returns: TRUE if the string is valid, FALSE otherwise.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.is_list_location_hexstring(hexstring text)
+RETURNS boolean
+LANGUAGE plpgsql IMMUTABLE
+AS $$
+BEGIN
+    RETURN hexstring ~ '^0x[a-f0-9]{172}$';
+END;
+$$;
+
+
+
+-------------------------------------------------------------------------------
+-- Function: decode_list_storage_location
+-- Description: Decodes a list storage location string into its components.
+--              The list storage location string is composed of:
+--              - version (1 byte)
+--              - locationType (1 byte)
+--              - chainId (32 bytes)
+--              - contractAddress (20 bytes)
+--              - nonce (32 bytes)
+--              The function validates the length of the input string and
+--              extracts the components.
+-- Parameters:
+--   - list_storage_location (text): The list storage location string to be
+--                                   decoded.
+-- Returns: A table with 'version' (smallint), 'location_type' (smallint),
+--          'chain_id' (bigint), 'contract_address' (varchar(42)), and 'nonce'
+--          (varchar(42)).
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.decode_list_storage_location(list_storage_location character varying(174))
+RETURNS TABLE(version smallint, location_type smallint, chain_id bigint, contract_address character varying(42), nonce bigint)
+LANGUAGE plpgsql IMMUTABLE
+AS $$
+DECLARE
+    hex_data bytea;
+    hex_chain_id character varying(66);
+    temp_nonce bytea;
+BEGIN
+    -- Check if the length is valid
+    IF NOT public.is_list_location_hexstring(list_storage_location) THEN
+        RAISE EXCEPTION 'Invalid list location';
+    END IF;
+
+    -- Convert the hex string (excluding '0x') to bytea
+    hex_data := DECODE(SUBSTRING(list_storage_location FROM 3), 'hex');
+
+    -- Extract version and locationType
+    version := GET_BYTE(hex_data, 0);
+    location_type := GET_BYTE(hex_data, 1);
+
+    -- Validate version and locationType
+    IF version != 1 OR location_type != 1 THEN
+        RAISE EXCEPTION 'Invalid version or location type';
+    END IF;
+
+    -- Extract chainId (32 bytes) as hex string and convert to bigint
+    hex_chain_id := '0x' || ENCODE(SUBSTRING(hex_data FROM 3 FOR 32), 'hex');
+    chain_id := public.convert_hex_to_bigint(hex_chain_id);
+
+    -- Extract contractAddress (20 bytes to text)
+    contract_address := '0x' || ENCODE(SUBSTRING(hex_data FROM 35 FOR 20), 'hex');
+
+    -- Extract nonce (32 bytes to text)
+    temp_nonce := SUBSTRING(hex_data FROM 55 FOR 32);
+    nonce := public.convert_hex_to_bigint('0x' || ENCODE(temp_nonce, 'hex'));
+
+    RETURN NEXT;
+END;
+$$;
+
+
 
 -- migrate:down
