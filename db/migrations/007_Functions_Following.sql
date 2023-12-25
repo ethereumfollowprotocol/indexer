@@ -5,28 +5,42 @@
 -------------------------------------------------------------------------------
 -- Function: get_primary_list
 -- Description: Retrieves the primary list value for a given address from the
---              account_metadata table and converts it to a bigint. Utilizes
---              convert_hex_to_bigint to perform the conversion. The function
---              expects the primary list value to be a valid 66-character
---              hexadecimal string.
+--              account_metadata table. If not found, falls back to finding the
+--              lowest token_id from list_nfts_view where list_user equals the
+--              address. Converts valid hex string values to bigint.
 -- Parameters:
 --   - addr (character varying(42)): The address for which to retrieve the
 --          primary list value.
 -- Returns: The bigint representation of the primary list value for the given
---          address, or NULL if the value is invalid or not found.
+--          address, or the lowest token_id from list_nfts_view, or NULL if
+--          neither is found or if the values are invalid.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_primary_list(addr character varying(42))
+CREATE OR REPLACE FUNCTION public.get_primary_list(address character varying(42))
 RETURNS bigint AS $$
 DECLARE
     primary_list text;
+    normalized_addr character varying(42);
+    lowest_token_id bigint;
 BEGIN
+    -- Normalize the input address to lowercase
+    normalized_addr := LOWER(addr);
+
     -- Retrieve the primary list value from account_metadata
     SELECT am.value INTO primary_list
     FROM account_metadata AS am
-    WHERE am.address = addr AND am.key = 'efp.list.primary';
+    WHERE am.address = normalized_addr AND am.key = 'efp.list.primary';
 
-    -- Return the decoded primary list
-    RETURN public.convert_hex_to_bigint(primary_list);
+    -- Check if a primary list value was found and is valid
+    IF primary_list IS NOT NULL THEN
+        RETURN public.convert_hex_to_bigint(primary_list);
+    END IF;
+
+    -- Fallback: Retrieve the lowest token_id from list_nfts_view
+    SELECT MIN(token_id) INTO lowest_token_id
+    FROM list_nfts_view
+    WHERE list_user = normalized_addr;
+
+    RETURN lowest_token_id;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -67,7 +81,7 @@ BEGIN
         -- NOT muted
         lrtev.has_mute_tag = FALSE AND
         -- user who is following
-        lrtev.list_user = address AND
+        lrtev.list_user = LOWER(address) AND
         -- valid address format
         lrtev.data ~ '^0x[a-f0-9]{40}$'
     ORDER BY

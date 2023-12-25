@@ -36,7 +36,7 @@ BEGIN
         lrtev.has_mute_tag = FALSE AND
         -- who follow the address
         -- (the "data" of the address record is the address that is followed)
-        lrtev.data = address
+        lrtev.data = LOWER(address)
     ORDER BY
         lrtev.token_id ASC;
 END;
@@ -75,7 +75,7 @@ BEGIN
         -- NOT muted
         lrtev.has_mute_tag = FALSE AND
         -- match the address parameter
-        lrtev.data = address
+        lrtev.data = LOWER(address)
     ORDER BY
         lrtev.list_user ASC;
 END;
