@@ -70,7 +70,7 @@ $$ LANGUAGE plpgsql;
 -------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS public.get_following(character varying(42));
 CREATE OR REPLACE FUNCTION public.get_following(address character varying(42))
-RETURNS TABLE(token_id bigint, version smallint, record_type smallint, data character varying(42))
+RETURNS TABLE(token_id bigint, version smallint, record_type smallint, data character varying(42), tags character varying(255)[])
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -100,7 +100,8 @@ BEGIN
             lrtev.token_id,
             lrtev.version,
             lrtev.record_type,
-            lrtev.data
+            lrtev.data,
+            lrtev.tags
         FROM
             list_record_tags_extended_view AS lrtev
         WHERE
