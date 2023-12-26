@@ -16,7 +16,7 @@
 --          address, or the lowest token_id from with list_user equals the
 --          address. Returns NULL if no primary list value is found.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_primary_list(
+CREATE OR REPLACE FUNCTION query.get_primary_list(
   address types.eth_address
 )
 RETURNS BIGINT
@@ -31,7 +31,7 @@ BEGIN
 
     -- Retrieve the primary list value from account_metadata
     SELECT am.value INTO primary_list
-    FROM account_metadata AS am
+    FROM public.account_metadata AS am
     WHERE am.address = normalized_addr AND am.key = 'efp.list.primary';
 
     -- Check if a primary list value was found and is valid
@@ -67,7 +67,7 @@ $$ LANGUAGE plpgsql;
 --          relationship identifier. Returns empty table if no primary list is
 --          found.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_following(address types.eth_address)
+CREATE OR REPLACE FUNCTION query.get_following(address types.eth_address)
 RETURNS TABLE(
   token_id BIGINT,
   version types.uint8,
@@ -85,7 +85,7 @@ BEGIN
     normalized_addr := public.normalize_address(address);
 
     -- Get the primary list token id once
-    primary_list_token_id := public.get_primary_list(address);
+    primary_list_token_id := query.get_primary_list(address);
 
     -- If no primary list token id is found, return an empty result set
     IF primary_list_token_id IS NULL THEN
@@ -102,7 +102,7 @@ BEGIN
             v.data::types.eth_address,
             v.tags
         FROM
-            view_list_records_with_nft_manager_user_tags AS v
+            public.view_list_records_with_nft_manager_user_tags AS v
         WHERE
             -- only version 1
             v.version = 1 AND
@@ -144,7 +144,7 @@ $$;
 --          representing each user and their count of unique following
 --          addresses.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.count_unique_following_by_address(
+CREATE OR REPLACE FUNCTION query.count_unique_following_by_address(
   limit_count BIGINT
 )
 RETURNS TABLE(
@@ -159,7 +159,7 @@ BEGIN
         v.list_user AS address,
         COUNT(DISTINCT v.data) AS following_count
     FROM
-        view_list_records_with_nft_manager_user_tags AS v
+        public.view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only version 1
         v.version = 1 AND

@@ -19,7 +19,7 @@
 --          identifier, the user associated with the list, and the array of
 --          tags associated with each relationship.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_incoming_relationships(
+CREATE OR REPLACE FUNCTION query.get_incoming_relationships(
     address types.eth_address,
     tag VARCHAR(255)
 )
@@ -41,7 +41,7 @@ BEGIN
       v.token_id,
       v.list_user,
       v.tags
-    FROM view_list_records_with_nft_manager_user_tags AS v
+    FROM public.view_list_records_with_nft_manager_user_tags AS v
     WHERE
       -- only list record version 1
       v.version = 1 AND
@@ -75,7 +75,7 @@ $$;
 --          'tags' (VARCHAR(255)[]), representing the token
 --          identifier, the list record version, type, data, and tags.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_outgoing_relationships(
+CREATE OR REPLACE FUNCTION query.get_outgoing_relationships(
     address types.eth_address,
     tag VARCHAR(255)
 )
@@ -97,7 +97,7 @@ BEGIN
     normalized_addr := public.normalize_address(address);
 
     -- Get the primary list token id once
-    primary_list_token_id := public.get_primary_list(normalized_addr);
+    primary_list_token_id := query.get_primary_list(normalized_addr);
 
     -- If no primary list token id is found, return an empty result set
     IF primary_list_token_id IS NULL THEN
@@ -115,7 +115,7 @@ BEGIN
             v.data,
             v.tags
         FROM
-            view_list_records_with_nft_manager_user_tags AS v
+            public.view_list_records_with_nft_manager_user_tags AS v
         WHERE
             -- only list record version 1
             v.version = 1 AND

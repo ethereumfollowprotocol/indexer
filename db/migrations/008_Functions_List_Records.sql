@@ -13,7 +13,7 @@
 --          nonce (BIGINT), representing the list storage location chain ID,
 --          contract address, and nonce.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_list_storage_location(
+CREATE OR REPLACE FUNCTION query.get_list_storage_location(
   input_token_id BIGINT
 )
 RETURNS TABLE(
@@ -53,7 +53,7 @@ $$;
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_list_records(
+CREATE OR REPLACE FUNCTION query.get_list_records(
   token_id BIGINT
 )
 RETURNS TABLE(
@@ -66,8 +66,8 @@ AS $$
 BEGIN
   RETURN QUERY
   SELECT lr.version, lr.record_type, lr.data
-  FROM list_records AS lr
-  JOIN public.get_list_storage_location(token_id) AS lsl
+  FROM public.list_records AS lr
+  JOIN query.get_list_storage_location(token_id) AS lsl
   ON lr.chain_id = lsl.chain_id
     AND lr.contract_address = lsl.contract_address
     AND lr.nonce = lsl.nonce;
@@ -87,7 +87,7 @@ $$;
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_list_record_tags(
+CREATE OR REPLACE FUNCTION query.get_list_record_tags(
   token_id BIGINT
 )
 RETURNS TABLE(
@@ -105,8 +105,8 @@ BEGIN
       record_tags.record_type,
       record_tags.data,
       record_tags.tags
-    FROM view_list_records_with_tag_array AS record_tags
-    JOIN public.get_list_storage_location(token_id) AS list_storage_location
+    FROM public.view_list_records_with_tag_array AS record_tags
+    JOIN query.get_list_storage_location(token_id) AS list_storage_location
     ON record_tags.chain_id = list_storage_location.chain_id
       AND record_tags.contract_address = list_storage_location.contract_address
       AND record_tags.nonce = list_storage_location.nonce;

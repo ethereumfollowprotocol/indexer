@@ -4,6 +4,8 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
-CREATE SCHEMA TYPES;
+CREATE SCHEMA "types";
+
+CREATE SCHEMA "query";
 
 -- migrate:down

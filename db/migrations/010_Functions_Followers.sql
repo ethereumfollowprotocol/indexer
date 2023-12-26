@@ -10,7 +10,7 @@
 -- Returns: A table with 'token_id' (BIGINT) and 'list_user' (VARCHAR(255)),
 --          representing the relationship identifier and the follower's name.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_followers(
+CREATE OR REPLACE FUNCTION query.get_followers(
   address types.eth_address
 )
 RETURNS TABLE(
@@ -32,7 +32,7 @@ BEGIN
         -- the list user of the EFP List that follows the <address>
         v.list_user
     FROM
-        view_list_records_with_nft_manager_user_tags AS v
+        public.view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
         v.version = 1 AND
@@ -63,7 +63,7 @@ $$;
 -- Returns: A table with 'list_user' (VARCHAR(255)), representing unique names
 --          or identifiers of the followers.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_unique_followers(
+CREATE OR REPLACE FUNCTION query.get_unique_followers(
   address types.eth_address
 )
 RETURNS TABLE(
@@ -81,7 +81,7 @@ BEGIN
     SELECT DISTINCT
         v.list_user
     FROM
-        view_list_records_with_nft_manager_user_tags AS v
+        public.view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
         v.version = 1 AND
@@ -115,7 +115,7 @@ $$;
 -- Returns: A table with 'address' (text) and 'follower_count' (BIGINT),
 --          representing each address and its count of unique followers.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.count_unique_followers_by_address(
+CREATE OR REPLACE FUNCTION query.count_unique_followers_by_address(
   limit_count BIGINT
 )
 RETURNS TABLE(
@@ -130,7 +130,7 @@ BEGIN
         v.data::types.eth_address AS address,
         COUNT(DISTINCT v.list_user) AS followers_count
     FROM
-        view_list_records_with_nft_manager_user_tags AS v
+        public.view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
         v.version = 1 AND
