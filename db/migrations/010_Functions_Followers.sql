@@ -7,23 +7,23 @@
 --              type, excluding blocked or muted relationships.
 -- Parameters:
 --   - address (text): Address used to identify and filter followers.
--- Returns: A table with 'token_id' (bigint) and 'list_user' (varchar(255)),
+-- Returns: A table with 'token_id' (BIGINT) and 'list_user' (VARCHAR(255)),
 --          representing the relationship identifier and the follower's name.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_followers(address character varying(42))
-RETURNS TABLE(token_id bigint, list_user character varying(42))
+CREATE OR REPLACE FUNCTION public.get_followers(
+  address public.eth_address
+)
+RETURNS TABLE(
+  token_id BIGINT,
+  list_user public.eth_address
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr character varying(42);
+    normalized_addr public.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := LOWER(address);
-
-    -- Validate the input address format
-    IF NOT (public.is_valid_address(normalized_addr)) THEN
-        RAISE EXCEPTION 'Invalid address format';
-    END IF;
+    normalized_addr := public.normalize_address(address);
 
     RETURN QUERY
     SELECT
@@ -60,23 +60,22 @@ $$;
 --              listed once, even if associated with multiple tokens.
 -- Parameters:
 --   - address (text): Address used to identify and filter followers.
--- Returns: A table with 'list_user' (varchar(255)), representing unique names
+-- Returns: A table with 'list_user' (VARCHAR(255)), representing unique names
 --          or identifiers of the followers.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_unique_followers(address character varying(42))
-RETURNS TABLE(list_user character varying(42))
+CREATE OR REPLACE FUNCTION public.get_unique_followers(
+  address public.eth_address
+)
+RETURNS TABLE(
+  list_user public.eth_address
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr character varying(42);
+    normalized_addr public.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := LOWER(address);
-
-    -- Validate the input address format
-    IF NOT (public.is_valid_address(normalized_addr)) THEN
-        RAISE EXCEPTION 'Invalid address format';
-    END IF;
+    normalized_addr := public.normalize_address(address);
 
     RETURN QUERY
     SELECT DISTINCT
@@ -112,18 +111,23 @@ $$;
 --              returned rows. The function filters by version and type,
 --              excluding blocked or muted relationships.
 -- Parameters:
---   - limit_count (bigint): The maximum number of rows to return.
--- Returns: A table with 'address' (text) and 'follower_count' (bigint),
+--   - limit_count (BIGINT): The maximum number of rows to return.
+-- Returns: A table with 'address' (text) and 'follower_count' (BIGINT),
 --          representing each address and its count of unique followers.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.count_unique_followers_by_address(limit_count bigint)
-RETURNS TABLE(address character varying(42), followers_count bigint)
+CREATE OR REPLACE FUNCTION public.count_unique_followers_by_address(
+  limit_count BIGINT
+)
+RETURNS TABLE(
+  address public.eth_address,
+  followers_count BIGINT
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        v.data AS address,
+        v.data::public.eth_address AS address,
         COUNT(DISTINCT v.list_user) AS followers_count
     FROM
         view_list_records_with_nft_manager_user_tags AS v

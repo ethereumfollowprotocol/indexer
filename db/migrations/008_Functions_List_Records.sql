@@ -7,18 +7,24 @@
 -- Description: Retrieves the list storage location for a specified token_id
 --              from the list_nfts table.
 -- Parameters:
---   - input_token_id (bigint): The token_id for which to retrieve the list
+--   - input_token_id (BIGINT): The token_id for which to retrieve the list
 --                              storage location.
--- Returns: A table with chain_id (bigint), contract_address (varchar(42)), and
---          nonce (bigint), representing the list storage location chain ID,
+-- Returns: A table with chain_id (BIGINT), contract_address (varchar(42)), and
+--          nonce (BIGINT), representing the list storage location chain ID,
 --          contract address, and nonce.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_list_storage_location(input_token_id bigint)
-RETURNS TABLE(chain_id bigint, contract_address character varying(42), nonce bigint)
+CREATE OR REPLACE FUNCTION public.get_list_storage_location(
+  input_token_id BIGINT
+)
+RETURNS TABLE(
+  chain_id BIGINT,
+  contract_address public.eth_address,
+  nonce BIGINT
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    list_storage_location character varying;
+    list_storage_location VARCHAR;
 BEGIN
     RETURN QUERY
     SELECT
@@ -41,14 +47,20 @@ $$;
 -- Description: Retrieves a list of records for a specified token_id from the
 --              list_records table, ensuring the list storage location is valid.
 -- Parameters:
---   - param_token_id (bigint): The token_id for which to retrieve the list
+--   - param_token_id (BIGINT): The token_id for which to retrieve the list
 --                              records.
--- Returns: A table with 'version' (smallint), 'record_type' (smallint), and
+-- Returns: A table with 'version' (SMALLINT), 'record_type' (SMALLINT), and
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_list_records(token_id bigint)
-RETURNS TABLE(version smallint, record_type smallint, data character varying(255))
+CREATE OR REPLACE FUNCTION public.get_list_records(
+  token_id BIGINT
+)
+RETURNS TABLE(
+  version public.uint8,
+  record_type public.uint8,
+  data public.hexstring
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -69,14 +81,21 @@ $$;
 -- Description: Retrieves a list of records for a specified token_id from the
 --              list_records table, ensuring the list storage location is valid.
 -- Parameters:
---   - param_token_id (bigint): The token_id for which to retrieve the list
+--   - param_token_id (BIGINT): The token_id for which to retrieve the list
 --                              records.
--- Returns: A table with 'version' (smallint), 'record_type' (smallint), and
+-- Returns: A table with 'version' (SMALLINT), 'record_type' (SMALLINT), and
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_list_record_tags(token_id bigint)
-RETURNS TABLE(version smallint, record_type smallint, data character varying(255), tags character varying(255)[])
+CREATE OR REPLACE FUNCTION public.get_list_record_tags(
+  token_id BIGINT
+)
+RETURNS TABLE(
+  version public.uint8,
+  record_type public.uint8,
+  data public.hexstring,
+  tags VARCHAR(255)[]
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN

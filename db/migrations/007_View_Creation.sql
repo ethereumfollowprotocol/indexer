@@ -5,8 +5,8 @@
 CREATE VIEW public.view_list_nfts_with_manager_user AS
 SELECT
   nfts.*,
-  lm_manager.value AS list_manager,
-  lm_user.value AS list_user
+  lm_manager.value::public.eth_address AS list_manager,
+  lm_user.value::public.eth_address AS list_user
 FROM
   public.list_nfts AS nfts
   LEFT JOIN public.list_metadata AS lm_manager ON lm_manager.chain_id = nfts.list_storage_location_chain_id

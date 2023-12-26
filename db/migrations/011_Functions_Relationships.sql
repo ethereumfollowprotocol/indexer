@@ -11,35 +11,30 @@
 --              is referenced in the data field of list records and the tag is
 --              in the tags array.
 -- Parameters:
---   - address (character varying(42)): The Ethereum address for which to
+--   - address (public.eth_address): The Ethereum address for which to
 --                                      retrieve incoming relationships.
---   - tag (character varying(255)): The tag used to filter the relationships.
--- Returns: A table with 'token_id' (bigint), 'list_user' (character varying(42)),
---          and 'tags' (character varying(255)[]), representing the token
+--   - tag (VARCHAR(255)): The tag used to filter the relationships.
+-- Returns: A table with 'token_id' (BIGINT), 'list_user' (public.eth_address),
+--          and 'tags' (VARCHAR(255)[]), representing the token
 --          identifier, the user associated with the list, and the array of tags
 --          associated with each relationship.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_incoming_relationships(
-    address character varying(42),
-    tag character varying(255)
+    address public.eth_address,
+    tag VARCHAR(255)
 )
 RETURNS TABLE(
-    token_id bigint,
-    list_user character varying(42),
-    tags character varying(255)[]
+    token_id BIGINT,
+    list_user public.eth_address,
+    tags VARCHAR(255)[]
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr character varying(42);
+    normalized_addr public.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := LOWER(address);
-
-    -- Validate the input address format
-    IF NOT (public.is_valid_address(normalized_addr)) THEN
-        RAISE EXCEPTION 'Invalid address format';
-    END IF;
+    normalized_addr := public.normalize_address(address);
 
     RETURN QUERY
     SELECT
@@ -72,46 +67,41 @@ $$;
 --              list records' 'list_user' field and the tag is present in the
 --              tags array.
 -- Parameters:
---   - list_user (character varying(42)): The user identifier for which to
+--   - list_user (public.eth_address): The user identifier for which to
 --                                        retrieve outgoing relationships.
---   - tag (character varying(255)): The tag used to filter the relationships.
--- Returns: A table with 'token_id' (bigint), 'version' (smallint),
---          'record_type' (smallint), 'data' (character varying(255)), and
---          'tags' (character varying(255)[]), representing the token
+--   - tag (VARCHAR(255)): The tag used to filter the relationships.
+-- Returns: A table with 'token_id' (BIGINT), 'version' (SMALLINT),
+--          'record_type' (SMALLINT), 'data' (public.hexstring), and
+--          'tags' (VARCHAR(255)[]), representing the token
 --          identifier, the list record version, type, data, and tags.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_outgoing_relationships(
-    address character varying(42),
-    tag character varying(255)
+    address public.eth_address,
+    tag VARCHAR(255)
 )
 RETURNS TABLE(
-    token_id bigint,
-    list_user character varying(42),
-    version smallint,
-    record_type smallint,
-    data character varying(255),
-    tags character varying(255)[]
+    token_id BIGINT,
+    list_user public.eth_address,
+    version public.uint8,
+    record_type public.uint8,
+    data public.hexstring,
+    tags VARCHAR(255)[]
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr character varying(42);
-    primary_list_token_id bigint;
+    normalized_addr public.eth_address;
+    primary_list_token_id BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := LOWER(address);
-
-    -- Validate the input address format
-    IF NOT (public.is_valid_address(normalized_addr)) THEN
-        RAISE EXCEPTION 'Invalid address format';
-    END IF;
+    normalized_addr := public.normalize_address(address);
 
     -- Get the primary list token id once
     primary_list_token_id := public.get_primary_list(normalized_addr);
 
     -- If no primary list token id is found, return an empty result set
     IF primary_list_token_id IS NULL THEN
-        RETURN QUERY SELECT NULL::bigint, NULL::varchar(255) WHERE FALSE;
+        RETURN QUERY SELECT NULL::BIGINT, NULL::varchar(255) WHERE FALSE;
     END IF;
 
     -- else return the matching outgoing relationships
