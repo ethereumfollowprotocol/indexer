@@ -46,7 +46,13 @@ jobs:
       - name: 'Install Dependencies'
         uses: ./.github/actions/setup
 
+      - name: Install Railway CLI
+        run: bun add --global @railway/cli
+
       - name: Deploy Indexer
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: bunx railway@latest up --service='indexer' --environment='production'
+        run: |
+          RAILWAY_TOKEN=${RAILWAY_TOKEN} railway up \
+            --service='indexer' \
+            --environment='production'
