@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
     steps:
-      - name: 🔑 Checkout
+      - name: '🔑 Checkout'
         uses: actions/checkout@v4.1.1
 
       - name: 'Install Dependencies'
@@ -40,16 +40,20 @@ jobs:
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
     steps:
-      - name: 🔑 Checkout
+      - name: '🔑 Checkout'
         uses: actions/checkout@v4.1.1
 
-      - name: Install Railway CLI
-        run: yarn global add @railway/cli
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/setup
 
-      - name: Deploy Indexer
+      - name: 'Install Railway CLI'
+        run: bun add --global @railway/cli
+
+      - name: 'Deploy Indexer'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
           railway link $RAILWAY_PROJECT_ID indexer --environment='production'
           railway up --service='indexer' --environment='production'
+
