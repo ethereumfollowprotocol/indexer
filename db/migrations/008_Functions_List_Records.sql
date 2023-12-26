@@ -27,7 +27,7 @@ BEGIN
       dlsl.nonce
     FROM public.decode_list_storage_location(
         (SELECT nfts.list_storage_location
-         FROM list_nfts AS nfts
+         FROM public.list_nfts AS nfts
          WHERE nfts.token_id = input_token_id)
     ) AS dlsl
     WHERE dlsl.version = 1 AND dlsl.location_type = 1;
