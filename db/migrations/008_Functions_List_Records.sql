@@ -81,7 +81,4 @@ BEGIN
 END;
 $$;
 
-
-SELECT * FROM public.get_list_records(0);
-
 -- migrate:down
