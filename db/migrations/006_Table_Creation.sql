@@ -46,8 +46,7 @@ CREATE TABLE public.contract_events (
     transaction_hash,
     transaction_index,
     log_index
-  ),
-  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
+  ) -- , FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_events_updated_at BEFORE

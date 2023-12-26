@@ -62,7 +62,7 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
 
     // Start all publishers
     for (const publisher of publishers) {
-      publisher.start()
+      await publisher.start()
     }
 
     asyncExitHook(
