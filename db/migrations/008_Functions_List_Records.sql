@@ -41,43 +41,56 @@ $$;
 -- Description: Retrieves a list of records for a specified token_id from the
 --              list_records table, ensuring the list storage location is valid.
 -- Parameters:
---   - param_token_id (bigint): The token_id for which to retrieve the list records.
+--   - param_token_id (bigint): The token_id for which to retrieve the list
+--                              records.
 -- Returns: A table with 'version' (smallint), 'record_type' (smallint), and
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_list_records(token_id bigint)
-RETURNS TABLE(version smallint, record_type smallint, data character varying)
+RETURNS TABLE(version smallint, record_type smallint, data character varying(255))
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    list_storage_location_chain_id bigint;
-    list_storage_location_contract_address character varying(42);
-    list_storage_location_nonce bigint;
 BEGIN
+  RETURN QUERY
+  SELECT lr.version, lr.record_type, lr.data
+  FROM list_records AS lr
+  JOIN public.get_list_storage_location(token_id) AS lsl
+  ON lr.chain_id = lsl.chain_id
+    AND lr.contract_address = lsl.contract_address
+    AND lr.nonce = lsl.nonce;
+END;
+$$;
 
-    SELECT
-      lsl.chain_id,
-      lsl.contract_address,
-      lsl.nonce
-    INTO
-      list_storage_location_chain_id,
-      list_storage_location_contract_address,
-      list_storage_location_nonce
-    FROM public.get_list_storage_location(token_id) AS lsl;
 
-    -- Check if any of the decoded values is NULL (indicating list storage location was not found)
-    IF list_storage_location_chain_id IS NULL THEN
-        RETURN;
-    END IF;
 
-    -- Use the decoded values to filter the list_records
+-------------------------------------------------------------------------------
+-- Function: get_list_record_tags
+-- Description: Retrieves a list of records for a specified token_id from the
+--              list_records table, ensuring the list storage location is valid.
+-- Parameters:
+--   - param_token_id (bigint): The token_id for which to retrieve the list
+--                              records.
+-- Returns: A table with 'version' (smallint), 'record_type' (smallint), and
+--          'data' (varchar(255)), representing the list record version, type,
+--          and data.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.get_list_record_tags(token_id bigint)
+RETURNS TABLE(version smallint, record_type smallint, data character varying(255), tags character varying(255)[])
+LANGUAGE plpgsql
+AS $$
+BEGIN
     RETURN QUERY
-    SELECT lr.version, lr.record_type, lr.data
-    FROM list_records AS lr
-    WHERE lr.chain_id = list_storage_location_chain_id
-      AND lr.contract_address = list_storage_location_contract_address
-      AND lr.nonce = list_storage_location_nonce;
+    SELECT
+      lrtv.version,
+      lrtv.record_type,
+      lrtv.data,
+      lrtv.tags
+    FROM list_record_tags_view AS lrtv
+    JOIN public.get_list_storage_location(token_id) AS lsl
+    ON lrtv.chain_id = lsl.chain_id
+      AND lrtv.contract_address = lsl.contract_address
+      AND lrtv.nonce = lsl.nonce;
 END;
 $$;
 
