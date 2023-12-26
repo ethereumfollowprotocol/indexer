@@ -1,13 +1,13 @@
-import type { Abi } from 'viem'
 import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
-import { type Row, database } from '#/database'
+import { database, type Row } from '#/database'
 import { logger } from '#/logger'
-import { ListOperationHandler } from '#/pubsub/handlers/list-operation'
+import { ListOpHandler } from '#/pubsub/handlers/list-operation'
 import { ListStorageLocationChangeHandler } from '#/pubsub/handlers/list-storage-location-change'
 import { NewAccountMetadataValueHandler } from '#/pubsub/handlers/new-account-metadata-value'
 import { NewListMetadataValueHandler } from '#/pubsub/handlers/new-list-metadata-value'
 import { OwnershipTransferredHandler } from '#/pubsub/handlers/ownership-transferred'
 import { TransferHandler } from '#/pubsub/handlers/transfer'
+import type { Abi } from 'viem'
 import type { Event } from './event'
 
 /**
@@ -118,8 +118,8 @@ export class EventDispatcher implements EventSubscriber {
     const eventName: string = event.eventParameters.eventName
 
     switch (eventName) {
-      case 'ListOperation':
-        await new ListOperationHandler().onListOperation(event)
+      case 'ListOp':
+        await new ListOpHandler().onListOp(event)
         break
       case 'ListStorageLocationChange':
         await new ListStorageLocationChangeHandler().onListStorageLocationChange(event)

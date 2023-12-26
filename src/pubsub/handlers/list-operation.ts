@@ -1,11 +1,11 @@
-import { type Row, database } from '#/database'
+import { database, type Row } from '#/database'
 import { logger } from '#/logger'
-import { type ListOp, decodeListOp } from '#/process/list-op'
-import { type ListRecord, decodeListRecord } from '#/process/list-record'
+import { decodeListOp, type ListOp } from '#/process/list-op'
+import { decodeListRecord, type ListRecord } from '#/process/list-record'
 import type { Event } from '../event'
 
-export class ListOperationHandler {
-  async onListOperation(event: Event): Promise<void> {
+export class ListOpHandler {
+  async onListOp(event: Event): Promise<void> {
     const nonce: bigint = event.eventParameters.args['nonce']
     const op: `0x${string}` = event.eventParameters.args['op']
     const opBytes: Uint8Array = Buffer.from(op.slice(2), 'hex')
@@ -30,7 +30,7 @@ export class ListOperationHandler {
       opcode: opCode,
       data: opDataHexstring
     }
-    logger.log(`\x1b[96m(ListOperation) Insert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
+    logger.log(`\x1b[96m(ListOp) Insert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
     await database.insertInto('list_ops').values([row]).executeTakeFirst()
 
     await this.processListOp(event.chainId, event.contractAddress.toLowerCase() as `0x${string}`, nonce, listOp)
@@ -59,15 +59,13 @@ export class ListOperationHandler {
         data: listRecordDataHexstring
       }
       // green log
-      logger.log(`\x1b[92m(ListOperation) Add list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`)
+      logger.log(`\x1b[92m(ListOp) Add list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`)
       await database.insertInto('list_records').values([row]).executeTakeFirst()
     } else if (listOp.opcode === 2) {
       // REMOVE LIST RECORD
 
       const listRecordHexstring: `0x${string}` = `0x${Buffer.from(listOp.data).toString('hex')}`
-      logger.log(
-        `\x1b[91m(ListOperation) Delete list record ${listRecordHexstring} from list nonce ${nonce} in db\x1b[0m`
-      )
+      logger.log(`\x1b[91m(ListOp) Delete list record ${listRecordHexstring} from list nonce ${nonce} in db\x1b[0m`)
       const result = await database
         .deleteFrom('list_records')
         .where('chain_id', '=', chainId.toString())
@@ -95,7 +93,7 @@ export class ListOperationHandler {
         tag: tag
       }
       // green log
-      logger.log(`\x1b[92m(ListOperation) Add tag "${tag}" to list record ${listRecord} in db\x1b[0m`)
+      logger.log(`\x1b[92m(ListOp) Add tag "${tag}" to list record ${listRecord} in db\x1b[0m`)
       await database.insertInto('list_record_tags').values([row]).executeTakeFirst()
     } else if (listOp.opcode === 4) {
       // REMOVE LIST RECORD TAG
@@ -108,7 +106,7 @@ export class ListOperationHandler {
       const tagBytes: Uint8Array = listOp.data.slice(1 + 1 + 20) // tag
       const tag: string = Buffer.from(tagBytes).toString('utf-8')
 
-      logger.log(`\x1b[91m(ListOperation) Delete tag "${tag}" from list record ${listRecord} in db\x1b[0m`)
+      logger.log(`\x1b[91m(ListOp) Delete tag "${tag}" from list record ${listRecord} in db\x1b[0m`)
       const result = await database
         .deleteFrom('list_record_tags')
         .where('chain_id', '=', chainId.toString())
