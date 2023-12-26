@@ -39,19 +39,12 @@ jobs:
     needs: [checks]
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
-    permissions:
-      contents: write
-      packages: write
-      deployments: write
     steps:
       - name: 🔑 Checkout
         uses: actions/checkout@v4.1.1
 
-      - name: 'Install Dependencies'
-        uses: ./.github/actions/setup
-
       - name: Install Railway CLI
-        run: yarn add global @railway/cli
+        run: yarn global add @railway/cli
 
       - name: Deploy Indexer
         env:
