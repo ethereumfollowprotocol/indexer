@@ -1,17 +1,28 @@
 -- migrate:up
--- View Creation: Define all necessary views
+-------------------------------------------------------------------------------
+-- View: list_nfts_view
+-------------------------------------------------------------------------------
 CREATE VIEW public.list_nfts_view AS
 SELECT
   nfts.*,
-  lm.value AS list_user
+  lm_user.value AS list_user,
+  lm_manager.value AS list_manager
 FROM
   public.list_nfts AS nfts
-  LEFT JOIN public.list_metadata AS lm ON lm.chain_id = nfts.list_storage_location_chain_id
-  AND lm.contract_address = nfts.list_storage_location_contract_address
-  AND lm.nonce = nfts.list_storage_location_nonce
-  AND lm.key = 'user'
-  AND public.is_valid_address(lm.value);
+  LEFT JOIN public.list_metadata AS lm_user ON lm_user.chain_id = nfts.list_storage_location_chain_id
+  AND lm_user.contract_address = nfts.list_storage_location_contract_address
+  AND lm_user.nonce = nfts.list_storage_location_nonce
+  AND lm_user.key = 'user'
+  AND public.is_valid_address(lm_user.value)
+  LEFT JOIN public.list_metadata AS lm_manager ON lm_manager.chain_id = nfts.list_storage_location_chain_id
+  AND lm_manager.contract_address = nfts.list_storage_location_contract_address
+  AND lm_manager.nonce = nfts.list_storage_location_nonce
+  AND lm_manager.key = 'manager'
+  AND public.is_valid_address(lm_manager.value);
 
+-------------------------------------------------------------------------------
+-- View: list_record_tags_view
+-------------------------------------------------------------------------------
 CREATE VIEW public.list_record_tags_view AS
 SELECT
   records.chain_id,
@@ -37,30 +48,35 @@ GROUP BY
   records.record_type,
   records.data;
 
+-------------------------------------------------------------------------------
+-- View: list_record_tags_extended_view
+-------------------------------------------------------------------------------
 CREATE VIEW public.list_record_tags_extended_view AS
 SELECT
-  nft.token_id,
-  nft.list_user,
-  nft.list_storage_location_chain_id,
-  nft.list_storage_location_contract_address,
-  nft.list_storage_location_nonce,
-  v.record,
-  v.version,
-  v.record_type,
-  v.data,
-  v.tags,
+  nftv.token_id,
+  nftv.owner,
+  nftv.list_manager,
+  nftv.list_user,
+  nftv.list_storage_location_chain_id,
+  nftv.list_storage_location_contract_address,
+  nftv.list_storage_location_nonce,
+  lrtv.record,
+  lrtv.version,
+  lrtv.record_type,
+  lrtv.data,
+  lrtv.tags,
   CASE
-    WHEN 'block' = ANY(v.tags) THEN TRUE
+    WHEN 'block' = ANY(lrtv.tags) THEN TRUE
     ELSE FALSE
   END AS has_block_tag,
   CASE
-    WHEN 'mute' = ANY(v.tags) THEN TRUE
+    WHEN 'mute' = ANY(lrtv.tags) THEN TRUE
     ELSE FALSE
   END AS has_mute_tag
 FROM
-  public.list_record_tags_view AS v
-  LEFT JOIN public.list_nfts_view AS nft ON nft.list_storage_location_chain_id = v.chain_id
-  AND nft.list_storage_location_contract_address = v.contract_address
-  AND nft.list_storage_location_nonce = v.nonce;
+  public.list_record_tags_view AS lrtv
+  LEFT JOIN public.list_nfts_view AS nftv ON nftv.list_storage_location_chain_id = lrtv.chain_id
+  AND nftv.list_storage_location_contract_address = lrtv.contract_address
+  AND nftv.list_storage_location_nonce = lrtv.nonce;
 
 -- migrate:down
