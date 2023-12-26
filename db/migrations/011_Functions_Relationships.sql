@@ -11,27 +11,27 @@
 --              is referenced in the data field of list records and the tag is
 --              in the tags array.
 -- Parameters:
---   - address (public.eth_address): The Ethereum address for which to
+--   - address (types.eth_address): The Ethereum address for which to
 --                                      retrieve incoming relationships.
 --   - tag (VARCHAR(255)): The tag used to filter the relationships.
--- Returns: A table with 'token_id' (BIGINT), 'list_user' (public.eth_address),
+-- Returns: A table with 'token_id' (BIGINT), 'list_user' (types.eth_address),
 --          and 'tags' (VARCHAR(255)[]), representing the token
---          identifier, the user associated with the list, and the array of tags
---          associated with each relationship.
+--          identifier, the user associated with the list, and the array of
+--          tags associated with each relationship.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_incoming_relationships(
-    address public.eth_address,
+    address types.eth_address,
     tag VARCHAR(255)
 )
 RETURNS TABLE(
     token_id BIGINT,
-    list_user public.eth_address,
+    list_user types.eth_address,
     tags VARCHAR(255)[]
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr public.eth_address;
+    normalized_addr types.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
     normalized_addr := public.normalize_address(address);
@@ -67,30 +67,30 @@ $$;
 --              list records' 'list_user' field and the tag is present in the
 --              tags array.
 -- Parameters:
---   - list_user (public.eth_address): The user identifier for which to
+--   - list_user (types.eth_address): The user identifier for which to
 --                                        retrieve outgoing relationships.
 --   - tag (VARCHAR(255)): The tag used to filter the relationships.
 -- Returns: A table with 'token_id' (BIGINT), 'version' (SMALLINT),
---          'record_type' (SMALLINT), 'data' (public.hexstring), and
+--          'record_type' (SMALLINT), 'data' (types.hexstring), and
 --          'tags' (VARCHAR(255)[]), representing the token
 --          identifier, the list record version, type, data, and tags.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_outgoing_relationships(
-    address public.eth_address,
+    address types.eth_address,
     tag VARCHAR(255)
 )
 RETURNS TABLE(
     token_id BIGINT,
-    list_user public.eth_address,
-    version public.uint8,
-    record_type public.uint8,
-    data public.hexstring,
+    list_user types.eth_address,
+    version types.uint8,
+    record_type types.uint8,
+    data types.hexstring,
     tags VARCHAR(255)[]
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr public.eth_address;
+    normalized_addr types.eth_address;
     primary_list_token_id BIGINT;
 BEGIN
     -- Normalize the input address to lowercase

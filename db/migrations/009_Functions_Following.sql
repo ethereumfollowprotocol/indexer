@@ -10,20 +10,20 @@
 --              list_user equals the address. Converts valid hex string values
 --              to BIGINT.
 -- Parameters:
---   - addr (public.eth_address): The address for which to retrieve the
+--   - addr (types.eth_address): The address for which to retrieve the
 --          primary list value.
 -- Returns: The BIGINT representation of the primary list value for the given
 --          address, or the lowest token_id from with list_user equals the
 --          address. Returns NULL if no primary list value is found.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_primary_list(
-  address public.eth_address
+  address types.eth_address
 )
 RETURNS BIGINT
 AS $$
 DECLARE
     primary_list TEXT;
-    normalized_addr public.eth_address;
+    normalized_addr types.eth_address;
     lowest_token_id BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
@@ -60,25 +60,25 @@ $$ LANGUAGE plpgsql;
 --              list token ID from get_primary_list. If no primary list is
 --              found, returns an empty result set.
 -- Parameters:
---   - address (public.eth_address): Identifier of the user to find the
+--   - address (types.eth_address): Identifier of the user to find the
 --          following addresses.
 -- Returns: A table with 'followed_address' (varchar(255)) and 'token_id'
 --          (BIGINT), representing valid addresses being followed and the
 --          relationship identifier. Returns empty table if no primary list is
 --          found.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_following(address public.eth_address)
+CREATE OR REPLACE FUNCTION public.get_following(address types.eth_address)
 RETURNS TABLE(
   token_id BIGINT,
-  version public.uint8,
-  record_type public.uint8,
-  data public.eth_address,
+  version types.uint8,
+  record_type types.uint8,
+  data types.eth_address,
   tags VARCHAR(255)[]
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr public.eth_address;
+    normalized_addr types.eth_address;
     primary_list_token_id BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
@@ -99,7 +99,7 @@ BEGIN
             v.token_id,
             v.version,
             v.record_type,
-            v.data::public.eth_address,
+            v.data::types.eth_address,
             v.tags
         FROM
             view_list_records_with_nft_manager_user_tags AS v
@@ -148,7 +148,7 @@ CREATE OR REPLACE FUNCTION public.count_unique_following_by_address(
   limit_count BIGINT
 )
 RETURNS TABLE(
-  address public.eth_address,
+  address types.eth_address,
   following_count BIGINT
 )
 LANGUAGE PLPGSQL

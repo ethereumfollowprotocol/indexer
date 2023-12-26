@@ -11,9 +11,9 @@ SET
 -------------------------------------------------------------------------------
 CREATE TABLE public.contracts (
   chain_id BIGINT NOT NULL,
-  address public.eth_address NOT NULL,
+  address types.eth_address NOT NULL,
   name VARCHAR(255) NOT NULL,
-  owner public.eth_address NOT NULL,
+  owner types.eth_address NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (chain_id, address)
@@ -28,9 +28,9 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.events (
   id text DEFAULT public.generate_ulid() NOT NULL,
-  transaction_hash public.eth_transaction_hash NOT NULL,
+  transaction_hash types.eth_transaction_hash NOT NULL,
   block_number BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
   event_name VARCHAR(255) NOT NULL,
   event_parameters jsonb NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -46,10 +46,10 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.account_metadata (
   chain_id BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
-  address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
+  address types.eth_address NOT NULL,
   "key" VARCHAR(255) NOT NULL,
-  value public.hexstring NOT NULL,
+  value types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -69,12 +69,12 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_nfts (
   chain_id BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
   token_id BIGINT NOT NULL,
-  owner public.eth_address NOT NULL,
-  list_storage_location public.hexstring,
+  owner types.eth_address NOT NULL,
+  list_storage_location types.hexstring,
   list_storage_location_chain_id BIGINT,
-  list_storage_location_contract_address public.eth_address,
+  list_storage_location_contract_address types.eth_address,
   list_storage_location_nonce BIGINT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -94,10 +94,10 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_metadata (
   chain_id BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
   nonce BIGINT NOT NULL,
   "key" VARCHAR(255) NOT NULL,
-  value public.hexstring NOT NULL,
+  value types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -117,12 +117,12 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_ops (
   chain_id BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
   nonce BIGINT NOT NULL,
-  op public.hexstring NOT NULL,
-  version public.uint8 NOT NULL,
-  opcode public.uint8 NOT NULL,
-  data public.hexstring NOT NULL,
+  op types.hexstring NOT NULL,
+  version types.uint8 NOT NULL,
+  opcode types.uint8 NOT NULL,
+  data types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -142,12 +142,12 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_records (
   chain_id BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
   nonce BIGINT NOT NULL,
-  record public.hexstring NOT NULL,
-  version public.uint8 NOT NULL,
-  record_type public.uint8 NOT NULL,
-  data public.hexstring NOT NULL,
+  record types.hexstring NOT NULL,
+  version types.uint8 NOT NULL,
+  record_type types.uint8 NOT NULL,
+  data types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -167,9 +167,9 @@ UPDATE
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_record_tags (
   chain_id BIGINT NOT NULL,
-  contract_address public.eth_address NOT NULL,
+  contract_address types.eth_address NOT NULL,
   nonce BIGINT NOT NULL,
-  record public.hexstring NOT NULL,
+  record types.hexstring NOT NULL,
   tag VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION public.get_list_storage_location(
 )
 RETURNS TABLE(
   chain_id BIGINT,
-  contract_address public.eth_address,
+  contract_address types.eth_address,
   nonce BIGINT
 )
 LANGUAGE plpgsql
@@ -57,9 +57,9 @@ CREATE OR REPLACE FUNCTION public.get_list_records(
   token_id BIGINT
 )
 RETURNS TABLE(
-  version public.uint8,
-  record_type public.uint8,
-  data public.hexstring
+  version types.uint8,
+  record_type types.uint8,
+  data types.hexstring
 )
 LANGUAGE plpgsql
 AS $$
@@ -91,9 +91,9 @@ CREATE OR REPLACE FUNCTION public.get_list_record_tags(
   token_id BIGINT
 )
 RETURNS TABLE(
-  version public.uint8,
-  record_type public.uint8,
-  data public.hexstring,
+  version types.uint8,
+  record_type types.uint8,
+  data types.hexstring,
   tags VARCHAR(255)[]
 )
 LANGUAGE plpgsql

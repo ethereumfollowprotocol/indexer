@@ -89,11 +89,11 @@ $$;
 -- Returns: The normalized address if valid, otherwise raises an exception.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.normalize_address(address TEXT)
-RETURNS public.eth_address
+RETURNS types.eth_address
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 BEGIN
-    RETURN LOWER(address)::public.eth_address;
+    RETURN LOWER(address)::types.eth_address;
 END;
 $$;
 
@@ -191,7 +191,7 @@ RETURNS TABLE(
   version SMALLINT,
   location_type SMALLINT,
   chain_id BIGINT,
-  contract_address public.eth_address,
+  contract_address types.eth_address,
   nonce BIGINT
 )
 LANGUAGE plpgsql IMMUTABLE
@@ -223,7 +223,7 @@ BEGIN
     chain_id := public.convert_hex_to_bigint(hex_chain_id);
 
     -- Extract contractAddress (20 bytes to TEXT)
-    contract_address := ('0x' || ENCODE(SUBSTRING(hex_data FROM 35 FOR 20), 'hex'))::public.eth_address;
+    contract_address := ('0x' || ENCODE(SUBSTRING(hex_data FROM 35 FOR 20), 'hex'))::types.eth_address;
 
     -- Extract nonce (32 bytes to TEXT)
     temp_nonce := SUBSTRING(hex_data FROM 55 FOR 32);

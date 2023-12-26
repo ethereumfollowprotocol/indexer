@@ -11,16 +11,16 @@
 --          representing the relationship identifier and the follower's name.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_followers(
-  address public.eth_address
+  address types.eth_address
 )
 RETURNS TABLE(
   token_id BIGINT,
-  list_user public.eth_address
+  list_user types.eth_address
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr public.eth_address;
+    normalized_addr types.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
     normalized_addr := public.normalize_address(address);
@@ -64,15 +64,15 @@ $$;
 --          or identifiers of the followers.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.get_unique_followers(
-  address public.eth_address
+  address types.eth_address
 )
 RETURNS TABLE(
-  list_user public.eth_address
+  list_user types.eth_address
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    normalized_addr public.eth_address;
+    normalized_addr types.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
     normalized_addr := public.normalize_address(address);
@@ -119,7 +119,7 @@ CREATE OR REPLACE FUNCTION public.count_unique_followers_by_address(
   limit_count BIGINT
 )
 RETURNS TABLE(
-  address public.eth_address,
+  address types.eth_address,
   followers_count BIGINT
 )
 LANGUAGE plpgsql
@@ -127,7 +127,7 @@ AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        v.data::public.eth_address AS address,
+        v.data::types.eth_address AS address,
         COUNT(DISTINCT v.list_user) AS followers_count
     FROM
         view_list_records_with_nft_manager_user_tags AS v
