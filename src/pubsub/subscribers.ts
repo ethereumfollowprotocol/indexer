@@ -26,11 +26,15 @@ export interface EventSubscriber {
 export abstract class ContractEventSubscriber implements EventSubscriber {
   /**
    * Constructs an EventSubscriber.
+   * @param chainId - The chain ID of the network where the contract is deployed.
    * @param contractName - The name of the contract, used for easier identification and logging.
    * @param abi - The ABI of the contract, used for decoding event logs.
    * @param address - The Ethereum address of the contract.
    */
   constructor(
+    /** Chain ID of the network where the contract is deployed. */
+    public readonly chainId: bigint,
+
     /** Contract name for easier identification. */
     public readonly contractName: string,
 
@@ -63,26 +67,26 @@ export abstract class ContractEventSubscriber implements EventSubscriber {
 }
 
 export class EFPAccountMetadataSubscriber extends ContractEventSubscriber {
-  constructor(address: `0x${string}`) {
-    super('EFPAccountMetadata', efpAccountMetadataAbi, address)
+  constructor(chainId: bigint, address: `0x${string}`) {
+    super(chainId, 'EFPAccountMetadata', efpAccountMetadataAbi, address)
   }
 }
 
 export class EFPListRegistrySubscriber extends ContractEventSubscriber {
-  constructor(address: `0x${string}`) {
-    super('EFPListRegistry', efpListRegistryAbi, address)
+  constructor(chainId: bigint, address: `0x${string}`) {
+    super(chainId, 'EFPListRegistry', efpListRegistryAbi, address)
   }
 }
 
 export class EFPListRecordsSubscriber extends ContractEventSubscriber {
-  constructor(address: `0x${string}`) {
-    super('EFPListRecords', efpListRecordsAbi, address)
+  constructor(chainId: bigint, address: `0x${string}`) {
+    super(chainId, 'EFPListRecords', efpListRecordsAbi, address)
   }
 }
 
 export class EFPListMinterSubscriber extends ContractEventSubscriber {
-  constructor(address: `0x${string}`) {
-    super('EFPListMinter', efpListMinterAbi, address)
+  constructor(chainId: bigint, address: `0x${string}`) {
+    super(chainId, 'EFPListMinter', efpListMinterAbi, address)
   }
 }
 
@@ -99,17 +103,20 @@ export class EventsTableUploader implements EventSubscriber {
       serializableEventParameters.args[key] = typeof value === 'bigint' ? value.toString() : value
     }
 
-    const row: Row<'events'> = {
-      transaction_hash: event.transactionHash,
+    const row: Row<'contract_events'> = {
+      chain_id: event.chainId,
       block_number: event.blockNumber,
+      block_hash: event.blockHash,
       contract_address: event.contractAddress,
-      // problem: we don't have event name here
+      transaction_hash: event.transactionHash,
+      transaction_index: event.transactionIndex,
+      log_index: event.logIndex,
       event_name: event.eventParameters.eventName,
       event_parameters: JSON.stringify(serializableEventParameters)
     }
 
-    logger.log(`(${event.eventParameters.eventName}) Insert event into \`events\` table`)
-    await database.insertInto('events').values([row]).executeTakeFirst()
+    logger.log(`(${event.eventParameters.eventName}) Insert event into \`contract_events\` table`)
+    await database.insertInto('contract_events').values([row]).executeTakeFirst()
   }
 }
 

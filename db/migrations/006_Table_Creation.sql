@@ -26,20 +26,33 @@ UPDATE
 -------------------------------------------------------------------------------
 -- Table: events
 -------------------------------------------------------------------------------
-CREATE TABLE public.events (
-  id text DEFAULT public.generate_ulid() NOT NULL,
-  transaction_hash types.eth_transaction_hash NOT NULL,
+CREATE TABLE public.contract_events (
+  chain_id BIGINT NOT NULL,
   block_number BIGINT NOT NULL,
+  block_hash types.eth_block_hash NOT NULL,
   contract_address types.eth_address NOT NULL,
+  transaction_hash types.eth_transaction_hash NOT NULL,
+  transaction_index NUMERIC NOT NULL,
+  log_index NUMERIC NOT NULL,
   event_name VARCHAR(255) NOT NULL,
   event_parameters jsonb NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (
+    chain_id,
+    block_number,
+    block_hash,
+    contract_address,
+    transaction_hash,
+    transaction_index,
+    log_index
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_events_updated_at BEFORE
 UPDATE
-  ON public.events FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+  ON public.contract_events FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -------------------------------------------------------------------------------
 -- Table: account_metadata
@@ -57,7 +70,8 @@ CREATE TABLE public.account_metadata (
     contract_address,
     address,
     "key"
-  )
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_account_metadata_updated_at BEFORE
@@ -82,7 +96,8 @@ CREATE TABLE public.list_nfts (
     chain_id,
     contract_address,
     token_id
-  )
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_nfts_updated_at BEFORE
@@ -105,7 +120,8 @@ CREATE TABLE public.list_metadata (
     contract_address,
     nonce,
     "key"
-  )
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_metadata_updated_at BEFORE
@@ -130,7 +146,8 @@ CREATE TABLE public.list_ops (
     contract_address,
     nonce,
     op
-  )
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_ops_updated_at BEFORE
@@ -155,7 +172,8 @@ CREATE TABLE public.list_records (
     contract_address,
     nonce,
     record
-  )
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_records_updated_at BEFORE
@@ -179,7 +197,8 @@ CREATE TABLE public.list_record_tags (
     nonce,
     record,
     tag
-  )
+  ),
+  FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_record_tags_updated_at BEFORE

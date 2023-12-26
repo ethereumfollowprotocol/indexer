@@ -1,4 +1,3 @@
-import { asyncExitHook } from 'exit-hook'
 import type { EvmClient } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
@@ -14,10 +13,11 @@ import {
   EFPListRecordsSubscriber,
   EFPListRegistrySubscriber,
   EventDispatcher as EventProcessor,
-  type EventSubscriber,
-  EventsTableUploader
+  EventsTableUploader,
+  type EventSubscriber
 } from '#/pubsub/subscribers'
 import { raise, sleep } from '#/utilities'
+import { asyncExitHook } from 'exit-hook'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
@@ -31,10 +31,10 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     const efpListRecordsPublisher = new EFPListRecordsPublisher(client, chainId, env.EFP_CONTRACTS.LIST_RECORDS)
     const efpListMinterPublisher = new EFPListMinterPublisher(client, chainId, env.EFP_CONTRACTS.LIST_MINTER)
 
-    const efpAccountMetadataSubscriber = new EFPAccountMetadataSubscriber(env.EFP_CONTRACTS.ACCOUNT_METADATA)
-    const efpListRegistrySubscriber = new EFPListRegistrySubscriber(env.EFP_CONTRACTS.LIST_REGISTRY)
-    const efpListRecordsSubscriber = new EFPListRecordsSubscriber(env.EFP_CONTRACTS.LIST_RECORDS)
-    const efpListMinterSubscriber = new EFPListMinterSubscriber(env.EFP_CONTRACTS.LIST_MINTER)
+    const efpAccountMetadataSubscriber = new EFPAccountMetadataSubscriber(chainId, env.EFP_CONTRACTS.ACCOUNT_METADATA)
+    const efpListRegistrySubscriber = new EFPListRegistrySubscriber(chainId, env.EFP_CONTRACTS.LIST_REGISTRY)
+    const efpListRecordsSubscriber = new EFPListRecordsSubscriber(chainId, env.EFP_CONTRACTS.LIST_RECORDS)
+    const efpListMinterSubscriber = new EFPListMinterSubscriber(chainId, env.EFP_CONTRACTS.LIST_MINTER)
 
     efpAccountMetadataPublisher.subscribe(efpAccountMetadataSubscriber)
     efpListRegistryPublisher.subscribe(efpListRegistrySubscriber)

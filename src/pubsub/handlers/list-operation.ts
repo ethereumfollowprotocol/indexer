@@ -60,6 +60,7 @@ export class ListOpHandler {
       }
       // green log
       logger.log(`\x1b[92m(ListOp) Add list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`)
+      // TODO: ensure not duplicate
       await database.insertInto('list_records').values([row]).executeTakeFirst()
     } else if (listOp.opcode === 2) {
       // REMOVE LIST RECORD
@@ -94,6 +95,7 @@ export class ListOpHandler {
       }
       // green log
       logger.log(`\x1b[92m(ListOp) Add tag "${tag}" to list record ${listRecord} in db\x1b[0m`)
+      // TODO: ensure not duplicate tag
       await database.insertInto('list_record_tags').values([row]).executeTakeFirst()
     } else if (listOp.opcode === 4) {
       // REMOVE LIST RECORD TAG

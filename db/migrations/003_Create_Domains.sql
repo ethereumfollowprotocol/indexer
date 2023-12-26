@@ -29,6 +29,19 @@ CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})+$
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.eth_address AS VARCHAR(42) CHECK (VALUE ~ '^0x[a-f0-9]{40}$');
 
+
+
+-------------------------------------------------------------------------------
+-- Domain: eth_block_hash
+--
+-- Description: A domain for validating Ethereum block hashes.
+-- Constraints: Must be a string of 66 characters, starting with '0x' and
+--              containing 64 lowercase hexadecimal characters.
+-------------------------------------------------------------------------------
+CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
+
+
+
 -------------------------------------------------------------------------------
 -- Domain: eth_transaction_hash
 --
