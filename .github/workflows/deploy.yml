@@ -51,12 +51,12 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Railway CLI
-        run: yarn global @railway/cli
+        run: yarn add global @railway/cli
 
       - name: Deploy Indexer
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
-          RAILWAY_TOKEN=${RAILWAY_TOKEN} railway up \
-            --service='indexer' \
-            --environment='production'
+          railway link $RAILWAY_PROJECT_ID indexer
+          railway up --service='indexer' --environment='production'
