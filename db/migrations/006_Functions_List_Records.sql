@@ -82,15 +82,15 @@ AS $$
 BEGIN
     RETURN QUERY
     SELECT
-      lrtv.version,
-      lrtv.record_type,
-      lrtv.data,
-      lrtv.tags
-    FROM list_record_tags_view AS lrtv
-    JOIN public.get_list_storage_location(token_id) AS lsl
-    ON lrtv.chain_id = lsl.chain_id
-      AND lrtv.contract_address = lsl.contract_address
-      AND lrtv.nonce = lsl.nonce;
+      record_tags.version,
+      record_tags.record_type,
+      record_tags.data,
+      record_tags.tags
+    FROM view_list_records_with_tag_array AS record_tags
+    JOIN public.get_list_storage_location(token_id) AS list_storage_location
+    ON record_tags.chain_id = list_storage_location.chain_id
+      AND record_tags.contract_address = list_storage_location.contract_address
+      AND record_tags.nonce = list_storage_location.nonce;
 END;
 $$;
 

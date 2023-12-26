@@ -5,11 +5,11 @@
 -------------------------------------------------------------------------------
 -- Function: get_incoming_relationships
 -- Description: Retrieves incoming relationships for a given address and a
---              specific tag from the list_record_tags_extended_view. It filters
---              records by a normalized version of the address and the specified
---              tag, identifying relationships where the address is referenced
---              in the data field of list records and the tag is in the tags
---              array.
+--              specific tag from view_list_records_with_nft_manager_user_tags.
+--              It filters records by a normalized version of the address and
+--              the specified tag, identifying relationships where the address
+--              is referenced in the data field of list records and the tag is
+--              in the tags array.
 -- Parameters:
 --   - address (character varying(42)): The Ethereum address for which to
 --                                      retrieve incoming relationships.
@@ -43,20 +43,20 @@ BEGIN
 
     RETURN QUERY
     SELECT
-      lrtev.token_id,
-      lrtev.list_user,
-      lrtev.tags
-    FROM list_record_tags_extended_view AS lrtev
+      v.token_id,
+      v.list_user,
+      v.tags
+    FROM view_list_records_with_nft_manager_user_tags AS v
     WHERE
       -- only list record version 1
-      lrtev.version = 1 AND
+      v.version = 1 AND
       -- address record type (1)
-      lrtev.record_type = 1 AND
+      v.record_type = 1 AND
       -- valid address format
-      lrtev.data = normalized_addr AND
+      v.data = normalized_addr AND
       -- ok if block/muted we are looking at tags in general
       -- tag is in the list of tags
-      lrtev.tags @> ARRAY[tag]::varchar(255)[];
+      v.tags @> ARRAY[tag]::varchar(255)[];
 END;
 $$;
 
@@ -65,7 +65,7 @@ $$;
 -------------------------------------------------------------------------------
 -- Function: get_outgoing_relationships
 -- Description: Retrieves outgoing relationships from a specified user with a
---              particular tag from the list_record_tags_extended_view. This
+--              particular tag from the view_list_records_with_nft_manager_user_tags. This
 --              function identifies relationships initiated by the given user
 --              and filters them based on the specified tag. It's designed to
 --              target records where the initiating user is linked in the
@@ -118,28 +118,28 @@ BEGIN
     RETURN QUERY
     WITH primary_list AS (
         SELECT
-            lrtev.token_id,
-            lrtev.list_user,
-            lrtev.version,
-            lrtev.record_type,
-            lrtev.data,
-            lrtev.tags
+            v.token_id,
+            v.list_user,
+            v.version,
+            v.record_type,
+            v.data,
+            v.tags
         FROM
-            list_record_tags_extended_view AS lrtev
+            view_list_records_with_nft_manager_user_tags AS v
         WHERE
             -- only list record version 1
-            lrtev.version = 1 AND
+            v.version = 1 AND
             -- address record type (1)
-            lrtev.record_type = 1 AND
+            v.record_type = 1 AND
             -- valid address format
-            public.is_valid_address(lrtev.data) AND
+            public.is_valid_address(v.data) AND
             -- who is followed by the list user
-            lrtev.list_user = normalized_addr AND
+            v.list_user = normalized_addr AND
             -- from their primary list
-            lrtev.token_id = primary_list_token_id AND
+            v.token_id = primary_list_token_id AND
             -- okay if blocked/muted we are looking at tags in general
             -- tag is in the list of tags
-            lrtev.tags @> ARRAY[tag]::varchar(255)[]
+            v.tags @> ARRAY[tag]::varchar(255)[]
     )
     SELECT * FROM primary_list
     ORDER BY

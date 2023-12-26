@@ -6,17 +6,21 @@
 -- Function: get_primary_list
 -- Description: Retrieves the primary list value for a given address from the
 --              account_metadata table. If not found, falls back to finding the
---              lowest token_id from list_nfts_view where list_user equals the
---              address. Converts valid hex string values to bigint.
+--              lowest token_id from view_list_nfts_with_manager_user where
+--              list_user equals the address. Converts valid hex string values
+--              to bigint.
 -- Parameters:
 --   - addr (character varying(42)): The address for which to retrieve the
 --          primary list value.
 -- Returns: The bigint representation of the primary list value for the given
---          address, or the lowest token_id from list_nfts_view, or NULL if
---          neither is found or if the values are invalid.
+--          address, or the lowest token_id from with list_user equals the
+--          address. Returns NULL if no primary list value is found.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_primary_list(address character varying(42))
-RETURNS bigint AS $$
+CREATE OR REPLACE FUNCTION public.get_primary_list(
+  address character varying(42)
+)
+RETURNS bigint
+AS $$
 DECLARE
     primary_list text;
     normalized_addr character varying(42);
@@ -40,9 +44,9 @@ BEGIN
         RETURN public.convert_hex_to_bigint(primary_list);
     END IF;
 
-    -- Fallback: Retrieve the lowest token_id from list_nfts_view
+    -- Fallback: Retrieve the lowest token_id
     SELECT MIN(token_id) INTO lowest_token_id
-    FROM list_nfts_view
+    FROM view_list_nfts_with_manager_user
     WHERE list_user = normalized_addr;
 
     RETURN lowest_token_id;
@@ -54,12 +58,12 @@ $$ LANGUAGE plpgsql;
 -------------------------------------------------------------------------------
 -- Function: get_following
 -- Description: Retrieves a list of addresses followed by a user from the
---              list_record_tags_extended_view, ensuring addresses are valid
---              20-byte, lower-case hexadecimals (0x followed by 40 hex chars).
---              Filters tokens by version and type, excluding blocked or muted
---              relationships. Leverages primary list token ID from
---              get_primary_list. If no primary list is found, returns an empty
---              result set.
+--              view_list_records_with_nft_manager_user_tags, ensuring
+--              addresses are valid 20-byte, lower-case hexadecimals (0x
+--              followed by 40 hex chars). Filters tokens by version and type,
+--              excluding blocked or muted relationships. Leverages primary
+--              list token ID from get_primary_list. If no primary list is
+--              found, returns an empty result set.
 -- Parameters:
 --   - address (character varying(42)): Identifier of the user to find the
 --          following addresses.
@@ -70,7 +74,13 @@ $$ LANGUAGE plpgsql;
 -------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS public.get_following(character varying(42));
 CREATE OR REPLACE FUNCTION public.get_following(address character varying(42))
-RETURNS TABLE(token_id bigint, version smallint, record_type smallint, data character varying(42), tags character varying(255)[])
+RETURNS TABLE(
+  token_id bigint,
+  version smallint,
+  record_type smallint,
+  data character varying(42),
+  tags character varying(255)[]
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -97,21 +107,21 @@ BEGIN
     RETURN QUERY
     WITH primary_list AS (
         SELECT
-            lrtev.token_id,
-            lrtev.version,
-            lrtev.record_type,
-            lrtev.data,
-            lrtev.tags
+            v.token_id,
+            v.version,
+            v.record_type,
+            v.data,
+            v.tags
         FROM
-            list_record_tags_extended_view AS lrtev
+            view_list_records_with_nft_manager_user_tags AS v
         WHERE
-            lrtev.version = 1 AND
-            lrtev.record_type = 1 AND
-            lrtev.has_block_tag = FALSE AND
-            lrtev.has_mute_tag = FALSE AND
-            lrtev.list_user = normalized_addr AND
-            public.is_valid_address(lrtev.data) AND
-            lrtev.token_id = primary_list_token_id
+            v.version = 1 AND
+            v.record_type = 1 AND
+            v.has_block_tag = FALSE AND
+            v.has_mute_tag = FALSE AND
+            v.list_user = normalized_addr AND
+            public.is_valid_address(v.data) AND
+            v.token_id = primary_list_token_id
     )
     SELECT * FROM primary_list
     ORDER BY
@@ -127,14 +137,16 @@ $$;
 -------------------------------------------------------------------------------
 -- Function: count_unique_following_by_address
 -- Description: Counts the unique addresses that each user is following in the
---              list_record_tags_extended_view, groups the results by user, and
---              orders them by the number of unique addresses in descending
---              order. Includes a LIMIT parameter to control the number of
---              returned rows. The function filters by version and type,
---              excluding blocked or muted relationships.
+--              view_list_records_with_nft_manager_user_tags, groups the
+--              results by user, and orders them by the number of unique
+--              addresses in descending order. Includes a LIMIT parameter to
+--              control the number of returned rows. The function filters by
+--              version and type, excluding blocked or muted relationships.
 -- Parameters:
 --   - limit_count (bigint): The maximum number of rows to return.
--- Returns: tbd
+-- Returns: A table with 'address' (text) and 'following_count' (bigint),
+--          representing each user and their count of unique following
+--          addresses.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.count_unique_following_by_address(limit_count bigint)
 RETURNS TABLE(address character varying(42), following_count bigint)
@@ -143,26 +155,26 @@ AS $$
 BEGIN
     RETURN QUERY
   SELECT
-        lrtev.list_user AS address,
-        COUNT(DISTINCT lrtev.data) AS following_count
+        v.list_user AS address,
+        COUNT(DISTINCT v.data) AS following_count
     FROM
-        list_record_tags_extended_view AS lrtev
+        view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only version 1
-        lrtev.version = 1 AND
+        v.version = 1 AND
         -- address record type (1)
-        lrtev.record_type = 1 AND
+        v.record_type = 1 AND
         -- NOT blocked
-        lrtev.has_block_tag = FALSE AND
+        v.has_block_tag = FALSE AND
         -- NOT muted
-        lrtev.has_mute_tag = FALSE AND
+        v.has_mute_tag = FALSE AND
         -- valid address format
-        public.is_valid_address(lrtev.data)
+        public.is_valid_address(v.data)
     GROUP BY
-        lrtev.list_user
+        v.list_user
     ORDER BY
         following_count DESC,
-        lrtev.list_user ASC
+        v.list_user ASC
     LIMIT limit_count;
 END;
 $$;

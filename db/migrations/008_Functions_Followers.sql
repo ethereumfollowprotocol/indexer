@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------
 -- Function: get_followers
 -- Description: Retrieves a list of followers for a specified address from the
---              list_record_tags_extended_view. It filters tokens by version and
+--              view_list_records_with_nft_manager_user_tags. It filters tokens by version and
 --              type, excluding blocked or muted relationships.
 -- Parameters:
 --   - address (text): Address used to identify and filter followers.
@@ -28,27 +28,27 @@ BEGIN
     RETURN QUERY
     SELECT
         -- the token id that follows the <address>
-        lrtev.token_id,
+        v.token_id,
         -- the list user of the EFP List that follows the <address>
-        lrtev.list_user
+        v.list_user
     FROM
-        list_record_tags_extended_view AS lrtev
+        view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
-        lrtev.version = 1 AND
+        v.version = 1 AND
         -- address record type (1)
-        lrtev.record_type = 1 AND
+        v.record_type = 1 AND
         -- valid address format
-        public.is_valid_address(lrtev.data) AND
+        public.is_valid_address(v.data) AND
         -- NOT blocked
-        lrtev.has_block_tag = FALSE AND
+        v.has_block_tag = FALSE AND
         -- NOT muted
-        lrtev.has_mute_tag = FALSE AND
+        v.has_mute_tag = FALSE AND
         -- who follow the address
         -- (the "data" of the address record is the address that is followed)
-        lrtev.data = normalized_addr
+        v.data = normalized_addr
     ORDER BY
-        lrtev.token_id ASC;
+        v.token_id ASC;
 END;
 $$;
 
@@ -80,24 +80,24 @@ BEGIN
 
     RETURN QUERY
     SELECT DISTINCT
-        lrtev.list_user
+        v.list_user
     FROM
-        list_record_tags_extended_view AS lrtev
+        view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
-        lrtev.version = 1 AND
+        v.version = 1 AND
         -- address record type (1)
-        lrtev.record_type = 1 AND
+        v.record_type = 1 AND
         -- valid address format
-        public.is_valid_address(lrtev.data) AND
+        public.is_valid_address(v.data) AND
         -- NOT blocked
-        lrtev.has_block_tag = FALSE AND
+        v.has_block_tag = FALSE AND
         -- NOT muted
-        lrtev.has_mute_tag = FALSE AND
+        v.has_mute_tag = FALSE AND
         -- match the address parameter
-        lrtev.data = normalized_addr
+        v.data = normalized_addr
     ORDER BY
-        lrtev.list_user ASC;
+        v.list_user ASC;
 END;
 $$;
 
@@ -106,7 +106,7 @@ $$;
 -------------------------------------------------------------------------------
 -- Function: count_unique_followers_by_address
 -- Description: Counts the unique followers for each address in the
---              list_record_tags_extended_view, groups the results by address,
+--              view_list_records_with_nft_manager_user_tags, groups the results by address,
 --              and orders them by the number of unique followers in descending
 --              order. Includes a LIMIT parameter to control the number of
 --              returned rows. The function filters by version and type,
@@ -123,26 +123,26 @@ AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        lrtev.data AS address,
-        COUNT(DISTINCT lrtev.list_user) AS followers_count
+        v.data AS address,
+        COUNT(DISTINCT v.list_user) AS followers_count
     FROM
-        list_record_tags_extended_view AS lrtev
+        view_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
-        lrtev.version = 1 AND
+        v.version = 1 AND
         -- address record type (1)
-        lrtev.record_type = 1 AND
+        v.record_type = 1 AND
         -- valid address format
-        public.is_valid_address(lrtev.data) AND
+        public.is_valid_address(v.data) AND
         -- NOT blocked
-        lrtev.has_block_tag = FALSE AND
+        v.has_block_tag = FALSE AND
         -- NOT muted
-        lrtev.has_mute_tag = FALSE
+        v.has_mute_tag = FALSE
     GROUP BY
-        lrtev.data
+        v.data
     ORDER BY
         followers_count DESC,
-        lrtev.data ASC
+        v.data ASC
     LIMIT limit_count;
 END;
 $$;
