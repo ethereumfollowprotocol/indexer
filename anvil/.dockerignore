@@ -1,0 +1,4 @@
+# ignore everything
+*
+# except for
+!entrypoint.sh

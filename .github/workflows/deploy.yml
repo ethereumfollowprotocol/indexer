@@ -47,11 +47,9 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Railway CLI
-        run: |
-          bun add --global @railway/cli
+        run: bun add --global @railway/cli
 
       - name: Deploy Indexer
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          railway up --detach --service='indexer' --environment='production'
+        run: railway up --service='indexer' --environment='production'
