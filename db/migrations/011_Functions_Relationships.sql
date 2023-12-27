@@ -34,7 +34,7 @@ DECLARE
     normalized_addr types.eth_address;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := public.normalize_address(address);
+    normalized_addr := public.normalize_eth_address(address);
 
     RETURN QUERY
     SELECT

@@ -1,36 +1,38 @@
-import { type Row, database } from '#/database'
+import { database } from '#/database'
 import { logger } from '#/logger'
+import { sql, type QueryResult, type RawBuilder } from 'kysely'
+import type { Address } from 'viem'
 import type { Event } from '../event'
 
 export class OwnershipTransferredHandler {
   async onOwnershipTransferred(event: Event): Promise<void> {
-    // this was a new contract that got deployed and transferred
-    // ownership to the owner
-    const previousOwner = event.eventParameters.args['previousOwner']
-    const newOwner = event.eventParameters.args['newOwner']
-    if (previousOwner === '0x0000000000000000000000000000000000000000') {
-      const contractsRow: Row<'contracts'> = {
-        chain_id: event.chainId,
-        address: event.contractAddress.toLowerCase(),
-        name: event.contractName,
-        owner: newOwner.toLowerCase()
-      }
-      logger.log(`\x1b[96m(OwnershipTransferred) Insert ${event.contractName} contract into \`contracts\` table\x1b[0m`)
-      await database.insertInto('contracts').values([contractsRow]).executeTakeFirst()
-    } else {
-      // contract ownership was transferred but the contract should already
-      // be in the database
+    const chainId: bigint = event.chainId
+    const contractAddress: Address = event.contractAddress
+    const contractName: string = event.contractName
+    const previousOwner: Address = event.eventParameters.args['previousOwner']
+    const newOwner: Address = event.eventParameters.args['newOwner']
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__ownership_transferred(
+      ${chainId},
+      ${contractAddress},
+      ${contractName},
+      ${previousOwner},
+      ${newOwner}
+    )`
+    const eventSignature: string = `OwnershipTransferred(${previousOwner}, ${newOwner})`
+    logger.info(eventSignature)
 
-      // we will update the owner in the database
-      logger.log(
-        `\x1b[95m(OwnershipTransferred) Updating ${event.contractName} contract owner from ${previousOwner} to ${newOwner} in \`contracts\` table\x1b[0m`
-      )
-      await database
-        .updateTable('contracts')
-        .set({ owner: newOwner })
-        .where('chain_id', '=', event.chainId.toString())
-        .where('address', '=', event.contractAddress.toLowerCase())
-        .executeTakeFirst()
+    try {
+      const result: QueryResult<unknown> = await query.execute(database)
+      // sleep for 1 sec
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      if (!result || result.rows.length === 0) {
+        logger.warn(`${eventSignature} query returned no rows`)
+        return
+      }
+    } catch (error: any) {
+      logger.error(`${eventSignature} Error processing event: ${error.message}`)
+      process.exit(1)
     }
   }
 }

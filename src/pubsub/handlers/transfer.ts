@@ -1,38 +1,38 @@
-import { type Row, database } from '#/database'
+import { database } from '#/database'
 import { logger } from '#/logger'
+import { sql, type QueryResult, type RawBuilder } from 'kysely'
+import type { Address } from 'viem'
 import type { Event } from '../event'
 
 export class TransferHandler {
   async onTransfer(event: Event): Promise<void> {
-    const from: string = event.eventParameters.args['from']
-    const to: string = event.eventParameters.args['to']
-    if (from === '0x0000000000000000000000000000000000000000') {
-      // insert as new row
-      const row: Row<'list_nfts'> = {
-        chain_id: event.chainId,
-        contract_address: event.contractAddress.toLowerCase(),
-        token_id: event.eventParameters.args['tokenId'],
-        owner: to.toLowerCase()
-        // list_manager: '',
-        // list_user: to
-        // list_storage_location: '',
-        // list_storage_location_chain_id: 0n,
-        // list_storage_location_contract_address: ''
-        // list_storage_location_nonce: 0n,
-      }
+    const chainId: bigint = event.chainId
+    const contractAddress: Address = event.contractAddress
+    const from: Address = event.eventParameters.args['from']
+    const to: Address = event.eventParameters.args['to']
+    const tokenId: bigint = event.eventParameters.args['tokenId']
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__transfer(
+      ${chainId},
+      ${contractAddress},
+      ${tokenId},
+      ${from},
+      ${to}
+    )`
+    const eventSignature: string = `Transfer(${tokenId}, ${from}, ${to})`
+    logger.info(eventSignature)
 
-      logger.log(`\x1b[94m(Transfer) Insert ${event.eventParameters.eventName} event \`list_nfts\` table\x1b[0m`)
-      await database.insertInto('list_nfts').values([row]).executeTakeFirst()
-    } else {
-      // update existing row
-      logger.log(`\x1b[93m(Transfer) Update ${event.eventParameters.eventName} event in db\x1b[0m`)
-      await database
-        .updateTable('list_nfts')
-        .set({ owner: to })
-        .where('chain_id', '=', event.chainId.toString())
-        .where('contract_address', '=', event.contractAddress)
-        .where('token_id', '=', event.eventParameters.args['tokenId'])
-        .executeTakeFirst()
+    try {
+      const result: QueryResult<unknown> = await query.execute(database)
+      // sleep for 1 sec
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      if (!result || result.rows.length === 0) {
+        logger.warn(`${eventSignature} query returned no rows`)
+        return
+      }
+    } catch (error: any) {
+      logger.error(`${eventSignature} Error processing event: ${error.message}`)
+      process.exit(1)
     }
   }
 }

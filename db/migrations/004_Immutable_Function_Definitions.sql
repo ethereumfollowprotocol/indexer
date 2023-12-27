@@ -82,13 +82,14 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: normalize_address
--- Description: Normalizes the input Ethereum address to lowercase and validates its format.
+-- Function: normalize_eth_address
+-- Description: Normalizes the input Ethereum address to lowercase and
+--              validates its format.
 -- Parameters:
 --   - address (TEXT): The Ethereum address to be normalized and validated.
 -- Returns: The normalized address if valid, otherwise raises an exception.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.normalize_address(address TEXT)
+CREATE OR REPLACE FUNCTION public.normalize_eth_address(address TEXT)
 RETURNS types.eth_address
 LANGUAGE plpgsql IMMUTABLE
 AS $$

@@ -27,7 +27,7 @@ DECLARE
     lowest_token_id BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := public.normalize_address(address);
+    normalized_addr := public.normalize_eth_address(address);
 
     -- Retrieve the primary list value from account_metadata
     SELECT am.value INTO primary_list
