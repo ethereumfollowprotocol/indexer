@@ -24,7 +24,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: decode_efp_list_storage_location__version_001__location_type_001
+-- Function: public.decode_efp_list_storage_location__v001__location_type_001
 -- Description: Decodes a list storage location string into its components.
 --              The list storage location string is composed of:
 --              - version (1 byte)
@@ -35,15 +35,15 @@ $$;
 --              The function validates the length of the input string and
 --              extracts the components.
 -- Parameters:
---   - p_list_storage_location (TEXT): The list storage location string to be
---                                   decoded.
--- Returns: types.efp_list_storage_location__version_001__location_type_001
+--   - p_list_storage_location_hex (TEXT): The list storage location string to
+--                                         be decoded.
+-- Returns: types.decode_efp_list_storage_location__v001__location_type_001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode_efp_list_storage_location__version_001__location_type_001(
-    p_list_storage_location VARCHAR(174)
+CREATE OR REPLACE FUNCTION public.decode_efp_list_storage_location__v001__location_type_001(
+    p_list_storage_location_hex VARCHAR(174)
 )
 RETURNS
-  types.efp_list_storage_location__version_001__location_type_001
+  types.efp_list_storage_location__v001__location_type_001
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
@@ -56,12 +56,12 @@ DECLARE
     nonce BIGINT;
 BEGIN
     -- Check if the length is valid
-    IF NOT public.is_list_storage_location_hexstring(p_list_storage_location) THEN
+    IF NOT public.is_list_storage_location_hexstring(p_list_storage_location_hex) THEN
         RAISE EXCEPTION 'Invalid list location';
     END IF;
 
     -- Convert the hex string (excluding '0x') to bytea
-    hex_data := DECODE(SUBSTRING(p_list_storage_location FROM 3), 'hex');
+    hex_data := DECODE(SUBSTRING(p_list_storage_location_hex FROM 3), 'hex');
 
     ----------------------------------------
     -- version

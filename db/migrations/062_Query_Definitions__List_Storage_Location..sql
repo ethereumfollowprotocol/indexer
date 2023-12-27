@@ -31,10 +31,10 @@ BEGIN
       dlsl.chain_id,
       dlsl.contract_address,
       dlsl.nonce
-    FROM public.decode_efp_list_storage_location__version_001__location_type_001(
-        (SELECT nfts.list_storage_location
-         FROM public.list_nfts AS nfts
-         WHERE nfts.token_id = input_token_id)
+    FROM public.decode_efp_list_storage_location__v001__location_type_001(
+        (SELECT nft.list_storage_location
+         FROM public.list_nfts nft
+         WHERE nft.token_id = input_token_id)
     ) AS dlsl
     WHERE dlsl.version = 1 AND dlsl.location_type = 1;
 END;
