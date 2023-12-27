@@ -8,7 +8,7 @@
 CREATE TYPE types.efp_list_record AS (
     version types.uint8,
     record_type types.uint8,
-    data_hex types.hexstring
+    data BYTEA
 );
 
 -------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ CREATE TYPE types.efp_list_record AS (
 CREATE TYPE types.efp_list_record__v001 AS (
     version types.uint8__1,
     record_type types.uint8,
-    data_hex types.hexstring
+    data BYTEA
 );
 
 -------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ CREATE TYPE types.efp_list_record__v001 AS (
 CREATE TYPE types.efp_list_record__v001__record_type_001 AS (
     version types.uint8__1,
     record_type types.uint8__1,
-    data_hex types.hexstring
+    data BYTEA
 );
 
 -------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ CREATE DOMAIN types.efp_tag AS VARCHAR(255);
 CREATE TYPE types.efp_list_record_tag AS (
     version types.uint8,
     record_type types.uint8,
-    data_hex types.hexstring,
+    data BYTEA,
     tag types.efp_tag
 );
 

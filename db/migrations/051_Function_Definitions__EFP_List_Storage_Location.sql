@@ -24,7 +24,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: public.decode_efp_list_storage_location__v001__location_type_001
+-- Function: public.decode__efp_list_storage_location__v001__location_type_001
 -- Description: Decodes a list storage location string into its components.
 --              The list storage location string is composed of:
 --              - version (1 byte)
@@ -37,9 +37,9 @@ $$;
 -- Parameters:
 --   - p_list_storage_location_hex (TEXT): The list storage location string to
 --                                         be decoded.
--- Returns: types.decode_efp_list_storage_location__v001__location_type_001
+-- Returns: types.efp_list_storage_location__v001__location_type_001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode_efp_list_storage_location__v001__location_type_001(
+CREATE OR REPLACE FUNCTION public.decode__efp_list_storage_location__v001__location_type_001(
     p_list_storage_location_hex VARCHAR(174)
 )
 RETURNS

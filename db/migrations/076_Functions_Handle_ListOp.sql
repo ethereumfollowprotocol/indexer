@@ -29,11 +29,11 @@ RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 DECLARE
+    list_record_hex types.hexstring;
     list_record types.efp_list_record;
 BEGIN
-    list_record := public.decode_list_record(
-        p_list_op__v001__opcode_001.record_hex
-    );
+    list_record_hex := public.hexlify(p_list_op__v001__opcode_001.record);
+    list_record := public.decode_list_record(list_record_hex);
 
     -- if there's a conflict, then this will raise an exception
     INSERT INTO public.list_records (
@@ -48,10 +48,10 @@ BEGIN
         p_chain_id,
         p_contract_address,
         p_nonce,
-        p_list_op__v001__opcode_001.record_hex,
+        list_record_hex,
         list_record.version,
         list_record.record_type,
-        list_record.data_hex
+        public.hexlify(list_record.data)
     );
 END;
 $$;
@@ -85,9 +85,9 @@ RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    list_record types.efp_list_record;
+    list_record_hex types.hexstring;
 BEGIN
-    list_record := public.decode_list_record(p_list_op__v001__opcode_002.record_hex);
+    list_record_hex := public.hexlify(p_list_op__v001__opcode_002.record);
 
     -- if it doesn't already exist, raise exception
     IF NOT EXISTS (
@@ -97,13 +97,13 @@ BEGIN
             chain_id = p_chain_id AND
             contract_address = p_contract_address AND
             nonce = p_nonce AND
-            record = p_list_op__v001__opcode_002.record_hex
+            record = list_record_hex
     ) THEN
         RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
             p_chain_id,
             p_contract_address,
             p_nonce,
-            p_list_op__v001__opcode_002.record_hex;
+            list_record_hex;
     END IF;
 
     -- the record exists, so delete it
@@ -112,7 +112,7 @@ BEGIN
         chain_id = p_chain_id AND
         contract_address = p_contract_address AND
         nonce = p_nonce AND
-        record = p_list_op__v001__opcode_002.record_hex;
+        record = list_record_hex;
 END;
 $$;
 
@@ -131,7 +131,7 @@ $$;
 --   - p_contract_address (types.eth_address): The contract address associated
 --                                        with the event.
 --   - p_nonce (BIGINT): The nonce associated with the event.
---   - p_op (types.hexstring): The operation data as a hex string.
+--   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 --   - p_list_op__v001 (types.efp_list_op__v001): The operation data as a
 --                                                 record.
 -------------------------------------------------------------------------------
@@ -146,35 +146,35 @@ RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    list_op_v001__opcode_001 types.efp_list_op__v001__opcode_001;
-    list_op_v001__opcode_002 types.efp_list_op__v001__opcode_002;
+    list_op__v001__opcode_001 types.efp_list_op__v001__opcode_001;
+    list_op__v001__opcode_002 types.efp_list_op__v001__opcode_002;
 BEGIN
     CASE
         WHEN p_list_op__v001.opcode = 1 THEN
-            list_op_v001__opcode_001 := (
+            list_op__v001__opcode_001 := (
                 p_list_op__v001.version,
                 p_list_op__v001.opcode::types.uint8__1,
-                p_list_op__v001.data_hex
+                p_list_op__v001.data
             )::types.efp_list_op__v001__opcode_001;
             PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
               p_chain_id,
               p_contract_address,
               p_nonce,
               p_list_op_hex,
-              list_op_v001__opcode_001
+              list_op__v001__opcode_001
             );
         WHEN p_list_op__v001.opcode = 2 THEN
-            list_op_v001__opcode_002 := (
+            list_op__v001__opcode_002 := (
               p_list_op__v001.version,
               p_list_op__v001.opcode::types.uint8__2,
-              p_list_op__v001.data_hex
+              p_list_op__v001.data
             )::types.efp_list_op__v001__opcode_002;
             PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
               p_chain_id,
               p_contract_address,
               p_nonce,
               p_list_op_hex,
-              list_op_v001__opcode_002
+              list_op__v001__opcode_002
             );
         WHEN p_list_op__v001.opcode = 3 THEN
         -- skip
@@ -218,7 +218,7 @@ DECLARE
     list_op__v001 types.efp_list_op__v001;
 BEGIN
     normalized_contract_address := public.normalize_eth_address(p_contract_address);
-    list_op := public.decode_list_op(p_list_op_hex);
+    list_op := public.decode__efp_list_op(p_list_op_hex);
 
     -- Insert the operation into list_ops
     INSERT INTO public.list_ops (
@@ -237,7 +237,7 @@ BEGIN
         p_list_op_hex,
         list_op.version,
         list_op.opcode,
-        list_op.data_hex
+        public.hexlify(list_op.data)
     )
     ON CONFLICT (chain_id, contract_address, nonce, op) DO NOTHING;
 
@@ -245,7 +245,8 @@ BEGIN
       WHEN list_op.version = 1 THEN
           list_op__v001 := (
               list_op.version::types.uint8__1,
-              list_op.opcode, list_op.data_hex
+              list_op.opcode,
+              list_op.data
           )::types.efp_list_op__v001;
           PERFORM public.handle_contract_event__ListOp__v001(
             p_chain_id,
@@ -257,7 +258,6 @@ BEGIN
       ELSE
           RAISE EXCEPTION 'Unsupported list op version: %', list_op.version;
     END CASE;
-
 END;
 $$;
 

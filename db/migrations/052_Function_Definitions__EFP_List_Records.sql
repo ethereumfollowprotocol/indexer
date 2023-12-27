@@ -43,7 +43,7 @@ DECLARE
     tmp_record_version INTEGER;
     record_version types.uint8__1;
     record_type types.uint8;
-    record_data_hex types.hexstring;
+    record_data BYTEA;
 BEGIN
     -- check if the length is valid
     IF LENGTH(p_record_bytea) < 2 THEN
@@ -78,10 +78,10 @@ BEGIN
     ----------------------------------------
     -- data
     ----------------------------------------
-    record_data_hex := ('0x' || ENCODE(SUBSTRING(p_record_bytea FROM 3), 'hex'))::types.hexstring;
+    record_data := SUBSTRING(p_record_bytea FROM 3);
 
     -- Prepare return values
-    RETURN (record_version, record_type, record_data_hex);
+    RETURN (record_version, record_type, record_data);
 END;
 $$;
 
@@ -89,7 +89,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: decode_list_op
+-- Function: decode_list_record
 -- Description: Decodes a list record string into its components.
 --              The list record hex string is composed of:
 --              - version (1 byte)
@@ -111,7 +111,7 @@ DECLARE
     record_bytea BYTEA;
     record_version types.uint8;
     record_type types.uint8;
-    record_data_hex types.hexstring;
+    record_data BYTEA;
     record__v001 types.efp_list_record__v001;
 BEGIN
     -- Check if the length is valid (at least 2 characters for '0x')
@@ -138,7 +138,7 @@ BEGIN
         WHEN record_version = 1 THEN
             record__v001 := public.decode_list_record__v001(record_bytea);
             record_type := record__v001.record_type;
-            record_data_hex := record__v001.data_hex;
+            record_data := record__v001.data;
         ELSE
             -- no other versions are defined yet
             --
@@ -146,10 +146,10 @@ BEGIN
             -- list record version 1 schema and so they may not exist in
             -- other versions, so we just return NULL for both
             record_type := NULL;
-            record_data_hex := NULL;
+            record_data := NULL;
     END CASE;
 
-    RETURN (record_version, record_type, record_data_hex);
+    RETURN (record_version, record_type, record_data);
 END;
 $$;
 

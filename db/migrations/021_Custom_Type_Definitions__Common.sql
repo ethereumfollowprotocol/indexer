@@ -55,4 +55,23 @@ CREATE DOMAIN types.uint8__4 AS SMALLINT CHECK (VALUE = 4);
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})*$');
 
+
+
+-------------------------------------------------------------------------------
+-- Function: public.hexlify
+-- Description: Converts a BYTEA input to a hexadecimal string.
+-- Parameters:
+--   - bytea_data (BYTEA): The binary data to be converted.
+-- Returns: The hexadecimal string representation of the input binary data.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.hexlify(bytea_data BYTEA)
+RETURNS types.hexstring
+LANGUAGE plpgsql IMMUTABLE
+AS $$
+BEGIN
+    -- Convert BYTEA to a hexadecimal string with '0x' prefix
+    RETURN ('0x' || ENCODE(bytea_data, 'hex'))::types.hexstring;
+END;
+$$;
+
 -- migrate:down
