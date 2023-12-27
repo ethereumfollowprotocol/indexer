@@ -98,8 +98,7 @@ $$;
 --              version 1 list op.
 -- Parameters:
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
--- Returns: A table with 'version' (SMALLINT), 'opcode' (SMALLINT), and
---          'data' (types.hexstring). The data is returned as a hex string.
+-- Returns: types.efp_list_op__v001
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.decode_list_op__v001(
   p_op_bytea BYTEA
@@ -216,7 +215,7 @@ BEGIN
         WHEN op_version = 1 THEN
             op_v001 := public.decode_list_op__v001(op_bytea);
             op_opcode := op_v001.opcode;
-            op_data_hex := op_v001.data;
+            op_data_hex := op_v001.data_hex;
         ELSE
             -- no other versions are defined yet
             --

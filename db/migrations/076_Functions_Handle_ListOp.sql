@@ -9,15 +9,16 @@
 --              the appropriate format.
 -- Parameters:
 --   - p_chain_id (BIGINT): The blockchain network identifier.
---   - p_contract_address (VARCHAR(42)): The contract address associated with
+--   - p_contract_address (types.eth_address): The contract address associated with
 --                                        the event.
 --   - p_nonce (BIGINT): The nonce associated with the event.
 --   - p_op (types.hexstring): The operation data as a hex string.
---   - p_op_decoded (RECORD): The operation data as a record.
+--   - p_op_decoded (types.efp_list_op__v001__opcode_001): The operation data
+--                                                         as a record.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_001(
   p_chain_id BIGINT,
-  p_contract_address types.hexstring,
+  p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_op_hex types.hexstring,
   p_op_v001__opcode_001 types.efp_list_op__v001__opcode_001
@@ -25,8 +26,11 @@ CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_00
 RETURNS VOID
 LANGUAGE plpgsql
 AS $$
+DECLARE
+    record types.efp_list_record;
 BEGIN
-    -- TODO: Decode the record data
+    record := public.decode_list_record(p_op_v001__opcode_001.record_hex);
+
     -- TODO: Insert the operation into list_records
     -- INSERT INTO public.list_records (chain_id, contract_address, nonce, record, version, record_type, data)
     -- VALUES (p_chain_id, p_contract_address, p_nonce, foo.record, bar.version, baz.record_type, qux.data)
@@ -49,7 +53,7 @@ $$;
 -- Description: TODO write description
 -- Parameters:
 --   - p_chain_id (BIGINT): The blockchain network identifier.
---   - p_contract_address (VARCHAR(42)): The contract address associated with
+--   - p_contract_address (types.eth_address): The contract address associated with
 --                                        the event.
 --   - p_nonce (BIGINT): The nonce associated with the event.
 --   - p_op (types.hexstring): The operation data as a hex string.
@@ -57,7 +61,7 @@ $$;
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001(
   p_chain_id BIGINT,
-  p_contract_address types.hexstring,
+  p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_op_hex types.hexstring,
   p_op_v001 types.efp_list_op__v001
@@ -70,7 +74,7 @@ DECLARE
 BEGIN
     CASE
         WHEN p_op_v001.opcode = 1 THEN
-            op_v001__opcode_001 := (p_op_v001.version, p_op_v001.opcode::types.uint8__1, p_op_v001.data)::types.efp_list_op__v001__opcode_001;
+            op_v001__opcode_001 := (p_op_v001.version, p_op_v001.opcode::types.uint8__1, p_op_v001.data_hex)::types.efp_list_op__v001__opcode_001;
             PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
               p_chain_id,
               p_contract_address,
@@ -78,6 +82,12 @@ BEGIN
               p_op_hex,
               op_v001__opcode_001
             );
+        WHEN p_op_v001.opcode = 2 THEN
+        -- skip
+        WHEN p_op_v001.opcode = 3 THEN
+        -- skip
+        WHEN p_op_v001.opcode = 4 THEN
+        -- skip
         ELSE
             RAISE EXCEPTION 'Unsupported list op version 1 opcode: %', p_op_v001.opcode;
     END CASE;
@@ -119,12 +129,12 @@ BEGIN
 
     -- Insert the operation into list_ops
     INSERT INTO public.list_ops (chain_id, contract_address, nonce, op, version, opcode, data)
-    VALUES (p_chain_id, normalized_contract_address, p_nonce, p_op_hex, op_decoded.version, op_decoded.opcode, op_decoded.data)
+    VALUES (p_chain_id, normalized_contract_address, p_nonce, p_op_hex, op_decoded.version, op_decoded.opcode, op_decoded.data_hex)
     ON CONFLICT (chain_id, contract_address, nonce, op) DO NOTHING;
 
     CASE
       WHEN op_decoded.version = 1 THEN
-          op_v001 := (op_decoded.version::types.uint8__1, op_decoded.opcode, op_decoded.data)::types.efp_list_op__v001;
+          op_v001 := (op_decoded.version::types.uint8__1, op_decoded.opcode, op_decoded.data_hex)::types.efp_list_op__v001;
           PERFORM public.handle_contract_event__ListOp__v001(
             p_chain_id,
             p_contract_address,
