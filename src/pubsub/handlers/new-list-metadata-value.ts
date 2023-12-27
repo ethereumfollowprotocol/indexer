@@ -5,15 +5,13 @@ import type { Event } from '../event'
 
 export class NewListMetadataValueHandler {
   async onNewListMetadataValue(event: Event): Promise<void> {
-    const chainId: bigint = event.chainId
-    const contractAddress: string = event.contractAddress
     const nonce: bigint = event.eventParameters.args['nonce']
     const key: string = event.eventParameters.args['key']
     const value: string = event.eventParameters.args['value']
 
     const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__NewListMetadataValue(
-      ${chainId},
-      ${contractAddress},
+      ${event.chainId},
+      ${event.contractAddress},
       ${nonce},
       ${key},
       ${value}

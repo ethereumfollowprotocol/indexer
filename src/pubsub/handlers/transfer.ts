@@ -6,14 +6,12 @@ import type { Event } from '../event'
 
 export class TransferHandler {
   async onTransfer(event: Event): Promise<void> {
-    const chainId: bigint = event.chainId
-    const contractAddress: Address = event.contractAddress
     const from: Address = event.eventParameters.args['from']
     const to: Address = event.eventParameters.args['to']
     const tokenId: bigint = event.eventParameters.args['tokenId']
     const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__Transfer(
-      ${chainId},
-      ${contractAddress},
+      ${event.chainId},
+      ${event.contractAddress},
       ${tokenId},
       ${from},
       ${to}

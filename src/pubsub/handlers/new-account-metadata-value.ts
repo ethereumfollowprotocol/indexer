@@ -5,14 +5,13 @@ import type { Event } from '../event'
 
 export class NewAccountMetadataValueHandler {
   async onNewAccountMetadataValue(event: Event): Promise<void> {
-    const contractAddress: string = event.contractAddress
     const address: `0x${string}` = event.eventParameters.args['addr']
     const key: string = event.eventParameters.args['key']
     const value: string = event.eventParameters.args['value']
 
     const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__NewAccountMetadataValue(
       ${event.chainId},
-      ${contractAddress},
+      ${event.contractAddress},
       ${address},
       ${key},
       ${value}

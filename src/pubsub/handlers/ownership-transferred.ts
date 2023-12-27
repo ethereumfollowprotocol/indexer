@@ -6,14 +6,12 @@ import type { Event } from '../event'
 
 export class OwnershipTransferredHandler {
   async onOwnershipTransferred(event: Event): Promise<void> {
-    const chainId: bigint = event.chainId
-    const contractAddress: Address = event.contractAddress
     const contractName: string = event.contractName
     const previousOwner: Address = event.eventParameters.args['previousOwner']
     const newOwner: Address = event.eventParameters.args['newOwner']
     const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__OwnershipTransferred(
-      ${chainId},
-      ${contractAddress},
+      ${event.chainId},
+      ${event.contractAddress},
       ${contractName},
       ${previousOwner},
       ${newOwner}
