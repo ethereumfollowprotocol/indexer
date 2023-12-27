@@ -187,7 +187,7 @@ CREATE TABLE public.list_record_tags (
   contract_address types.eth_address NOT NULL,
   nonce BIGINT NOT NULL,
   record types.hexstring NOT NULL,
-  tag VARCHAR(255) NOT NULL,
+  tag types.efp_tag NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
