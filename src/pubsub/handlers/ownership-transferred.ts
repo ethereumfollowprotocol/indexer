@@ -11,14 +11,14 @@ export class OwnershipTransferredHandler {
     const contractName: string = event.contractName
     const previousOwner: Address = event.eventParameters.args['previousOwner']
     const newOwner: Address = event.eventParameters.args['newOwner']
-    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__ownership_transferred(
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__OwnershipTransferred(
       ${chainId},
       ${contractAddress},
       ${contractName},
       ${previousOwner},
       ${newOwner}
     )`
-    const eventSignature: string = `OwnershipTransferred(${previousOwner}, ${newOwner})`
+    const eventSignature: string = `${event.eventParameters.eventName}(${previousOwner}, ${newOwner})`
     logger.info(eventSignature)
 
     try {

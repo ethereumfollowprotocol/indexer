@@ -1,69 +1,37 @@
-import { type Row, database } from '#/database'
+import { database } from '#/database'
 import { logger } from '#/logger'
-import { colors } from '#/utilities/colors'
+import { sql, type QueryResult, type RawBuilder } from 'kysely'
 import type { Event } from '../event'
 
 export class NewAccountMetadataValueHandler {
   async onNewAccountMetadataValue(event: Event): Promise<void> {
+    const contractAddress: string = event.contractAddress
     const address: `0x${string}` = event.eventParameters.args['addr']
     const key: string = event.eventParameters.args['key']
     const value: string = event.eventParameters.args['value']
 
-    // insert or update
-    const row: Row<'account_metadata'> = {
-      chain_id: event.chainId,
-      contract_address: event.contractAddress.toLowerCase(),
-      address: address.toLowerCase(),
-      key: key,
-      value: value
-    }
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__NewAccountMetadataValue(
+      ${event.chainId},
+      ${contractAddress},
+      ${address},
+      ${key},
+      ${value}
+    )`
+    const eventSignature: string = `${event.eventParameters.eventName}(${address}, ${key}, ${value})`
+    logger.info(eventSignature)
 
-    // check if value is already set for this chain_id/contract_address/address/key
+    try {
+      const result: QueryResult<unknown> = await query.execute(database)
+      // sleep for 1 sec
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-    const query = database
-      .selectFrom('account_metadata')
-      .select('value')
-      .where('chain_id', '=', event.chainId.toString())
-      .where('contract_address', '=', event.contractAddress.toLowerCase())
-      .where('address', '=', address.toLowerCase())
-      .where('key', '=', key)
-    // print
-    const existing: { value: string } | undefined = await query.executeTakeFirst()
-    if (existing === undefined) {
-      // insert
-      logger.log(
-        `${
-          colors.LIGHT_BLUE
-        }(NewAccountMetadataValue) Insert account metadata chain_id=${event.chainId.toString()} contract_address=${event.contractAddress.toLowerCase()} address=${address.toLowerCase()} ${key}=${value} into \`account_metadata\` table${
-          colors.ENDC
-        }`
-      )
-      await database.insertInto('account_metadata').values([row]).executeTakeFirst()
-    } else if (existing.value !== value) {
-      // update
-      logger.log(
-        `${
-          colors.LIGHT_MAGENTA
-        }(NewAccountMetadataValue) Updating account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} in \`account_metadata\` table${
-          colors.ENDC
-        }`
-      )
-      await database
-        .updateTable('account_metadata')
-        .set({ value: value })
-        .where('chain_id', '=', event.chainId.toString())
-        .where('contract_address', '=', event.contractAddress.toLowerCase())
-        .where('address', '=', address.toLowerCase())
-        .where('key', '=', key)
-        .executeTakeFirst()
-    } else {
-      logger.log(
-        `${
-          colors.LIGHT_BLUE
-        }(NewAccountMetadataValue) Account metadata ${address.toLowerCase()} chain_id=${event.chainId.toString()} ${key}=${value} already exists in \`account_metadata\` table${
-          colors.ENDC
-        }`
-      )
+      if (!result || result.rows.length === 0) {
+        logger.warn(`${eventSignature} query returned no rows`)
+        return
+      }
+    } catch (error: any) {
+      logger.error(`${eventSignature} Error processing event: ${error.message}`)
+      process.exit(1)
     }
   }
 }

@@ -11,14 +11,14 @@ export class TransferHandler {
     const from: Address = event.eventParameters.args['from']
     const to: Address = event.eventParameters.args['to']
     const tokenId: bigint = event.eventParameters.args['tokenId']
-    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__transfer(
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__Transfer(
       ${chainId},
       ${contractAddress},
       ${tokenId},
       ${from},
       ${to}
     )`
-    const eventSignature: string = `Transfer(${tokenId}, ${from}, ${to})`
+    const eventSignature: string = `${event.eventParameters.eventName}(${tokenId}, ${from}, ${to})`
     logger.info(eventSignature)
 
     try {

@@ -1,25 +1,38 @@
-import { type Row, database } from '#/database'
+import { database } from '#/database'
 import { logger } from '#/logger'
+import { sql, type QueryResult, type RawBuilder } from 'kysely'
 import type { Event } from '../event'
 
 export class NewListMetadataValueHandler {
   async onNewListMetadataValue(event: Event): Promise<void> {
+    const chainId: bigint = event.chainId
+    const contractAddress: string = event.contractAddress
     const nonce: bigint = event.eventParameters.args['nonce']
     const key: string = event.eventParameters.args['key']
     const value: string = event.eventParameters.args['value']
 
-    // insert or update
-    const row: Row<'list_metadata'> = {
-      chain_id: event.chainId,
-      contract_address: event.contractAddress,
-      nonce,
-      key,
-      value
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__NewListMetadataValue(
+      ${chainId},
+      ${contractAddress},
+      ${nonce},
+      ${key},
+      ${value}
+    )`
+    const eventSignature: string = `${event.eventParameters.eventName}(${nonce}, ${key}, ${value})`
+    logger.info(eventSignature)
+
+    try {
+      const result: QueryResult<unknown> = await query.execute(database)
+      // sleep for 1 sec
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      if (!result || result.rows.length === 0) {
+        logger.warn(`${eventSignature} query returned no rows`)
+        return
+      }
+    } catch (error: any) {
+      logger.error(`${eventSignature} Error processing event: ${error.message}`)
+      process.exit(1)
     }
-    logger.log(
-      `\x1b[33m(NewListMetadataValue) EFP List w/ nonce: ${nonce} insert ${key}=${value} into \`list_metadata\` table\x1b[0m`
-    )
-    // TODO: insert or update if already exists
-    await database.insertInto('list_metadata').values([row]).executeTakeFirst()
   }
 }
