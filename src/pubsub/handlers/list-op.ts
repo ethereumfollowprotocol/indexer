@@ -45,18 +45,7 @@ export class ListOpHandler {
     if (listOp.opcode === 1) {
       // do nothing
     } else if (listOp.opcode === 2) {
-      // REMOVE LIST RECORD
-
-      const listRecordHexstring: `0x${string}` = `0x${Buffer.from(listOp.data).toString('hex')}`
-      logger.log(`\x1b[91m(ListOp) Delete list record ${listRecordHexstring} from list nonce ${nonce} in db\x1b[0m`)
-      const result = await database
-        .deleteFrom('list_records')
-        .where('chain_id', '=', chainId.toString())
-        .where('contract_address', '=', contractAddress.toLowerCase())
-        .where('nonce', '=', nonce.toString())
-        .where('record', '=', listRecordHexstring)
-        .executeTakeFirst()
-      logger.log(result)
+      // do nothing
     } else if (listOp.opcode === 3) {
       // ADD LIST RECORD TAG
 

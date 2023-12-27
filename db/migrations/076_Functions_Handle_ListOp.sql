@@ -4,13 +4,14 @@
 
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_001
--- Description: Inserts a new record into the list_records table. This function
---              is responsible for decoding the record data and storing it in
---              the appropriate format.
+-- Description: Handles a list op version 1 opcode 1 (add record) by
+--              inserting the record into the list_records table.
+--              If the record already exists, then this function will raise an
+--              exception.
 -- Parameters:
 --   - p_chain_id (BIGINT): The blockchain network identifier.
---   - p_contract_address (types.eth_address): The contract address associated with
---                                        the event.
+--   - p_contract_address (types.eth_address): The contract address associated
+--                                             with the event.
 --   - p_nonce (BIGINT): The nonce associated with the event.
 --   - p_op (types.hexstring): The operation data as a hex string.
 --   - p_op_decoded (types.efp_list_op__v001__opcode_001): The operation data
@@ -31,7 +32,15 @@ DECLARE
 BEGIN
     list_record := public.decode_list_record(p_op_v001__opcode_001.record_hex);
 
-    INSERT INTO public.list_records (chain_id, contract_address, nonce, record, version, record_type, data)
+    -- if there's a conflict, then this will raise an exception
+    INSERT INTO public.list_records (
+        chain_id,
+        contract_address,
+        nonce, record,
+        version,
+        record_type,
+        data
+    )
     VALUES (
         p_chain_id,
         p_contract_address,
@@ -40,16 +49,68 @@ BEGIN
         list_record.version,
         list_record.record_type,
         list_record.data_hex
-    )
-    ON CONFLICT (chain_id, contract_address, nonce, record) DO NOTHING;
-
-    -- TODO: handle conflict (duplicate add record)
-    -- RAISE EXCEPTION 'Unimplemented handle_contract_event__ListOp__v001__opcode_001';
+    );
 END;
 $$;
 
 
--- TODO: handle_contract_event__ListOp__v001__opcode_002
+
+-------------------------------------------------------------------------------
+-- Function: handle_contract_event__ListOp__v001__opcode_002
+-- Description: Handles a list op version 1 opcode 2 (remove record) by
+--              removing the record from the list_records table.
+--              If the record does not already exist, then this function will
+--              raise an exception.
+-- Parameters:
+--   - p_chain_id (BIGINT): The blockchain network identifier.
+--   - p_contract_address (types.eth_address): The contract address associated
+--                                             with the event.
+--   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_op (types.hexstring): The operation data as a hex string.
+--   - p_op_decoded (types.efp_list_op__v001__opcode_001): The operation data
+--                                                         as a record.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_002(
+  p_chain_id BIGINT,
+  p_contract_address types.eth_address,
+  p_nonce BIGINT,
+  p_op_hex types.hexstring,
+  p_op_v001__opcode_002 types.efp_list_op__v001__opcode_002
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    list_record types.efp_list_record;
+BEGIN
+    list_record := public.decode_list_record(p_op_v001__opcode_002.record_hex);
+
+    -- if it doesn't already exist, raise exception
+    IF NOT EXISTS (
+        SELECT 1
+        FROM public.list_records
+        WHERE
+            chain_id = p_chain_id AND
+            contract_address = p_contract_address AND
+            nonce = p_nonce AND
+            record = p_op_v001__opcode_002.record_hex
+    ) THEN
+        RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
+            p_chain_id, p_contract_address, p_nonce, p_op_v001__opcode_002.record_hex;
+    END IF;
+
+    -- the record exists, so delete it
+    DELETE FROM public.list_records
+    WHERE
+        chain_id = p_chain_id AND
+        contract_address = p_contract_address AND
+        nonce = p_nonce AND
+        record = p_op_v001__opcode_002.record_hex;
+END;
+$$;
+
+
+
 -- TODO: handle_contract_event__ListOp__v001__opcode_003
 -- TODO: handle_contract_event__ListOp__v001__opcode_004
 
@@ -78,6 +139,7 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     op_v001__opcode_001 types.efp_list_op__v001__opcode_001;
+    op_v001__opcode_002 types.efp_list_op__v001__opcode_002;
 BEGIN
     CASE
         WHEN p_op_v001.opcode = 1 THEN
@@ -90,7 +152,14 @@ BEGIN
               op_v001__opcode_001
             );
         WHEN p_op_v001.opcode = 2 THEN
-        -- skip
+            op_v001__opcode_002 := (p_op_v001.version, p_op_v001.opcode::types.uint8__2, p_op_v001.data_hex)::types.efp_list_op__v001__opcode_002;
+            PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
+              p_chain_id,
+              p_contract_address,
+              p_nonce,
+              p_op_hex,
+              op_v001__opcode_002
+            );
         WHEN p_op_v001.opcode = 3 THEN
         -- skip
         WHEN p_op_v001.opcode = 4 THEN
