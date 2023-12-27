@@ -4,7 +4,7 @@
 --
 -- Description: A list op
 -------------------------------------------------------------------------------
-CREATE TYPE types.efp_list_op AS (version types.uint8, op types.hexstring);
+CREATE TYPE TYPES.efp_list_op AS (version TYPES.uint8, op TYPES.hexstring);
 
 -- ============================================================================
 -- version 1
@@ -13,68 +13,68 @@ CREATE TYPE types.efp_list_op AS (version types.uint8, op types.hexstring);
 --
 --
 -------------------------------------------------------------------------------
--- Type: types.efp_list_op__version_001
+-- Type: types.efp_list_op__v001
 --
 -- Description: A list op with version byte 0x01
 -------------------------------------------------------------------------------
-CREATE TYPE types.efp_list_op__version_001 AS (
-  version types.uint8__1,
-  opcode types.uint8,
-  data types.hexstring
+CREATE TYPE TYPES.efp_list_op__v001 AS (
+  version TYPES.uint8__1,
+  opcode TYPES.uint8,
+  data TYPES.hexstring
 );
 
 -------------------------------------------------------------------------------
--- Type: types.efp_list_op__version_001__opcode_001
+-- Type: types.efp_list_op__v001__opcode_001
 --
 -- Description: A list op with version byte 0x01 and opcode byte 0x01
 -------------------------------------------------------------------------------
-CREATE TYPE types.efp_list_op__version_001__opcode_001 AS (
-  version types.uint8__1,
+CREATE TYPE TYPES.efp_list_op__v001__opcode_001 AS (
+  version TYPES.uint8__1,
   -- opcode 0x01: add record
-  opcode types.uint8__1,
+  opcode TYPES.uint8__1,
   -- remove record operation => data is [record]
-  record types.hexstring
+  record TYPES.hexstring
 );
 
 -------------------------------------------------------------------------------
--- Type: types.efp_list_op__version_001__opcode_002
+-- Type: types.efp_list_op__v001__opcode_002
 --
 -- Description: A list op with version byte 0x01 and opcode byte 0x02
 -------------------------------------------------------------------------------
-CREATE TYPE types.efp_list_op__version_001__opcode_002 AS (
-  version types.uint8__1,
+CREATE TYPE TYPES.efp_list_op__v001__opcode_002 AS (
+  version TYPES.uint8__1,
   -- opcode 0x02: remove record
-  opcode types.uint8__2,
+  opcode TYPES.uint8__2,
   -- remove record operation => data is [record]
-  record types.hexstring
+  record TYPES.hexstring
 );
 
 -------------------------------------------------------------------------------
--- Type: types.efp_list_op__version_001__opcode_003
+-- Type: types.efp_list_op__v001__opcode_003
 --
 -- Description: A list op with version byte 0x01 and opcode byte 0x03
 -------------------------------------------------------------------------------
-CREATE TYPE types.efp_list_op__version_001__opcode_003 AS (
-  version types.uint8__1,
+CREATE TYPE TYPES.efp_list_op__v001__opcode_003 AS (
+  version TYPES.uint8__1,
   -- opcode 0x03: add record tag
-  opcode types.uint8__3,
+  opcode TYPES.uint8__3,
   -- add record operation => data is [record, tag]
-  record types.hexstring,
-  tag types.efp_tag
+  record TYPES.hexstring,
+  tag TYPES.efp_tag
 );
 
 -------------------------------------------------------------------------------
--- Type: types.efp_list_op__version_001__opcode_004
+-- Type: types.efp_list_op__v001__opcode_004
 --
 -- Description: A list op with version byte 0x01 and opcode byte 0x04
 -------------------------------------------------------------------------------
-CREATE TYPE types.efp_list_op__version_001__opcode_004 AS (
-  version types.uint8__1,
+CREATE TYPE TYPES.efp_list_op__v001__opcode_004 AS (
+  version TYPES.uint8__1,
   -- opcode 0x04: remove record tag
-  opcode types.uint8__4,
+  opcode TYPES.uint8__4,
   -- remove record operation => data is [record, tag]
-  record types.hexstring,
-  tag types.efp_tag
+  record TYPES.hexstring,
+  tag TYPES.efp_tag
 );
 
 -- migrate:down

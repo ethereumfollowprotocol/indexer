@@ -3,14 +3,14 @@
 
 
 -------------------------------------------------------------------------------
--- Function: validate_list_op__version_001__opcode_001
+-- Function: validate_list_op__v001__opcode_001
 -- Description: Validates the integrity of a list operation specific to version
 --              1 and opcode 1.
 -- Parameters:
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__version_001__opcode_001(
+CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_001(
     p_op_bytea BYTEA
 )
 RETURNS void
@@ -26,14 +26,14 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: validate_list_op__version_001__opcode_002
+-- Function: validate_list_op__v001__opcode_002
 -- Description: Validates the integrity of a list operation specific to version
 --              1 and opcode 2.
 -- Parameters:
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__version_001__opcode_002(
+CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_002(
     p_op_bytea BYTEA
 )
 RETURNS void
@@ -48,14 +48,14 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: validate_list_op__version_001__opcode_003
+-- Function: validate_list_op__v001__opcode_003
 -- Description: Validates the integrity of a list operation specific to version
 --              1 and opcode 3.
 -- Parameters:
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__version_001__opcode_003(
+CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_003(
     p_op_bytea BYTEA
 )
 RETURNS void
@@ -70,14 +70,14 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: validate_list_op__version_001__opcode_004
+-- Function: validate_list_op__v001__opcode_004
 -- Description: Validates the integrity of a list operation specific to version
 --              1 and opcode 4.
 -- Parameters:
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__version_001__opcode_004(
+CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_004(
     p_op_bytea BYTEA
 )
 RETURNS void
@@ -93,7 +93,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: decode_list_op__version_001
+-- Function: decode_list_op__v001
 -- Description: This function validates and decodes a byte array representing a
 --              version 1 list op.
 -- Parameters:
@@ -101,7 +101,7 @@ $$;
 -- Returns: A table with 'version' (SMALLINT), 'opcode' (SMALLINT), and
 --          'data' (types.hexstring). The data is returned as a hex string.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode_list_op__version_001(
+CREATE OR REPLACE FUNCTION public.decode_list_op__v001(
   p_op_bytea BYTEA
 )
 RETURNS TABLE(
@@ -141,13 +141,13 @@ BEGIN
     -- opcode 4 = remove tag [version, opcode, record, tag]
     CASE
         WHEN op_opcode = 1 THEN
-            PERFORM public.validate_list_op__version_001__opcode_001(p_op_bytea);
+            PERFORM public.validate_list_op__v001__opcode_001(p_op_bytea);
         WHEN op_opcode = 2 THEN
-            PERFORM public.validate_list_op__version_001__opcode_002(p_op_bytea);
+            PERFORM public.validate_list_op__v001__opcode_002(p_op_bytea);
         WHEN op_opcode = 3 THEN
-            PERFORM public.validate_list_op__version_001__opcode_003(p_op_bytea);
+            PERFORM public.validate_list_op__v001__opcode_003(p_op_bytea);
         WHEN op_opcode = 4 THEN
-            PERFORM public.validate_list_op__version_001__opcode_004(p_op_bytea);
+            PERFORM public.validate_list_op__v001__opcode_004(p_op_bytea);
         ELSE
             RAISE EXCEPTION 'Cannot decode list op with opcode=% using version 1 decoder', op_opcode;
     END CASE;
@@ -226,7 +226,7 @@ BEGIN
       -- Check version and determine opcode and data
       CASE
           WHEN op_version = 1 THEN
-              op_record_version_1 := public.decode_list_op__version_001(op_bytea);
+              op_record_version_1 := public.decode_list_op__v001(op_bytea);
               op_opcode := op_record_version_1.opcode;
               op_data_hexstring := op_record_version_1.data;
           ELSE

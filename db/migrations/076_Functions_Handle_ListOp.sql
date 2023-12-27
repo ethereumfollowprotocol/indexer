@@ -3,7 +3,7 @@
 
 
 -------------------------------------------------------------------------------
--- Function: handle_contract_event__ListOp__version_001__opcode_001
+-- Function: handle_contract_event__ListOp__v001__opcode_001
 -- Description: Inserts a new record into the list_records table. This function
 --              is responsible for decoding the record data and storing it in
 --              the appropriate format.
@@ -15,7 +15,7 @@
 --   - p_op (types.hexstring): The operation data as a hex string.
 --   - p_op_decoded (RECORD): The operation data as a record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__version_001__opcode_001(
+CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_001(
   p_chain_id BIGINT,
   p_contract_address types.hexstring,
   p_nonce BIGINT,
@@ -38,19 +38,19 @@ BEGIN
     -- ON CONFLICT (chain_id, contract_address, nonce, record) DO NOTHING;
 
     -- TODO: handle conflict (duplicate add record)
-    -- RAISE EXCEPTION 'Unimplemented handle_contract_event__ListOp__version_001__opcode_001';
+    -- RAISE EXCEPTION 'Unimplemented handle_contract_event__ListOp__v001__opcode_001';
 END;
 $$;
 
 
--- TODO: handle_contract_event__ListOp__version_001__opcode_002
--- TODO: handle_contract_event__ListOp__version_001__opcode_003
--- TODO: handle_contract_event__ListOp__version_001__opcode_004
+-- TODO: handle_contract_event__ListOp__v001__opcode_002
+-- TODO: handle_contract_event__ListOp__v001__opcode_003
+-- TODO: handle_contract_event__ListOp__v001__opcode_004
 
 
 
 -------------------------------------------------------------------------------
--- Function: handle_contract_event__ListOp__version_001
+-- Function: handle_contract_event__ListOp__v001
 -- Description: TODO write description
 -- Parameters:
 --   - p_chain_id (BIGINT): The blockchain network identifier.
@@ -60,7 +60,7 @@ $$;
 --   - p_op (types.hexstring): The operation data as a hex string.
 --   - p_op_decoded (RECORD): The operation data as a record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__version_001(
+CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001(
   p_chain_id BIGINT,
   p_contract_address types.hexstring,
   p_nonce BIGINT,
@@ -78,7 +78,7 @@ AS $$
 BEGIN
     -- CASE
     --     WHEN p_op_decoded.opcode = 1 THEN
-    --         PERFORM public.handle_contract_event__ListOp__version_001__opcode_001(p_chain_id, p_contract_address, p_nonce, p_op, p_op_decoded);
+    --         PERFORM public.handle_contract_event__ListOp__v001__opcode_001(p_chain_id, p_contract_address, p_nonce, p_op, p_op_decoded);
     --     ELSE
     --         RAISE EXCEPTION 'Unsupported list op version 1 opcode: %', p_op_decoded.opcode;
     -- END CASE;
@@ -129,7 +129,7 @@ BEGIN
 
     CASE
       WHEN op_decoded.version = 1 THEN
-        PERFORM public.handle_contract_event__ListOp__version_001(p_chain_id, p_contract_address, p_nonce, p_op, op_decoded);
+        PERFORM public.handle_contract_event__ListOp__v001(p_chain_id, p_contract_address, p_nonce, p_op, op_decoded);
       ELSE
         RAISE EXCEPTION 'Unsupported list op version: %', op_decoded.version;
     END CASE;
