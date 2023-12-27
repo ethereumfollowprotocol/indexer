@@ -104,17 +104,14 @@ $$;
 CREATE OR REPLACE FUNCTION public.decode_list_op__v001(
   p_op_bytea BYTEA
 )
-RETURNS TABLE(
-    version SMALLINT,
-    opcode SMALLINT,
-    data types.hexstring
-)
+RETURNS types.efp_list_op__v001
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
-    op_version SMALLINT;
-    op_opcode SMALLINT;
-    op_data_hexstring types.hexstring;
+    tmp_op_version INTEGER;
+    op_version types.uint8__1;
+    op_opcode types.uint8;
+    op_data_hex types.hexstring;
 BEGIN
     -- check if the length is valid
     IF LENGTH(p_op_bytea) < 2 THEN
@@ -124,16 +121,19 @@ BEGIN
     ----------------------------------------
     -- version
     ----------------------------------------
-    op_version := GET_BYTE(p_op_bytea, 0)::SMALLINT;
+    -- function should only be called if first byte is known to be version 1
+    tmp_op_version := GET_BYTE(p_op_bytea, 0);
     -- validate it is version 1
-    IF op_version != 1 THEN
-        RAISE EXCEPTION 'Cannot decode list op with version=% using version 1 decoder', op_version;
+    IF tmp_op_version != 1 THEN
+        RAISE EXCEPTION 'Cannot decode list op with version=% using version 1 decoder', tmp_op_version;
     END IF;
+    -- convert to types.uint8__1
+    op_version := tmp_op_version::types.uint8__1;
 
     ----------------------------------------
     -- opcode
     ----------------------------------------
-    op_opcode := GET_BYTE(p_op_bytea, 1)::SMALLINT;
+    op_opcode := GET_BYTE(p_op_bytea, 1)::types.uint8;
     -- cases:
     -- opcode 1 = add record [version, opcode, record]
     -- opcode 2 = remove record [version, opcode, record]
@@ -155,14 +155,10 @@ BEGIN
     ----------------------------------------
     -- data
     ----------------------------------------
-    op_data_hexstring := ('0x' || ENCODE(SUBSTRING(p_op_bytea FROM 3), 'hex'))::types.hexstring;
+    op_data_hex := ('0x' || ENCODE(SUBSTRING(p_op_bytea FROM 3), 'hex'))::types.hexstring;
 
     -- Prepare return values
-    version := op_version;
-    opcode := op_opcode;
-    data := op_data_hexstring;
-
-    RETURN NEXT;
+    RETURN (op_version, op_opcode, op_data_hex);
 END;
 $$;
 
@@ -184,64 +180,54 @@ $$;
 --          and 'data' (types.hexstring or NULL).
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.decode_list_op(
-  p_op VARCHAR(255)
+  p_op_hex VARCHAR(255)
 )
-RETURNS TABLE(
-  version SMALLINT,
-  opcode SMALLINT,
-  data types.hexstring
-)
+RETURNS types.efp_list_op
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
     op_bytea BYTEA;
-    op_version SMALLINT;
-    op_opcode SMALLINT;
-    op_data_hexstring types.hexstring;
-    op_record_version_1 RECORD;
+    op_version types.uint8;
+    op_opcode types.uint8;
+    op_data_hex types.hexstring;
+    op_v001 types.efp_list_op__v001;
 BEGIN
     -- Check if the length is valid (at least 2 characters for '0x')
-    IF NOT public.is_hexstring(p_op) THEN
-        RAISE EXCEPTION 'op is not a valid hexstring: "%"', p_op;
+    IF NOT public.is_hexstring(p_op_hex) THEN
+        RAISE EXCEPTION 'op is not a valid hexstring: "%"', p_op_hex;
     END IF;
 
-    -- default to NULL because may be just "0x" with no version/opcode/data
-    -- if user uploads "0x" as a list op (it will not revert)
-    op_version := NULL;
-    op_opcode := NULL;
-    op_data_hexstring := NULL;
-
     -- Convert the hex string (excluding '0x') to bytea
-    op_bytea := DECODE(SUBSTRING(p_op FROM 3), 'hex');
+    op_bytea := DECODE(SUBSTRING(p_op_hex FROM 3), 'hex');
 
     -- could possibly just be the string "0x", in which case we can't get the
     -- version, so guard agains
-    IF LENGTH(op_bytea) > 0 THEN
-
-      ----------------------------------------
-      -- version
-      ----------------------------------------
-      op_version := GET_BYTE(op_bytea, 0)::SMALLINT;
-
-      -- Check version and determine opcode and data
-      CASE
-          WHEN op_version = 1 THEN
-              op_record_version_1 := public.decode_list_op__v001(op_bytea);
-              op_opcode := op_record_version_1.opcode;
-              op_data_hexstring := op_record_version_1.data;
-          ELSE
-              -- no other versions are defined yet
-              -- do nothing
-              -- NULL;
-      END CASE;
+    IF LENGTH(op_bytea) = 0 THEN
+        RETURN (NULL, NULL, NULL);
     END IF;
 
-    -- Prepare return values
-    version := op_version;
-    opcode := op_opcode;
-    data := op_data_hexstring;
+    ----------------------------------------
+    -- version
+    ----------------------------------------
+    op_version := GET_BYTE(op_bytea, 0)::types.uint8;
 
-    RETURN NEXT;
+    -- Check version and determine opcode and data
+    CASE
+        WHEN op_version = 1 THEN
+            op_v001 := public.decode_list_op__v001(op_bytea);
+            op_opcode := op_v001.opcode;
+            op_data_hex := op_v001.data;
+        ELSE
+            -- no other versions are defined yet
+            --
+            -- technically both "opcode" and "data" are defined by the
+            -- list op version 1 schema and so they may not exist in
+            -- other versions, so we just return NULL for both
+            op_opcode := NULL;
+            op_data_hex := NULL;
+    END CASE;
+
+    RETURN (op_version, op_opcode, op_data_hex);
 END;
 $$;
 
