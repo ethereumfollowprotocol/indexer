@@ -21,8 +21,6 @@ export class NewAccountMetadataValueHandler {
 
     try {
       const result: QueryResult<unknown> = await query.execute(database)
-      // sleep for 1 sec
-      await new Promise(resolve => setTimeout(resolve, 1000))
 
       if (!result || result.rows.length === 0) {
         logger.warn(`${eventSignature} query returned no rows`)

@@ -2,37 +2,39 @@ import { database, type Row } from '#/database'
 import { logger } from '#/logger'
 import { decodeListOp, type ListOp } from '#/process/list-op'
 import { decodeListRecord, type ListRecord } from '#/process/list-record'
+import { sql, type QueryResult, type RawBuilder } from 'kysely'
 import type { Event } from '../event'
 
 export class ListOpHandler {
   async onListOp(event: Event): Promise<void> {
     const nonce: bigint = event.eventParameters.args['nonce']
     const op: `0x${string}` = event.eventParameters.args['op']
-    const opBytes: Uint8Array = Buffer.from(op.slice(2), 'hex')
-    const listOp: ListOp = decodeListOp(opBytes)
 
-    const opDataView: DataView = new DataView(opBytes.buffer)
-    // to get a number from a Uint8Array, we need to use the DataView class like so:
-    const opVersion: number = opDataView.getUint8(0)
-    const opCode: number = opDataView.getUint8(1)
-    const opData: Uint8Array = opBytes.slice(2)
-    const opDataHexstring: `0x${string}` = `0x${Buffer.from(opData).toString('hex')}`
+    const query: RawBuilder<unknown> = sql`SELECT public.handle_contract_event__ListOp(
+      ${event.chainId},
+      ${event.contractAddress},
+      ${nonce},
+      ${op}
+    )`
+    const eventSignature: string = `${event.eventParameters.eventName}(${nonce}, ${op})`
+    logger.info(eventSignature)
 
-    // log bright cyan so it stands out
+    try {
+      const result: QueryResult<unknown> = await query.execute(database)
+      // sleep for 1 sec
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-    // insert
-    const row: Row<'list_ops'> = {
-      chain_id: event.chainId,
-      contract_address: event.contractAddress.toLowerCase(),
-      nonce: nonce,
-      op: op,
-      version: opVersion,
-      opcode: opCode,
-      data: opDataHexstring
+      if (!result || result.rows.length === 0) {
+        logger.warn(`${eventSignature} query returned no rows`)
+        return
+      }
+    } catch (error: any) {
+      logger.error(`${eventSignature} Error processing event: ${error.message}`)
+      process.exit(1)
     }
-    logger.log(`\x1b[96m(ListOp) Insert list op ${op} into \`list_ops\` table for nonce ${nonce}\x1b[0m`)
-    await database.insertInto('list_ops').values([row]).executeTakeFirst()
 
+    // STEP 2: we will do this later
+    const listOp: ListOp = decodeListOp(op)
     await this.processListOp(event.chainId, event.contractAddress.toLowerCase() as `0x${string}`, nonce, listOp)
   }
 

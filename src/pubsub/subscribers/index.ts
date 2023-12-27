@@ -1,7 +1,7 @@
 import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
 import { database, type Row } from '#/database'
 import { logger } from '#/logger'
-import { ListOpHandler } from '#/pubsub/handlers/list-operation'
+import { ListOpHandler } from '#/pubsub/handlers/list-op'
 import { ListStorageLocationChangeHandler } from '#/pubsub/handlers/list-storage-location-change'
 import { NewAccountMetadataValueHandler } from '#/pubsub/handlers/new-account-metadata-value'
 import { NewListMetadataValueHandler } from '#/pubsub/handlers/new-list-metadata-value'

@@ -3,6 +3,45 @@
 
 
 -------------------------------------------------------------------------------
+-- Function: handle_contract_event__ListOp
+-- Description: Inserts a new operation record into the list_ops table. This
+--              function is responsible for decoding the operation data and
+--              storing it in the appropriate format.
+-- Parameters:
+--   - p_chain_id (BIGINT): The blockchain network identifier.
+--   - p_contract_address (VARCHAR(42)): The contract address associated with
+--                                        the operation.
+--   - p_nonce (BIGINT): The nonce associated with the operation.
+--   - p_op (VARCHAR(255)): The operation data as a hex string.
+-- Returns: VOID
+-- Notes: Uses the list_ops table for storage. Decoding functions are stubbed.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp(
+  p_chain_id BIGINT,
+  p_contract_address VARCHAR(42),
+  p_nonce BIGINT,
+  p_op types.hexstring
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    normalized_contract_address types.eth_address;
+    list_op RECORD;
+BEGIN
+    normalized_contract_address := public.normalize_eth_address(p_contract_address);
+    list_op := public.decode_list_op(p_op);
+
+    -- Insert the operation into list_ops
+    INSERT INTO public.list_ops (chain_id, contract_address, nonce, op, version, opcode, data)
+    VALUES (p_chain_id, normalized_contract_address, p_nonce, p_op, list_op.version, list_op.opcode, list_op.data)
+    ON CONFLICT (chain_id, contract_address, nonce, op) DO NOTHING;
+END;
+$$;
+
+
+
+-------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListStorageLocationChange
 -- Description: Processes a ListStorageLocationChange event by decoding the
 --              list storage location and updating the corresponding fields in
@@ -38,16 +77,16 @@ BEGIN
     decoded_location := public.decode_list_storage_location(p_list_storage_location);
 
     -- Update list_nfts with the decoded values
-    UPDATE public.list_nfts
+    UPDATE public.list_nfts nft
     SET
         list_storage_location = p_list_storage_location,
         list_storage_location_chain_id = decoded_location.chain_id,
         list_storage_location_contract_address = decoded_location.contract_address,
         list_storage_location_nonce = decoded_location.nonce
     WHERE
-        chain_id = p_chain_id
-        AND contract_address = normalized_contract_address
-        AND token_id = p_token_id;
+        nft.chain_id = p_chain_id
+        AND nft.contract_address = normalized_contract_address
+        AND nft.token_id = p_token_id;
 END;
 $$;
 
@@ -89,7 +128,7 @@ BEGIN
     normalized_address := public.normalize_eth_address(p_address);
 
     -- Upsert metadata value
-    INSERT INTO account_metadata (chain_id, contract_address, address, key, value)
+    INSERT INTO public.account_metadata (chain_id, contract_address, address, key, value)
     VALUES (p_chain_id, normalized_contract_address, normalized_address, p_key, p_value)
     ON CONFLICT (chain_id, contract_address, address, key)
     DO UPDATE SET value = EXCLUDED.value;

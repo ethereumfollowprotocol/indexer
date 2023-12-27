@@ -16,9 +16,9 @@ CREATE DOMAIN types.uint8 AS SMALLINT CHECK (
 --
 -- Description: Represents a hexadecimal string.
 -- Constraints: Must conform to the format specified in the is_hexstring
---              function, typically starting with '0x'.
+--              function, typically starting with '0x'. Minimum length is 2.
 -------------------------------------------------------------------------------
-CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})+$');
+CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})*$');
 
 -------------------------------------------------------------------------------
 -- Domain: eth_address
@@ -29,8 +29,6 @@ CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})+$
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.eth_address AS VARCHAR(42) CHECK (VALUE ~ '^0x[a-f0-9]{40}$');
 
-
-
 -------------------------------------------------------------------------------
 -- Domain: eth_block_hash
 --
@@ -39,8 +37,6 @@ CREATE DOMAIN types.eth_address AS VARCHAR(42) CHECK (VALUE ~ '^0x[a-f0-9]{40}$'
 --              containing 64 lowercase hexadecimal characters.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
-
-
 
 -------------------------------------------------------------------------------
 -- Domain: eth_transaction_hash
