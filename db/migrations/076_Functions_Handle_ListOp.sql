@@ -27,14 +27,21 @@ RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    record types.efp_list_record;
+    list_record types.efp_list_record;
 BEGIN
-    record := public.decode_list_record(p_op_v001__opcode_001.record_hex);
+    list_record := public.decode_list_record(p_op_v001__opcode_001.record_hex);
 
-    -- TODO: Insert the operation into list_records
-    -- INSERT INTO public.list_records (chain_id, contract_address, nonce, record, version, record_type, data)
-    -- VALUES (p_chain_id, p_contract_address, p_nonce, foo.record, bar.version, baz.record_type, qux.data)
-    -- ON CONFLICT (chain_id, contract_address, nonce, record) DO NOTHING;
+    INSERT INTO public.list_records (chain_id, contract_address, nonce, record, version, record_type, data)
+    VALUES (
+        p_chain_id,
+        p_contract_address,
+        p_nonce,
+        p_op_v001__opcode_001.record_hex,
+        list_record.version,
+        list_record.record_type,
+        list_record.data_hex
+    )
+    ON CONFLICT (chain_id, contract_address, nonce, record) DO NOTHING;
 
     -- TODO: handle conflict (duplicate add record)
     -- RAISE EXCEPTION 'Unimplemented handle_contract_event__ListOp__v001__opcode_001';

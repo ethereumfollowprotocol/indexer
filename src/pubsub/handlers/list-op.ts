@@ -1,7 +1,6 @@
 import { database, type Row } from '#/database'
 import { logger } from '#/logger'
 import { decodeListOp, type ListOp } from '#/process/list-op'
-import { decodeListRecord, type ListRecord } from '#/process/list-record'
 import { sql, type QueryResult, type RawBuilder } from 'kysely'
 import type { Event } from '../event'
 
@@ -44,26 +43,7 @@ export class ListOpHandler {
     }
 
     if (listOp.opcode === 1) {
-      // ADD LIST RECORD
-
-      // insert
-      const listRecordHexstring: `0x${string}` = `0x${Buffer.from(listOp.data).toString('hex')}`
-      const listRecord: ListRecord = decodeListRecord(listOp.data)
-      const listRecordDataHexstring: `0x${string}` = `0x${Buffer.from(listRecord.data).toString('hex')}`
-
-      const row: Row<'list_records'> = {
-        chain_id: chainId,
-        contract_address: contractAddress.toLowerCase(),
-        nonce: nonce,
-        record: listRecordHexstring,
-        version: listRecord.version,
-        record_type: listRecord.recordType,
-        data: listRecordDataHexstring
-      }
-      // green log
-      logger.log(`\x1b[92m(ListOp) Add list record ${listRecordHexstring} to list nonce ${nonce} in db\x1b[0m`)
-      // TODO: ensure not duplicate
-      await database.insertInto('list_records').values([row]).executeTakeFirst()
+      // do nothing
     } else if (listOp.opcode === 2) {
       // REMOVE LIST RECORD
 
