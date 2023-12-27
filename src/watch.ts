@@ -5,59 +5,55 @@ import {
   EFPAccountMetadataPublisher,
   EFPListMinterPublisher,
   EFPListRecordsPublisher,
-  EFPListRegistryPublisher
-} from '#/pubsub/publishers'
-import {
-  EFPAccountMetadataSubscriber,
-  EFPListMinterSubscriber,
-  EFPListRecordsSubscriber,
-  EFPListRegistrySubscriber,
-  EventDispatcher as EventProcessor,
-  EventsTableUploader,
-  type EventSubscriber
-} from '#/pubsub/subscribers'
+  EFPListRegistryPublisher,
+  EventInterleaver,
+  type EventPublisher
+} from '#/pubsub/publisher/publishers'
+import { EventDispatcher as EventProcessor, EventsTableUploader, type EventSubscriber } from '#/pubsub/subscribers'
 import { raise, sleep } from '#/utilities'
 import { asyncExitHook } from 'exit-hook'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
     const chainId: bigint = BigInt(await client.getChainId())
-    const efpAccountMetadataPublisher = new EFPAccountMetadataPublisher(
+    const efpAccountMetadataPublisher: EventPublisher = new EFPAccountMetadataPublisher(
       client,
       chainId,
       env.EFP_CONTRACTS.ACCOUNT_METADATA
     )
-    const efpListRegistryPublisher = new EFPListRegistryPublisher(client, chainId, env.EFP_CONTRACTS.LIST_REGISTRY)
-    const efpListRecordsPublisher = new EFPListRecordsPublisher(client, chainId, env.EFP_CONTRACTS.LIST_RECORDS)
-    const efpListMinterPublisher = new EFPListMinterPublisher(client, chainId, env.EFP_CONTRACTS.LIST_MINTER)
-
-    const efpAccountMetadataSubscriber = new EFPAccountMetadataSubscriber(chainId, env.EFP_CONTRACTS.ACCOUNT_METADATA)
-    const efpListRegistrySubscriber = new EFPListRegistrySubscriber(chainId, env.EFP_CONTRACTS.LIST_REGISTRY)
-    const efpListRecordsSubscriber = new EFPListRecordsSubscriber(chainId, env.EFP_CONTRACTS.LIST_RECORDS)
-    const efpListMinterSubscriber = new EFPListMinterSubscriber(chainId, env.EFP_CONTRACTS.LIST_MINTER)
-
-    efpAccountMetadataPublisher.subscribe(efpAccountMetadataSubscriber)
-    efpListRegistryPublisher.subscribe(efpListRegistrySubscriber)
-    efpListRecordsPublisher.subscribe(efpListRecordsSubscriber)
-    efpListMinterPublisher.subscribe(efpListMinterSubscriber)
+    const efpListRegistryPublisher: EventPublisher = new EFPListRegistryPublisher(
+      client,
+      chainId,
+      env.EFP_CONTRACTS.LIST_REGISTRY
+    )
+    const efpListRecordsPublisher: EventPublisher = new EFPListRecordsPublisher(
+      client,
+      chainId,
+      env.EFP_CONTRACTS.LIST_RECORDS
+    )
+    const efpListMinterPublisher: EventPublisher = new EFPListMinterPublisher(
+      client,
+      chainId,
+      env.EFP_CONTRACTS.LIST_MINTER
+    )
+    const eventInterleaver = new EventInterleaver()
+    efpAccountMetadataPublisher.subscribe(eventInterleaver)
+    efpListRegistryPublisher.subscribe(eventInterleaver)
+    efpListRecordsPublisher.subscribe(eventInterleaver)
+    efpListMinterPublisher.subscribe(eventInterleaver)
 
     const eventsTableUploader: EventSubscriber = new EventsTableUploader()
-    efpAccountMetadataPublisher.subscribe(eventsTableUploader)
-    efpListRegistryPublisher.subscribe(eventsTableUploader)
-    efpListRecordsPublisher.subscribe(eventsTableUploader)
-    efpListMinterPublisher.subscribe(eventsTableUploader)
+    eventInterleaver.subscribe(eventsTableUploader)
 
     const eventProcessor: EventSubscriber = new EventProcessor()
-    efpAccountMetadataPublisher.subscribe(eventProcessor)
-    efpListRegistryPublisher.subscribe(eventProcessor)
-    efpListRecordsPublisher.subscribe(eventProcessor)
-    efpListMinterPublisher.subscribe(eventProcessor)
+    eventInterleaver.subscribe(eventProcessor)
 
-    const publishers = [
+    const publishers: EventPublisher[] = [
       efpAccountMetadataPublisher,
       efpListRegistryPublisher,
       efpListRecordsPublisher,
-      efpListMinterPublisher
+      efpListMinterPublisher,
+      eventInterleaver
     ]
 
     // Start all publishers

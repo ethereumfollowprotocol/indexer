@@ -8,7 +8,7 @@ import { NewListMetadataValueHandler } from '#/pubsub/handlers/new-list-metadata
 import { OwnershipTransferredHandler } from '#/pubsub/handlers/ownership-transferred'
 import { TransferHandler } from '#/pubsub/handlers/transfer'
 import type { Abi } from 'viem'
-import type { Event } from './event'
+import type { Event } from '../event'
 
 /**
  * Interface defining the structure and methods for an EventSubscriber.

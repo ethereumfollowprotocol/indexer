@@ -1,20 +1,10 @@
 import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
+import { compareEvents, createEventSignature, decodeLogtoEvent, type Event } from '#/pubsub/event'
 import { ContractEventSubscriber, type EventSubscriber } from '#/pubsub/subscribers'
 import { raise } from '#/utilities'
 import { parseAbiItem, type Abi, type Log } from 'viem'
-import { decodeLogtoEvent, type Event } from './event'
-
-function createEventSignature(abiObject: any): string {
-  const params = abiObject.inputs
-    .map((input: any) => {
-      return `${input.type}${input.indexed ? ' indexed' : ''} ${input.name}`
-    })
-    .join(', ')
-
-  return `event ${abiObject.name}(${params})`
-}
 
 /**
  * Interface defining the structure and methods for an EventPublisher.
@@ -107,24 +97,7 @@ export class ContractEventPublisher implements EventPublisher {
   }
 
   private async processLogs(logs: Log[]): Promise<void> {
-    logs.sort((a, b) => {
-      if (a.blockNumber === null || b.blockNumber === null) {
-        throw new Error('blockNumber is null')
-      }
-      let result = Number(a.blockNumber - b.blockNumber)
-      if (result !== 0) return result
-
-      if (a.transactionIndex === null || b.transactionIndex === null) {
-        throw new Error('transactionIndex is null')
-      }
-      result = a.transactionIndex - b.transactionIndex
-      if (result !== 0) return result
-
-      if (a.logIndex === null || b.logIndex === null) {
-        throw new Error('Log index is null')
-      }
-      return a.logIndex - b.logIndex
-    })
+    logs.sort(compareEvents)
 
     // Process each log
     for (const log of logs) {
@@ -198,5 +171,129 @@ export class EFPListRecordsPublisher extends ContractEventPublisher {
 export class EFPListMinterPublisher extends ContractEventPublisher {
   constructor(client: EvmClient, chainId: bigint, address: `0x${string}`) {
     super(client, chainId, 'EFPListMinter', efpListMinterAbi, address)
+  }
+}
+
+type ReceivedEvent = {
+  // the event
+  event: Event
+  // the time it was received
+  receivedAt: Date
+}
+
+/**
+ * Concrete implementation of EventPublisher for interleaving disparate
+ * event streams from multiple upstream publishers into a single
+ * time-ordered stream of events.
+ */
+export class EventInterleaver implements EventPublisher, EventSubscriber {
+  private readonly priorityQueue: ReceivedEvent[] = []
+  private subscribers: EventSubscriber[] = []
+
+  // Delay before propagating events to ensure time ordering.
+  private readonly propagationDelay: number = 5000
+
+  // Interval at which the queue is checked and processed.
+  private readonly daemonInterval: number = 1000
+
+  // Timer for the repeating process. Null when not running.
+  private daemonTimer: NodeJS.Timeout | null = null
+
+  // Flag to prevent concurrent processing.
+  private isProcessing = false
+
+  /**
+   * Subscribe a new event subscriber.
+   * @param subscriber - The subscriber to be added.
+   */
+  subscribe(subscriber: EventSubscriber): void {
+    this.subscribers.push(subscriber)
+  }
+
+  /**
+   * Unsubscribe an existing event subscriber.
+   * @param subscriber - The subscriber to be removed.
+   */
+  unsubscribe(subscriber: EventSubscriber): void {
+    this.subscribers = this.subscribers.filter(existingSubscriber => existingSubscriber !== subscriber)
+  }
+
+  /**
+   * Start the event interleaving process.
+   * Initializes and starts a timer to process the event queue at regular intervals.
+   * Prevents concurrent processing of events using a flag.
+   */
+  start(): void {
+    if (this.daemonTimer) {
+      // Already running, so exit.
+      return
+    }
+    // Set up a timer that triggers at regular intervals.
+    this.daemonTimer = setInterval(async () => {
+      // Check if processing is already underway.
+      if (!this.isProcessing) {
+        // Mark as processing.
+        this.isProcessing = true
+        try {
+          // Process events in the queue.
+          await this.processQueue()
+        } catch (error) {
+          // Log and handle any errors during processing.
+          logger.error('Error processing queue:', error)
+        } finally {
+          // Reset processing flag, allowing the next interval to process.
+          this.isProcessing = false
+        }
+      }
+    }, this.daemonInterval)
+  }
+
+  /**
+   * Stop the event interleaving process.
+   * Clears the timer and resets the related state.
+   */
+  stop(): void {
+    if (this.daemonTimer) {
+      // Clear the interval timer.
+      clearInterval(this.daemonTimer)
+      this.daemonTimer = null
+    }
+  }
+
+  /**
+   * Handle an incoming event.
+   * Adds the event to the priority queue and sorts it to maintain time order.
+   * @param event - The event to be handled.
+   */
+  onEvent(event: Event): Promise<void> {
+    // Add event to the queue with the current timestamp.
+    this.priorityQueue.push({ event, receivedAt: new Date() })
+    // Sort the queue to ensure time ordering.
+    this.priorityQueue.sort((a: ReceivedEvent, b: ReceivedEvent) => compareEvents(a.event, b.event))
+    return Promise.resolve()
+  }
+
+  /**
+   * Process the event queue.
+   * Dequeues and propagates events that are ready based on the propagation delay.
+   */
+  private async processQueue(): Promise<void> {
+    logger.info(`Processing queue with ${this.priorityQueue.length} event${this.priorityQueue.length === 1 ? '' : 's'}`)
+    const now = new Date()
+    while (this.priorityQueue.length > 0) {
+      const receivedEvent = this.priorityQueue[0] as ReceivedEvent
+      const elapsedWaitTime = now.getTime() - receivedEvent.receivedAt.getTime()
+      // Check if the event has waited long enough based on the propagation delay.
+      if (elapsedWaitTime < this.propagationDelay) {
+        // If not ready, exit the loop to wait more.
+        break
+      }
+      // Process the event for each subscriber.
+      for (const subscriber of this.subscribers) {
+        await subscriber.onEvent(receivedEvent.event)
+      }
+      // Remove the processed event from the queue.
+      this.priorityQueue.shift()
+    }
   }
 }

@@ -58,3 +58,38 @@ export function decodeLogtoEvent(chainId: bigint, contractName: string, abi: any
     topics
   }
 }
+
+export type OrderableEventLog = {
+  blockNumber: bigint | null
+  transactionIndex: number | null
+  logIndex: number | null
+}
+
+export function compareEvents(a: OrderableEventLog, b: OrderableEventLog): number {
+  if (a.blockNumber === null || b.blockNumber === null) {
+    throw new Error('blockNumber is null')
+  }
+  let result = Number(a.blockNumber - b.blockNumber)
+  if (result !== 0) return result
+
+  if (a.transactionIndex === null || b.transactionIndex === null) {
+    throw new Error('transactionIndex is null')
+  }
+  result = a.transactionIndex - b.transactionIndex
+  if (result !== 0) return result
+
+  if (a.logIndex === null || b.logIndex === null) {
+    throw new Error('Log index is null')
+  }
+  return a.logIndex - b.logIndex
+}
+
+export function createEventSignature(abiObject: any): string {
+  const params = abiObject.inputs
+    .map((input: any) => {
+      return `${input.type}${input.indexed ? ' indexed' : ''} ${input.name}`
+    })
+    .join(', ')
+
+  return `event ${abiObject.name}(${params})`
+}
