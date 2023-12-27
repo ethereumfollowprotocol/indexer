@@ -3,7 +3,7 @@
 
 
 -------------------------------------------------------------------------------
--- Function: is_list_location_hexstring
+-- Function: is_list_storage_location_hexstring
 -- Description: Validates that the given string is a valid list location
 --              hexadecimal string. The string must start with '0x' and contain
 --              172 hexadecimal characters. The function uses a regular
@@ -12,7 +12,7 @@
 --   - hexstring (TEXT): The hexadecimal string to be validated.
 -- Returns: TRUE if the string is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_list_location_hexstring(hexstring TEXT)
+CREATE OR REPLACE FUNCTION public.is_list_storage_location_hexstring(hexstring TEXT)
 RETURNS BOOLEAN
 LANGUAGE plpgsql IMMUTABLE
 AS $$
@@ -59,7 +59,7 @@ DECLARE
     temp_nonce bytea;
 BEGIN
     -- Check if the length is valid
-    IF NOT public.is_list_location_hexstring(list_storage_location) THEN
+    IF NOT public.is_list_storage_location_hexstring(list_storage_location) THEN
         RAISE EXCEPTION 'Invalid list location';
     END IF;
 

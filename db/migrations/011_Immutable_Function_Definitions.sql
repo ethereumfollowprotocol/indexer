@@ -82,25 +82,6 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: normalize_eth_address
--- Description: Normalizes the input Ethereum address to lowercase and
---              validates its format.
--- Parameters:
---   - address (TEXT): The Ethereum address to be normalized and validated.
--- Returns: The normalized address if valid, otherwise raises an exception.
--------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.normalize_eth_address(address TEXT)
-RETURNS types.eth_address
-LANGUAGE plpgsql IMMUTABLE
-AS $$
-BEGIN
-    RETURN LOWER(address)::types.eth_address;
-END;
-$$;
-
-
-
--------------------------------------------------------------------------------
 -- Function: convert_hex_to_bigint
 -- Description: Converts a 66-character hexadecimal string to a bigint. The
 --              hex string should start with '0x' and contain 64 hexadecimal

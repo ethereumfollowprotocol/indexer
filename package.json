@@ -8,7 +8,7 @@
     "dev": "bun --watch --hot ./src/index.ts",
     "start": "bun --watch --hot dist/index.js",
     "build": "bun build ./src/index.ts --minify --target='bun' --format='esm' --outfile='./dist/index.js'",
-    "database": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans database",
+    "database": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans database database-setup",
     "database:status": "dbmate status",
     "database:drop": "dbmate drop",
     "database:up": "dbmate up && bun database:generate-types",
