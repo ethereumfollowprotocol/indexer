@@ -28,14 +28,15 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     normalized_contract_address types.eth_address;
-    -- {chain_id, contract_address, nonce}
+    -- {version, location_type, chain_id, contract_address, nonce}
     decoded_location RECORD;
 BEGIN
     -- Normalize the input addresses to lowercase
     normalized_contract_address := public.normalize_eth_address(p_contract_address);
 
     -- Decode the list storage location
-    decoded_location := public.decode_list_storage_location(p_list_storage_location);
+    -- TODO: need to robustly handle list location versions, location_types
+    decoded_location := public.decode_efp_list_storage_location__version_001__location_type_001(p_list_storage_location);
 
     -- Update list_nfts with the decoded values
     UPDATE public.list_nfts nft

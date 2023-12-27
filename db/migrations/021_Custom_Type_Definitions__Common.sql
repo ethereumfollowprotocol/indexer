@@ -12,6 +12,14 @@ CREATE DOMAIN types.uint8 AS SMALLINT CHECK (
 );
 
 -------------------------------------------------------------------------------
+-- Domain: types.uint8__1
+--
+-- Description: The value 1.
+-- Constraints: Value must be within the range of 0 to 255 inclusive.
+-------------------------------------------------------------------------------
+CREATE DOMAIN types.uint8__1 AS SMALLINT CHECK (VALUE = 1);
+
+-------------------------------------------------------------------------------
 -- Domain: types.hexstring
 --
 -- Description: Represents a hexadecimal string.

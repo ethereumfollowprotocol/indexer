@@ -24,7 +24,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: decode_list_storage_location
+-- Function: decode_efp_list_storage_location__version_001__location_type_001
 -- Description: Decodes a list storage location string into its components.
 --              The list storage location string is composed of:
 --              - version (1 byte)
@@ -35,41 +35,38 @@ $$;
 --              The function validates the length of the input string and
 --              extracts the components.
 -- Parameters:
---   - list_storage_location (TEXT): The list storage location string to be
+--   - p_list_storage_location (TEXT): The list storage location string to be
 --                                   decoded.
--- Returns: A table with 'version' (SMALLINT), 'location_type' (SMALLINT),
---          'chain_id' (bigint), 'contract_address' (VARCHAR(42)), and 'nonce'
---          (VARCHAR(42)).
+-- Returns: types.efp_list_storage_location__version_001__location_type_001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode_list_storage_location(
-    list_storage_location VARCHAR(174)
+CREATE OR REPLACE FUNCTION public.decode_efp_list_storage_location__version_001__location_type_001(
+    p_list_storage_location VARCHAR(174)
 )
-RETURNS TABLE(
-    version SMALLINT,
-    location_type SMALLINT,
-    chain_id BIGINT,
-    contract_address types.eth_address,
-    nonce BIGINT
-)
+RETURNS
+  types.efp_list_storage_location__version_001__location_type_001
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
     hex_data bytea;
     hex_chain_id VARCHAR(66);
-    temp_nonce bytea;
+    version types.uint8;
+    location_type types.uint8;
+    chain_id BIGINT;
+    contract_address types.eth_address;
+    nonce BIGINT;
 BEGIN
     -- Check if the length is valid
-    IF NOT public.is_list_storage_location_hexstring(list_storage_location) THEN
+    IF NOT public.is_list_storage_location_hexstring(p_list_storage_location) THEN
         RAISE EXCEPTION 'Invalid list location';
     END IF;
 
     -- Convert the hex string (excluding '0x') to bytea
-    hex_data := DECODE(SUBSTRING(list_storage_location FROM 3), 'hex');
+    hex_data := DECODE(SUBSTRING(p_list_storage_location FROM 3), 'hex');
 
     ----------------------------------------
     -- version
     ----------------------------------------
-    version := GET_BYTE(hex_data, 0);
+    version := GET_BYTE(hex_data, 0)::types.uint8;
     IF version != 1 THEN
         RAISE EXCEPTION 'Invalid version: % (expected 1)', version;
     END IF;
@@ -77,7 +74,7 @@ BEGIN
     ----------------------------------------
     -- location_type
     ----------------------------------------
-    location_type := GET_BYTE(hex_data, 1);
+    location_type := GET_BYTE(hex_data, 1)::types.uint8;
     IF location_type != 1 THEN
         RAISE EXCEPTION 'Invalid location type: % (expected 1)', location_type;
     END IF;
@@ -102,10 +99,16 @@ BEGIN
     ----------------------------------------
 
     -- Extract nonce (32 bytes to TEXT)
-    temp_nonce := SUBSTRING(hex_data FROM 55 FOR 32);
-    nonce := public.convert_hex_to_bigint('0x' || ENCODE(temp_nonce, 'hex'));
+    nonce := public.convert_hex_to_bigint('0x' || ENCODE(SUBSTRING(hex_data FROM 55 FOR 32), 'hex'));
 
-    RETURN NEXT;
+    -- Return the decoded list storage location
+    RETURN (
+        version::types.uint8__1,
+        location_type::types.uint8__1,
+        chain_id,
+        contract_address,
+        nonce
+      );
 END;
 $$;
 

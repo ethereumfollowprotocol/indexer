@@ -31,7 +31,7 @@ BEGIN
       dlsl.chain_id,
       dlsl.contract_address,
       dlsl.nonce
-    FROM public.decode_list_storage_location(
+    FROM public.decode_efp_list_storage_location__version_001__location_type_001(
         (SELECT nfts.list_storage_location
          FROM public.list_nfts AS nfts
          WHERE nfts.token_id = input_token_id)
