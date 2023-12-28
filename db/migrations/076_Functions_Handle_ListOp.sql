@@ -166,7 +166,62 @@ $$;
 
 
 
--- TODO: handle_contract_event__ListOp__v001__opcode_004
+-------------------------------------------------------------------------------
+-- Function: handle_contract_event__ListOp__v001__opcode_004
+-- Description: Handles a list op version 1 opcode 4 (remove record tag) by
+--              removing the record tag from the list_record_tags table.
+--              If the record tag does not already exist, then this function will
+--              raise an exception.
+-- Parameters:
+--   - p_chain_id (BIGINT): The blockchain network identifier.
+--   - p_contract_address (types.eth_address): The contract address associated
+--                                             with the event.
+--   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_list_op_hex (types.hexstring): The operation data as a hex string.
+--   - p_list_op__v001__opcode_004 (types.efp_list_op__v001__opcode_004):
+--                           The operation data as a record.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION
+public.handle_contract_event__ListOp__v001__opcode_004(
+  p_chain_id BIGINT,
+  p_contract_address types.eth_address,
+  p_nonce BIGINT,
+  p_list_op_hex types.hexstring,
+  p_list_op__v001__opcode_004 types.efp_list_op__v001__opcode_004
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Check if the record tag exists
+    IF NOT EXISTS (
+        SELECT 1
+        FROM public.list_record_tags
+        WHERE
+            chain_id = p_chain_id AND
+            contract_address = p_contract_address AND
+            nonce = p_nonce AND
+            record = public.hexlify(p_list_op__v001__opcode_004.record) AND
+            tag = p_list_op__v001__opcode_004.tag
+    ) THEN
+        RAISE EXCEPTION 'Cannot remove non-existent list_record_tags row (chain_id=%, contract_address=%, nonce=%, record=%, tag=%)',
+            p_chain_id,
+            p_contract_address,
+            p_nonce,
+            public.hexlify(p_list_op__v001__opcode_004.record),
+            p_list_op__v001__opcode_004.tag;
+    END IF;
+
+    -- Record tag exists, so delete it
+    DELETE FROM public.list_record_tags
+    WHERE
+        chain_id = p_chain_id AND
+        contract_address = p_contract_address AND
+        nonce = p_nonce AND
+        record = public.hexlify(p_list_op__v001__opcode_004.record) AND
+        tag = p_list_op__v001__opcode_004.tag;
+END;
+$$;
 
 
 
@@ -193,57 +248,65 @@ RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    list_op__v001__opcode_001 types.efp_list_op__v001__opcode_001;
-    list_op__v001__opcode_002 types.efp_list_op__v001__opcode_002;
-    list_op__v001__opcode_003 types.efp_list_op__v001__opcode_003;
     pair_list_record_tag RECORD;
 BEGIN
     CASE
         WHEN p_list_op__v001.opcode = 1 THEN
-            list_op__v001__opcode_001 := (
-                p_list_op__v001.version,
-                p_list_op__v001.opcode::types.uint8__1,
-                p_list_op__v001.data
-            )::types.efp_list_op__v001__opcode_001;
             PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
               p_chain_id,
               p_contract_address,
               p_nonce,
               p_list_op_hex,
-              list_op__v001__opcode_001
+              (
+                  p_list_op__v001.version,
+                  p_list_op__v001.opcode::types.uint8__1,
+                  p_list_op__v001.data
+              )::types.efp_list_op__v001__opcode_001
             );
         WHEN p_list_op__v001.opcode = 2 THEN
-            list_op__v001__opcode_002 := (
-              p_list_op__v001.version,
-              p_list_op__v001.opcode::types.uint8__2,
-              p_list_op__v001.data
-            )::types.efp_list_op__v001__opcode_002;
             PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
               p_chain_id,
               p_contract_address,
               p_nonce,
               p_list_op_hex,
-              list_op__v001__opcode_002
+              (
+                  p_list_op__v001.version,
+                  p_list_op__v001.opcode::types.uint8__2,
+                  p_list_op__v001.data
+              )::types.efp_list_op__v001__opcode_002
             );
         WHEN p_list_op__v001.opcode = 3 THEN
             pair_list_record_tag := public.unpack__list_record_tag(
               p_list_op__v001.data
             );
-            list_op__v001__opcode_003 := (
-              p_list_op__v001.version,
-              p_list_op__v001.opcode::types.uint8__3,
-              pair_list_record_tag.list_record_bytea,
-              pair_list_record_tag.tag
-            )::types.efp_list_op__v001__opcode_003;
             PERFORM public.handle_contract_event__ListOp__v001__opcode_003(
               p_chain_id,
               p_contract_address,
               p_nonce,
               p_list_op_hex,
-              list_op__v001__opcode_003
+              (
+                  p_list_op__v001.version,
+                  p_list_op__v001.opcode::types.uint8__3,
+                  pair_list_record_tag.list_record_bytea,
+                  pair_list_record_tag.tag
+              )::types.efp_list_op__v001__opcode_003
             );
         WHEN p_list_op__v001.opcode = 4 THEN
-        -- skip
+            pair_list_record_tag := public.unpack__list_record_tag(
+              p_list_op__v001.data
+            );
+            PERFORM public.handle_contract_event__ListOp__v001__opcode_004(
+              p_chain_id,
+              p_contract_address,
+              p_nonce,
+              p_list_op_hex,
+              (
+                  p_list_op__v001.version,
+                  p_list_op__v001.opcode::types.uint8__4,
+                  pair_list_record_tag.list_record_bytea,
+                  pair_list_record_tag.tag
+              )::types.efp_list_op__v001__opcode_004
+            );
         ELSE
             RAISE EXCEPTION 'Unsupported list op version 1 opcode: %',
                 p_list_op__v001.opcode;
