@@ -14,6 +14,7 @@ defaults:
     shell: bash
 
 env:
+  NODE_OPTIONS: '--no-warnings'
   ACTIONS_RUNNER_DEBUG: true
 
 jobs:
@@ -22,13 +23,30 @@ jobs:
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
     steps:
-      - name: 🔑 Checkout
+      - name: '🔑 Checkout'
         uses: actions/checkout@v4.1.1
 
-      - name: 'Install Dependencies'
-        uses: ./.github/actions/setup
-
-      - name: 'Lint / Build / Test'
-        uses: ./.github/actions/checks
+      - name: '🐰 Setup Bun'
+        uses: oven-sh/setup-bun@v1
         with:
-          skip-build: false
+          bun-version: 'latest'
+
+      - name: 'Setup Biome'
+        uses: biomejs/setup-biome@v1
+        with:
+          version: 'latest'
+
+      # if lint fails no need to continue
+      - name: '🧹 Lint'
+        continue-on-error: false
+        run: biome ci .
+
+      - name: '📦 Install Dependencies'
+        run: bun install --frozen-lockfile
+
+      - name: '🧪 Typecheck'
+        run: bun typecheck
+
+      - name: '🔧 Build'
+        run: bun run build
+
