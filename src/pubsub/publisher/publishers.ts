@@ -1,10 +1,10 @@
-import { type Abi, type Log, parseAbiItem } from 'viem'
 import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
-import { type Event, compareEvents, createEventSignature, decodeLogtoEvent } from '#/pubsub/event'
+import { compareEvents, createEventSignature, decodeLogtoEvent, type Event } from '#/pubsub/event'
 import { ContractEventSubscriber, type EventSubscriber } from '#/pubsub/subscribers'
 import { raise } from '#/utilities'
+import { parseAbiItem, type Abi, type Log } from 'viem'
 
 /**
  * Interface defining the structure and methods for an EventPublisher.
@@ -12,7 +12,7 @@ import { raise } from '#/utilities'
 export interface EventPublisher {
   subscribe(subscriber: EventSubscriber): void
   unsubscribe(subscriber: EventSubscriber): void
-  start(): void
+  start(): Promise<void>
   stop(): void
 }
 
@@ -223,7 +223,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
    * Initializes and starts a timer to process the event queue at regular intervals.
    * Prevents concurrent processing of events using a flag.
    */
-  start(): void {
+  start(): Promise<void> {
     if (this.daemonTimer) {
       // Already running, so exit.
       return
@@ -246,6 +246,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
         }
       }
     }, this.daemonInterval)
+    return Promise.resolve()
   }
 
   /**

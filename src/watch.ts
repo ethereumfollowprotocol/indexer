@@ -1,4 +1,3 @@
-import { asyncExitHook } from 'exit-hook'
 import type { EvmClient } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
@@ -10,8 +9,9 @@ import {
   EventInterleaver,
   type EventPublisher
 } from '#/pubsub/publisher/publishers'
-import { EventDispatcher as EventProcessor, type EventSubscriber, EventsTableUploader } from '#/pubsub/subscribers'
+import { EventDispatcher as EventProcessor, EventsTableUploader, type EventSubscriber } from '#/pubsub/subscribers'
 import { raise, sleep } from '#/utilities'
+import { asyncExitHook } from 'exit-hook'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
@@ -58,7 +58,7 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
 
     // Start all publishers
     for (const publisher of publishers) {
-      publisher.start()
+      await publisher.start()
     }
 
     asyncExitHook(
