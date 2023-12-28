@@ -14,7 +14,7 @@
 --   - p_list_storage_location (VARCHAR(174)): The list storage location to be
 --                                             decoded and updated.
 -- Returns: VOID
--- Notes: Uses the list_nfts and decode_list_storage_location functions for
+-- Notes: Uses the list_nfts and decode__list_storage_location functions for
 --        storage and decoding respectively.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_contract_event__ListStorageLocationChange(

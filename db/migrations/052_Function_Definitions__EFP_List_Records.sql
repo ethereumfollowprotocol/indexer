@@ -26,14 +26,14 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: decode_list_record__v001
+-- Function: decode__list_record__v001
 -- Description: This function validates and decodes a byte array representing a
 --              version 1 list op.
 -- Parameters:
 --   - p_record_bytea (BYTEA): The operation data as a byte array.
 -- Returns: types.efp_list_record__v001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode_list_record__v001(
+CREATE OR REPLACE FUNCTION public.decode__list_record__v001(
   p_record_bytea BYTEA
 )
 RETURNS types.efp_list_record__v001
@@ -41,8 +41,8 @@ LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
     tmp_record_version INTEGER;
-    record_version types.uint8__1;
-    record_type types.uint8;
+    record_version types.uint8__1 := 1;
+    record_type types.uint8 := 0;
     record_data BYTEA;
 BEGIN
     -- check if the length is valid
@@ -81,15 +81,14 @@ BEGIN
     record_data := SUBSTRING(p_record_bytea FROM 3);
 
     -- Prepare return values
-    RETURN (record_version, record_type, record_data);
+    RETURN (record_version, record_type, record_data::types.bytea__not_null);
 END;
 $$;
 
 
 
-
 -------------------------------------------------------------------------------
--- Function: decode_list_record
+-- Function: decode__list_record
 -- Description: Decodes a list record string into its components.
 --              The list record hex string is composed of:
 --              - version (1 byte)
@@ -98,10 +97,10 @@ $$;
 --              The function validates the length of the input string based on
 --              version and record_type, and extracts the components.
 -- Parameters:
---   - p_op (VARCHAR(255)): The operation data as a hex string.
+--   - p_record_hex (VARCHAR(255)): The operation data as a hex string.
 -- Returns: types.efp_list_record
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode_list_record(
+CREATE OR REPLACE FUNCTION public.decode__list_record(
   p_record_hex VARCHAR(255)
 )
 RETURNS types.efp_list_record
@@ -109,14 +108,14 @@ LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
     record_bytea BYTEA;
-    record_version types.uint8;
-    record_type types.uint8;
+    record_version types.uint8 := 0;
+    record_type types.uint8 := 0;
     record_data BYTEA;
     record__v001 types.efp_list_record__v001;
 BEGIN
     -- Check if the length is valid (at least 2 characters for '0x')
     IF NOT public.is_hexstring(p_record_hex) THEN
-        RAISE EXCEPTION 'op is not a valid hexstring: "%"', p_record_hex;
+        RAISE EXCEPTION 'record is not a valid hexstring: "%"', p_record_hex;
     END IF;
 
     -- Convert the hex string (excluding '0x') to bytea
@@ -133,10 +132,9 @@ BEGIN
     ----------------------------------------
     record_version := GET_BYTE(record_bytea, 0)::types.uint8;
 
-    -- Check version and determine record_type and data
     CASE
         WHEN record_version = 1 THEN
-            record__v001 := public.decode_list_record__v001(record_bytea);
+            record__v001 := public.decode__list_record__v001(record_bytea);
             record_type := record__v001.record_type;
             record_data := record__v001.data;
         ELSE
@@ -149,7 +147,59 @@ BEGIN
             record_data := NULL;
     END CASE;
 
-    RETURN (record_version, record_type, record_data);
+    RETURN (record_version, record_type, record_data::types.bytea__not_null);
+END;
+$$;
+
+
+
+-------------------------------------------------------------------------------
+-- Function: unpack__list_record_tag
+-- Description: Unpacks a list record tag into its components.
+-- Parameters:
+--   - p_list_record_tag (BYTEA): The [record (N bytes), tag (M bytes)].
+-- Returns: list_record (BYTEA), tag (types.efp_tag)
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.unpack__list_record_tag(
+  p_list_record_tag types.bytea__not_null
+)
+RETURNS TABLE(
+    list_record_bytea types.bytea__not_null,
+    tag types.efp_tag
+)
+LANGUAGE plpgsql IMMUTABLE
+AS $$
+BEGIN
+    -- check the version byte exists and is 0x01
+    IF LENGTH(p_list_record_tag) < 1 THEN
+        RAISE EXCEPTION 'validation failed for list record tag (expected at least 1 byte, got %)',
+            LENGTH(p_list_record_tag);
+    END IF;
+    IF GET_BYTE(p_list_record_tag, 0) != 1 THEN
+        RAISE EXCEPTION 'validation failed for list record tag (expected version 1, got %)',
+            GET_BYTE(p_list_record_tag, 0);
+    END IF;
+
+    -- check the record_type byte exists and is 0x01
+    IF LENGTH(p_list_record_tag) < 2 THEN
+        RAISE EXCEPTION 'validation failed for list record tag (expected at least 2 bytes, got %)',
+            LENGTH(p_list_record_tag);
+    END IF;
+    IF GET_BYTE(p_list_record_tag, 1) != 1 THEN
+        RAISE EXCEPTION 'validation failed for list record tag (expected record_type 1, got %)',
+            GET_BYTE(p_list_record_tag, 1);
+    END IF;
+
+    -- record type 1 (address record) => record+tag length = (22 bytes) + (1+ byte)
+    IF LENGTH(p_list_record_tag) < 23 THEN
+        RAISE EXCEPTION 'validation failed for list record tag (expected at least 23 bytes, got %)',
+            LENGTH(p_list_record_tag);
+    END IF;
+
+    list_record_bytea := SUBSTRING(p_list_record_tag FROM 1 FOR 22)::types.bytea__not_null;
+    tag := SUBSTRING(p_list_record_tag FROM 23)::types.efp_tag;
+
+    RETURN NEXT;
 END;
 $$;
 

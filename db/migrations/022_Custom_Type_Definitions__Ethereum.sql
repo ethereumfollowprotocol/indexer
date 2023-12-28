@@ -23,6 +23,9 @@ RETURNS types.eth_address
 LANGUAGE plpgsql IMMUTABLE
 AS $$
 BEGIN
+    IF address IS NULL THEN
+        RAISE EXCEPTION 'address cannot be NULL';
+    END IF;
     RETURN LOWER(address)::types.eth_address;
 END;
 $$;
@@ -34,7 +37,7 @@ $$;
 -- Constraints: Must be a string of 66 characters, starting with '0x' and
 --              containing 64 lowercase hexadecimal characters.
 -------------------------------------------------------------------------------
-CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
+CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) NOT NULL CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
 
 -------------------------------------------------------------------------------
 -- Domain: types.eth_transaction_hash
@@ -43,6 +46,6 @@ CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) CHECK (VALUE ~ '^0x[a-f0-9]{64
 -- Constraints: Must be a string of 66 characters, starting with '0x' and
 --              containing 64 lowercase hexadecimal characters.
 -------------------------------------------------------------------------------
-CREATE DOMAIN types.eth_transaction_hash AS VARCHAR(66) CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
+CREATE DOMAIN types.eth_transaction_hash AS VARCHAR(66) NOT NULL CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
 
 -- migrate:down

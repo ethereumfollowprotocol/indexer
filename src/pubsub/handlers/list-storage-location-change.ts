@@ -14,7 +14,7 @@ export class ListStorageLocationChangeHandler {
       ${tokenId},
       ${listStorageLocation}
     )`
-    const eventSignature: string = `${event.eventParameters.eventName}(${tokenId}, ${listStorageLocation})`
+    const eventSignature: string = `${event.contractAddress} ${event.eventParameters.eventName}(${tokenId}, ${listStorageLocation})`
     logger.info(eventSignature)
 
     try {

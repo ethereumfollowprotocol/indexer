@@ -16,7 +16,7 @@ export class TransferHandler {
       ${from},
       ${to}
     )`
-    const eventSignature: string = `${event.eventParameters.eventName}(${tokenId}, ${from}, ${to})`
+    const eventSignature: string = `${event.contractAddress} ${event.eventParameters.eventName}(${tokenId}, ${from}, ${to})`
     logger.info(eventSignature)
 
     try {

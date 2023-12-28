@@ -49,12 +49,15 @@ BEGIN
             AND nft.contract_address = normalized_contract_address
             AND nft.token_id = p_token_id
         ) THEN
-            RAISE EXCEPTION 'Attempt to insert duplicate list_nfts row (chain_id=%, contract_address=%, token_id=%)', p_chain_id, p_contract_address, p_token_id;
+            RAISE EXCEPTION 'Attempt to insert duplicate list_nfts row (chain_id=%, contract_address=%, token_id=%)',
+                p_chain_id,
+                normalized_contract_address,
+                p_token_id;
         END IF;
 
         -- Insert new row
         INSERT INTO public.list_nfts (chain_id, contract_address, token_id, owner)
-        VALUES (p_chain_id, normalized_contract_address, p_token_id, normalized_to_address)
+        VALUES (p_chain_id, normalized_contract_address::types.eth_address, p_token_id, normalized_to_address::types.eth_address)
         ON CONFLICT (chain_id, contract_address, token_id) DO NOTHING;
 
     ELSE

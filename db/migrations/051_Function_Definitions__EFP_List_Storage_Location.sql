@@ -49,8 +49,8 @@ AS $$
 DECLARE
     hex_data bytea;
     hex_chain_id VARCHAR(66);
-    version types.uint8;
-    location_type types.uint8;
+    version types.uint8 := 0;
+    location_type types.uint8 := 0;
     chain_id BIGINT;
     contract_address types.eth_address;
     nonce BIGINT;

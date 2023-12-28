@@ -15,7 +15,7 @@ export class ListOpHandler {
       ${nonce},
       ${op}
     )`
-    const eventSignature: string = `${event.eventParameters.eventName}(${nonce}, ${op})`
+    const eventSignature: string = `${event.contractAddress} ${event.eventParameters.eventName}(${nonce}, ${op})`
     logger.info(eventSignature)
 
     try {

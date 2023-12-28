@@ -16,7 +16,7 @@ export class NewListMetadataValueHandler {
       ${key},
       ${value}
     )`
-    const eventSignature: string = `${event.eventParameters.eventName}(${nonce}, ${key}, ${value})`
+    const eventSignature: string = `${event.contractAddress} ${event.eventParameters.eventName}(${nonce}, ${key}, ${value})`
     logger.info(eventSignature)
 
     try {

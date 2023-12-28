@@ -108,8 +108,8 @@ LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
     tmp_op_version INTEGER;
-    list_op_version types.uint8__1;
-    list_op_opcode types.uint8;
+    list_op_version types.uint8__1 := 1;
+    list_op_opcode types.uint8 := 0;
     list_op_data BYTEA;
 BEGIN
     -- check if the length is valid
@@ -154,10 +154,13 @@ BEGIN
     ----------------------------------------
     -- data
     ----------------------------------------
+    IF LENGTH(p_op_bytea) < 3 THEN
+        RAISE EXCEPTION 'validation failed for list op version 1 (expected at least 3 bytes, got %)', LENGTH(p_op_bytea);
+    END IF;
     list_op_data := SUBSTRING(p_op_bytea FROM 3);
 
     -- Prepare return values
-    RETURN (list_op_version, list_op_opcode, list_op_data);
+    RETURN (list_op_version, list_op_opcode, list_op_data::types.bytea__not_null);
 END;
 $$;
 
@@ -186,8 +189,8 @@ LANGUAGE plpgsql IMMUTABLE
 AS $$
 DECLARE
     list_op_bytea BYTEA;
-    list_op_version types.uint8;
-    list_op_opcode types.uint8;
+    list_op_version types.uint8 := 0;
+    list_op_opcode types.uint8 := 0;
     list_op_data BYTEA;
     list_op__v001 types.efp_list_op__v001;
 BEGIN
@@ -226,7 +229,11 @@ BEGIN
             list_op_data := NULL;
     END CASE;
 
-    RETURN (list_op_version, list_op_opcode, list_op_data);
+    RETURN (
+        list_op_version,
+        list_op_opcode,
+        list_op_data::types.bytea__not_null
+    );
 END;
 $$;
 

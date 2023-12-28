@@ -14,7 +14,7 @@
 --                                             with the event.
 --   - p_nonce (BIGINT): The nonce associated with the event.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
---   - p_list_op__v001__opcode_001 (types.efp_list_op__v001__opcode_002):
+--   - p_list_op__v001__opcode_001 (types.efp_list_op__v001__opcode_001):
 --                           The operation data as a record.
 -------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION
@@ -33,13 +33,14 @@ DECLARE
     list_record types.efp_list_record;
 BEGIN
     list_record_hex := public.hexlify(p_list_op__v001__opcode_001.record);
-    list_record := public.decode_list_record(list_record_hex);
+    list_record := public.decode__list_record(list_record_hex);
 
     -- if there's a conflict, then this will raise an exception
     INSERT INTO public.list_records (
         chain_id,
         contract_address,
-        nonce, record,
+        nonce,
+        record,
         version,
         record_type,
         data
@@ -118,7 +119,53 @@ $$;
 
 
 
--- TODO: handle_contract_event__ListOp__v001__opcode_003
+-------------------------------------------------------------------------------
+-- Function: handle_contract_event__ListOp__v001__opcode_003
+-- Description: Handles a list op version 1 opcode 3 (add record tag) by
+--              inserting the record tag into the list_record_tags table.
+--              If the record tag already exists, then this function will raise
+--              an exception.
+-- Parameters:
+--   - p_chain_id (BIGINT): The blockchain network identifier.
+--   - p_contract_address (types.eth_address): The contract address associated
+--                                             with the event.
+--   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_list_op_hex (types.hexstring): The operation data as a hex string.
+--   - p_list_op__v001__opcode_003 (types.efp_list_op__v001__opcode_003):
+--                           The operation data as a record.
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION
+public.handle_contract_event__ListOp__v001__opcode_003(
+  p_chain_id BIGINT,
+  p_contract_address types.eth_address,
+  p_nonce BIGINT,
+  p_list_op_hex types.hexstring,
+  p_list_op__v001__opcode_003 types.efp_list_op__v001__opcode_003
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- if there's a conflict, then this will raise an exception
+    INSERT INTO public.list_record_tags (
+        chain_id,
+        contract_address,
+        nonce,
+        record,
+        tag
+    )
+    VALUES (
+        p_chain_id,
+        p_contract_address,
+        p_nonce,
+        public.hexlify(p_list_op__v001__opcode_003.record),
+        p_list_op__v001__opcode_003.tag
+    );
+END;
+$$;
+
+
+
 -- TODO: handle_contract_event__ListOp__v001__opcode_004
 
 
@@ -148,6 +195,8 @@ AS $$
 DECLARE
     list_op__v001__opcode_001 types.efp_list_op__v001__opcode_001;
     list_op__v001__opcode_002 types.efp_list_op__v001__opcode_002;
+    list_op__v001__opcode_003 types.efp_list_op__v001__opcode_003;
+    pair_list_record_tag RECORD;
 BEGIN
     CASE
         WHEN p_list_op__v001.opcode = 1 THEN
@@ -177,7 +226,22 @@ BEGIN
               list_op__v001__opcode_002
             );
         WHEN p_list_op__v001.opcode = 3 THEN
-        -- skip
+            pair_list_record_tag := public.unpack__list_record_tag(
+              p_list_op__v001.data
+            );
+            list_op__v001__opcode_003 := (
+              p_list_op__v001.version,
+              p_list_op__v001.opcode::types.uint8__3,
+              pair_list_record_tag.list_record_bytea,
+              pair_list_record_tag.tag
+            )::types.efp_list_op__v001__opcode_003;
+            PERFORM public.handle_contract_event__ListOp__v001__opcode_003(
+              p_chain_id,
+              p_contract_address,
+              p_nonce,
+              p_list_op_hex,
+              list_op__v001__opcode_003
+            );
         WHEN p_list_op__v001.opcode = 4 THEN
         -- skip
         ELSE

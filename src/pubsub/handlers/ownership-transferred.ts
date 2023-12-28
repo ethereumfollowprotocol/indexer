@@ -16,7 +16,7 @@ export class OwnershipTransferredHandler {
       ${previousOwner},
       ${newOwner}
     )`
-    const eventSignature: string = `${event.eventParameters.eventName}(${previousOwner}, ${newOwner})`
+    const eventSignature: string = `${event.contractAddress} ${event.eventParameters.eventName}(${previousOwner}, ${newOwner})`
     logger.info(eventSignature)
 
     try {

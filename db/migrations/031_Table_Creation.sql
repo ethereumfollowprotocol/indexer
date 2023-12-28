@@ -85,6 +85,7 @@ CREATE TABLE public.list_nfts (
   contract_address types.eth_address NOT NULL,
   token_id BIGINT NOT NULL,
   owner types.eth_address NOT NULL,
+  -- TODO split out list storage location to separate table
   list_storage_location types.hexstring,
   list_storage_location_chain_id BIGINT,
   list_storage_location_contract_address types.eth_address,

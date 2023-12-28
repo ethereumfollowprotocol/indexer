@@ -36,7 +36,6 @@ DECLARE
     normalized_previous_owner types.eth_address;
     normalized_new_owner types.eth_address;
 BEGIN
-    -- Normalize the input addresses to lowercase
     normalized_contract_address := public.normalize_eth_address(p_contract_address);
     normalized_new_owner := public.normalize_eth_address(p_new_owner);
 
@@ -47,7 +46,10 @@ BEGIN
             WHERE c.chain_id = p_chain_id
             AND c.address = normalized_contract_address
         ) THEN
-            RAISE EXCEPTION 'Attempt to insert duplicate contract (chain_id=%, address=%) with name %', p_chain_id, p_contract_address, p_contract_name;
+            RAISE EXCEPTION 'Attempt to insert duplicate contract (chain_id=%, address=%) with name %',
+                p_chain_id,
+                normalized_contract_address,
+                p_contract_name;
         END IF;
 
         -- Insert new contract
@@ -64,7 +66,10 @@ BEGIN
             AND c.address = normalized_contract_address
             AND c.owner = normalized_previous_owner
         ) THEN
-            RAISE EXCEPTION 'Previous owner does not match for contract (chain_id=%, address=%, expected_previous_owner=%)', p_chain_id, p_contract_address, p_previous_owner;
+            RAISE EXCEPTION 'Previous owner does not match for contract (chain_id=%, address=%, expected_previous_owner=%)',
+                p_chain_id,
+                normalized_contract_address,
+                normalized_previous_owner;
         END IF;
 
         -- Update existing contract owner

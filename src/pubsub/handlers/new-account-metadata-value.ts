@@ -16,7 +16,7 @@ export class NewAccountMetadataValueHandler {
       ${key},
       ${value}
     )`
-    const eventSignature: string = `${event.eventParameters.eventName}(${address}, ${key}, ${value})`
+    const eventSignature: string = `${event.contractAddress} ${event.eventParameters.eventName}(${address}, ${key}, ${value})`
     logger.info(eventSignature)
 
     try {
