@@ -2,6 +2,9 @@ name: Checks
 
 on:
   pull_request:
+  # allow workflow to be called from other workflows
+  workflow_call:
+  # allow workflow to be called from github.com UI
   workflow_dispatch:
   push:
     branches-ignore: [develop]
@@ -19,7 +22,6 @@ env:
 
 jobs:
   checks:
-    if: ${{ !contains(github.event.head_commit.message, '[skip-checks]') }}
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
     steps:
@@ -45,7 +47,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: '🧪 Typecheck'
-        run: bun typecheck
+        run: bunx tsc --project tsconfig.json --noEmit
 
       - name: '🔧 Build'
         run: bun run build

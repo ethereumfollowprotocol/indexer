@@ -10,7 +10,7 @@ on:
         description: 'Railway environment to deploy to'
         required: false
         default: 'production'
-      DEPLOY_SERVICES:
+      RAILWAY_SERVICES:
         type: choice
         description: 'Services to deploy'
         required: false
@@ -33,41 +33,12 @@ env:
   ACTIONS_RUNNER_DEBUG: true
   COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
   RAILWAY_ENVIRONMENT: ${{ github.event.inputs.RAILWAY_ENVIRONMENT }}
-  DEPLOY_SERVICES: ${{ github.event.inputs.DEPLOY_SERVICES }}
+  DEPLOY_SERVICES: ${{ github.event.inputs.RAILWAY_SERVICES }}
 
 jobs:
   checks:
-    if: ${{ !contains(github.event.head_commit.message, '[skip-deploy]') }}
-    timeout-minutes: 3
-    runs-on: ['ubuntu-latest']
-    steps:
-      - name: '🔑 Checkout'
-        uses: actions/checkout@v4.1.1
-
-      - name: '🐰 Setup Bun'
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 'latest'
-
-      - name: 'Setup Biome'
-        uses: biomejs/setup-biome@v1
-        with:
-          version: 'latest'
-
-      # if lint fails no need to continue
-      - name: '🧹 Lint'
-        continue-on-error: false
-        run: biome ci .
-
-      - name: '📦 Install Dependencies'
-        run: bun install --frozen-lockfile
-
-      - name: '🧪 Typecheck'
-        run: bun typecheck
-
-      - name: '🔧 Build'
-        run: bun run build
-
+    uses: './.github/workflows/checks.yml'
+    
   deploy:
     # only deploy if commit message contains `[deploy]`
     if: ${{ contains(github.event.head_commit.message, '[deploy]') }}
