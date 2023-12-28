@@ -32,20 +32,28 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
   // Flag to prevent concurrent processing.
   private isProcessing = false
 
+  constructor(upstream: EventPublisher[] = []) {
+    for (const publisher of upstream) {
+      publisher.subscribe(this)
+    }
+  }
+
   /**
    * Subscribe a new event subscriber.
    * @param subscriber - The subscriber to be added.
    */
-  subscribe(subscriber: EventSubscriber): void {
+  subscribe(subscriber: EventSubscriber): EventPublisher {
     this.subscribers.push(subscriber)
+    return this
   }
 
   /**
    * Unsubscribe an existing event subscriber.
    * @param subscriber - The subscriber to be removed.
    */
-  unsubscribe(subscriber: EventSubscriber): void {
+  unsubscribe(subscriber: EventSubscriber): EventPublisher {
     this.subscribers = this.subscribers.filter(existingSubscriber => existingSubscriber !== subscriber)
+    return this
   }
 
   /**

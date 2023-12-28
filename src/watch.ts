@@ -1,62 +1,47 @@
 import { asyncExitHook } from 'exit-hook'
+import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegistryAbi } from '#/abi'
 import type { EvmClient } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
-import {
-  EFPAccountMetadataPublisher,
-  EFPListMinterPublisher,
-  EFPListRecordsPublisher,
-  EFPListRegistryPublisher
-} from '#/pubsub/publisher/contract-event-publisher'
+import { ContractEventPublisher } from '#/pubsub/publisher/contract-event-publisher'
 import { EventInterleaver } from '#/pubsub/publisher/event-interleaver'
 import type { EventPublisher } from '#/pubsub/publisher/interface'
-import { type EventSubscriber, EventUploader } from '#/pubsub/subscriber'
+import { EventUploader } from '#/pubsub/subscriber'
 import { raise, sleep } from '#/utilities'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
   try {
     const chainId: bigint = BigInt(await client.getChainId())
-    const efpAccountMetadataPublisher: EventPublisher = new EFPAccountMetadataPublisher(
-      client,
-      chainId,
-      env.EFP_CONTRACTS.ACCOUNT_METADATA
-    )
-    const efpListRegistryPublisher: EventPublisher = new EFPListRegistryPublisher(
-      client,
-      chainId,
-      env.EFP_CONTRACTS.LIST_REGISTRY
-    )
-    const efpListRecordsPublisher: EventPublisher = new EFPListRecordsPublisher(
-      client,
-      chainId,
-      env.EFP_CONTRACTS.LIST_RECORDS
-    )
-    const efpListMinterPublisher: EventPublisher = new EFPListMinterPublisher(
-      client,
-      chainId,
-      env.EFP_CONTRACTS.LIST_MINTER
-    )
-    const eventInterleaver = new EventInterleaver()
-    efpAccountMetadataPublisher.subscribe(eventInterleaver)
-    efpListRegistryPublisher.subscribe(eventInterleaver)
-    efpListRecordsPublisher.subscribe(eventInterleaver)
-    efpListMinterPublisher.subscribe(eventInterleaver)
 
-    const eventsTableUploader: EventSubscriber = new EventUploader()
-    eventInterleaver.subscribe(eventsTableUploader)
-
+    // 1. Listen to all EFP contracts for events
     const publishers: EventPublisher[] = [
-      efpAccountMetadataPublisher,
-      efpListRegistryPublisher,
-      efpListRecordsPublisher,
-      efpListMinterPublisher,
-      eventInterleaver
+      new ContractEventPublisher(
+        client,
+        chainId,
+        'EFPAccountMetadata',
+        efpAccountMetadataAbi,
+        env.EFP_CONTRACTS.ACCOUNT_METADATA
+      ),
+      new ContractEventPublisher(
+        client,
+        chainId,
+        'EFPListRegistry',
+        efpListRegistryAbi,
+        env.EFP_CONTRACTS.LIST_REGISTRY
+      ),
+      new ContractEventPublisher(client, chainId, 'EFPListRecords', efpListRecordsAbi, env.EFP_CONTRACTS.LIST_RECORDS),
+      new ContractEventPublisher(client, chainId, 'EFPListMinter', efpListMinterAbi, env.EFP_CONTRACTS.LIST_MINTER)
     ]
 
+    // 2. Collect and interleave events in to a single ordered steam
+    const eventInterleaver = new EventInterleaver(publishers)
+    publishers.push(eventInterleaver)
+
+    // 3. Upload events to the database
+    eventInterleaver.subscribe(new EventUploader())
+
     // Start all publishers
-    for (const publisher of publishers) {
-      await publisher.start()
-    }
+    await Promise.all(publishers.map(publisher => publisher.start()))
 
     asyncExitHook(
       signal => {
