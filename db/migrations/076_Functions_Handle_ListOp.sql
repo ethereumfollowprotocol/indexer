@@ -250,8 +250,8 @@ AS $$
 DECLARE
     pair_list_record_tag RECORD;
 BEGIN
-    CASE
-        WHEN p_list_op__v001.opcode = 1 THEN
+    CASE p_list_op__v001.opcode
+        WHEN 1 THEN
             PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
               p_chain_id,
               p_contract_address,
@@ -263,7 +263,7 @@ BEGIN
                   p_list_op__v001.data
               )::types.efp_list_op__v001__opcode_001
             );
-        WHEN p_list_op__v001.opcode = 2 THEN
+        WHEN 2 THEN
             PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
               p_chain_id,
               p_contract_address,
@@ -275,7 +275,7 @@ BEGIN
                   p_list_op__v001.data
               )::types.efp_list_op__v001__opcode_002
             );
-        WHEN p_list_op__v001.opcode = 3 THEN
+        WHEN 3 THEN
             pair_list_record_tag := public.unpack__list_record_tag(
               p_list_op__v001.data
             );
@@ -291,7 +291,7 @@ BEGIN
                   pair_list_record_tag.tag
               )::types.efp_list_op__v001__opcode_003
             );
-        WHEN p_list_op__v001.opcode = 4 THEN
+        WHEN 4 THEN
             pair_list_record_tag := public.unpack__list_record_tag(
               p_list_op__v001.data
             );
@@ -368,8 +368,8 @@ BEGIN
     )
     ON CONFLICT (chain_id, contract_address, nonce, op) DO NOTHING;
 
-    CASE
-      WHEN list_op.version = 1 THEN
+    CASE list_op.version
+      WHEN 1 THEN
           list_op__v001 := (
               list_op.version::types.uint8__1,
               list_op.opcode,

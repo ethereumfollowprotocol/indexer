@@ -107,7 +107,7 @@ BEGIN
         location_type::types.uint8__1,
         chain_id,
         contract_address,
-        nonce
+        nonce::types.efp_list_storage_location_nonce
       );
 END;
 $$;

@@ -6,11 +6,11 @@ import {
   EFPAccountMetadataPublisher,
   EFPListMinterPublisher,
   EFPListRecordsPublisher,
-  EFPListRegistryPublisher,
-  EventInterleaver,
-  type EventPublisher
-} from '#/pubsub/publisher/publishers'
-import { EventDispatcher as EventProcessor, type EventSubscriber, EventsTableUploader } from '#/pubsub/subscribers'
+  EFPListRegistryPublisher
+} from '#/pubsub/publisher/contract-event-publisher'
+import { EventInterleaver } from '#/pubsub/publisher/event-interleaver'
+import type { EventPublisher } from '#/pubsub/publisher/interface'
+import { type EventSubscriber, EventUploader } from '#/pubsub/subscriber'
 import { raise, sleep } from '#/utilities'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
@@ -42,11 +42,8 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     efpListRecordsPublisher.subscribe(eventInterleaver)
     efpListMinterPublisher.subscribe(eventInterleaver)
 
-    const eventsTableUploader: EventSubscriber = new EventsTableUploader()
+    const eventsTableUploader: EventSubscriber = new EventUploader()
     eventInterleaver.subscribe(eventsTableUploader)
-
-    const eventProcessor: EventSubscriber = new EventProcessor()
-    eventInterleaver.subscribe(eventProcessor)
 
     const publishers: EventPublisher[] = [
       efpAccountMetadataPublisher,

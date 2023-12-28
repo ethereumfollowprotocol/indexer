@@ -10,7 +10,7 @@ SET
 -- Table: contracts
 -------------------------------------------------------------------------------
 CREATE TABLE public.contracts (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   address types.eth_address NOT NULL,
   name VARCHAR(255) NOT NULL,
   owner types.eth_address NOT NULL,
@@ -27,26 +27,25 @@ UPDATE
 -- Table: events
 -------------------------------------------------------------------------------
 CREATE TABLE public.contract_events (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   block_number BIGINT NOT NULL,
-  block_hash types.eth_block_hash NOT NULL,
-  contract_address types.eth_address NOT NULL,
-  transaction_hash types.eth_transaction_hash NOT NULL,
   transaction_index NUMERIC NOT NULL,
   log_index NUMERIC NOT NULL,
+  contract_address types.eth_address NOT NULL,
   event_name VARCHAR(255) NOT NULL,
-  event_parameters jsonb NOT NULL,
+  event_args jsonb NOT NULL,
+  block_hash types.eth_block_hash NOT NULL,
+  transaction_hash types.eth_transaction_hash NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
     chain_id,
     block_number,
-    block_hash,
-    contract_address,
-    transaction_hash,
     transaction_index,
     log_index
-  ) -- , FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
+  )
+  -- contracts won't exist in the database until after the indexer has seen them
+  -- , FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_events_updated_at BEFORE
@@ -57,7 +56,7 @@ UPDATE
 -- Table: account_metadata
 -------------------------------------------------------------------------------
 CREATE TABLE public.account_metadata (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   contract_address types.eth_address NOT NULL,
   address types.eth_address NOT NULL,
   "key" VARCHAR(255) NOT NULL,
@@ -81,15 +80,15 @@ UPDATE
 -- Table: list_nfts
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_nfts (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   contract_address types.eth_address NOT NULL,
-  token_id BIGINT NOT NULL,
+  token_id types.efp_list_nft_token_id NOT NULL,
   owner types.eth_address NOT NULL,
   -- TODO split out list storage location to separate table
   list_storage_location types.hexstring,
   list_storage_location_chain_id BIGINT,
   list_storage_location_contract_address types.eth_address,
-  list_storage_location_nonce BIGINT,
+  list_storage_location_nonce types.efp_list_storage_location_nonce,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (
@@ -108,9 +107,9 @@ UPDATE
 -- Table: list_metadata
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_metadata (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   contract_address types.eth_address NOT NULL,
-  nonce BIGINT NOT NULL,
+  nonce types.efp_list_storage_location_nonce NOT NULL,
   "key" VARCHAR(255) NOT NULL,
   value types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -132,9 +131,9 @@ UPDATE
 -- Table: list_ops
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_ops (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   contract_address types.eth_address NOT NULL,
-  nonce BIGINT NOT NULL,
+  nonce types.efp_list_storage_location_nonce NOT NULL,
   op types.hexstring NOT NULL,
   version types.uint8 NOT NULL,
   opcode types.uint8 NOT NULL,
@@ -158,9 +157,9 @@ UPDATE
 -- Table: list_records
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_records (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   contract_address types.eth_address NOT NULL,
-  nonce BIGINT NOT NULL,
+  nonce types.efp_list_storage_location_nonce NOT NULL,
   record types.hexstring NOT NULL,
   version types.uint8 NOT NULL,
   record_type types.uint8 NOT NULL,
@@ -184,9 +183,9 @@ UPDATE
 -- Table: list_record_tags
 -------------------------------------------------------------------------------
 CREATE TABLE public.list_record_tags (
-  chain_id BIGINT NOT NULL,
+  chain_id types.eth_chain_id NOT NULL,
   contract_address types.eth_address NOT NULL,
-  nonce BIGINT NOT NULL,
+  nonce types.efp_list_storage_location_nonce NOT NULL,
   record types.hexstring NOT NULL,
   tag types.efp_tag NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

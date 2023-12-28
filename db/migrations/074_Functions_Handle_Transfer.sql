@@ -23,7 +23,7 @@
 CREATE OR REPLACE FUNCTION public.handle_contract_event__Transfer(
     p_chain_id BIGINT,
     p_contract_address VARCHAR(42),
-    p_token_id BIGINT,
+    p_token_id types.efp_list_nft_token_id,
     p_from_address VARCHAR(42),
     p_to_address VARCHAR(42)
 )
@@ -56,8 +56,18 @@ BEGIN
         END IF;
 
         -- Insert new row
-        INSERT INTO public.list_nfts (chain_id, contract_address, token_id, owner)
-        VALUES (p_chain_id, normalized_contract_address::types.eth_address, p_token_id, normalized_to_address::types.eth_address)
+        INSERT INTO public.list_nfts (
+            chain_id,
+            contract_address,
+            token_id,
+            owner
+        )
+        VALUES (
+            p_chain_id,
+            normalized_contract_address::types.eth_address,
+            p_token_id,
+            normalized_to_address::types.eth_address
+        )
         ON CONFLICT (chain_id, contract_address, token_id) DO NOTHING;
 
     ELSE

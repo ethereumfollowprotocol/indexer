@@ -46,10 +46,12 @@ BEGIN
             WHERE c.chain_id = p_chain_id
             AND c.address = normalized_contract_address
         ) THEN
-            RAISE EXCEPTION 'Attempt to insert duplicate contract (chain_id=%, address=%) with name %',
+            RAISE EXCEPTION 'Attempt to insert duplicate contract (chain_id=%, address=%) with name=%, previous_owner=%, new_owner=%',
                 p_chain_id,
                 normalized_contract_address,
-                p_contract_name;
+                p_contract_name,
+                p_previous_owner,
+                p_new_owner;
         END IF;
 
         -- Insert new contract
