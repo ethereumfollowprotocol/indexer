@@ -12,7 +12,7 @@
     "database:drop": "dbmate drop",
     "database:up": "dbmate up && bun database:generate-types",
     "database:reset": "bun database:drop && bun database:up",
-    "database:generate-types": "kysely-codegen --dialect='postgres' --type-only-imports --log-level='error' --out-file='./src/database/generated/index.ts' && bun format && (cp ./src/database/generated/index.ts ../api/src/types/generated/index.ts || true)",
+    "database:generate-types": "kysely-codegen --dialect='postgres' --type-only-imports --log-level='error' --out-file='./src/database/generated/index.ts' && bun lint:format && (cp ./src/database/generated/index.ts ../api/src/types/generated/index.ts || true)",
     "db": "bun database",
     "down": "docker compose --file='compose.yml' --project-name='efp' down --remove-orphans",
     "drop": "bun down && docker volume rm --force efp_database",
