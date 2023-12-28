@@ -22,6 +22,7 @@ env:
 
 jobs:
   checks:
+    name: '🔎 Checks'
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
     steps:
@@ -49,6 +50,13 @@ jobs:
       - name: '🧪 Typecheck'
         run: bunx tsc --project tsconfig.json --noEmit
 
-      - name: '🔧 Build'
+      - name: '🔧 Build TypeScript App'
         run: bun run build
 
+      - name: '🧪 Build Indexer Image'
+        run: |
+          docker compose --file='compose.yml' --project-name='efp' up --build --abort-on-container-exit --no-start indexer
+
+      - name: '🧪 Build Database Image'
+        run: |
+          docker compose --file='compose.yml' --project-name='efp' up --build --abort-on-container-exit --no-start database

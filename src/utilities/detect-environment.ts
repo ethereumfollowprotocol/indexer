@@ -3,7 +3,7 @@ import { providerInfo, runtime } from 'std-env'
 
 export const environmentInfo = {
   isDocker: isDocker(),
-  isCI: providerInfo.ci,
+  isCI: Boolean(providerInfo.ci),
   provider: providerInfo.name,
   runtime: runtime
 }
