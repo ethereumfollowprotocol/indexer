@@ -1,7 +1,7 @@
-import { database, type Row } from '#/database'
+import { type QueryResult, type RawBuilder, sql } from 'kysely'
+import { type Row, database } from '#/database'
 import { logger } from '#/logger'
-import { decodeListOp, type ListOp } from '#/process/list-op'
-import { sql, type QueryResult, type RawBuilder } from 'kysely'
+import { type ListOp, decodeListOp } from '#/process/list-op'
 import type { Event } from '../event'
 
 export class ListOpHandler {

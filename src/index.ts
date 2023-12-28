@@ -53,7 +53,7 @@ async function main() {
   try {
     logger.log(`Process ID: ${process.pid}`)
     // wait for db to be up
-    while (true) {
+    for (;;) {
       try {
         logger.log(`dbmate up`, `🗄️`)
         await runDbmateCommand('status')

@@ -1,7 +1,7 @@
+import { type QueryResult, type RawBuilder, sql } from 'kysely'
+import type { Address } from 'viem'
 import { database } from '#/database'
 import { logger } from '#/logger'
-import { sql, type QueryResult, type RawBuilder } from 'kysely'
-import type { Address } from 'viem'
 import type { Event } from '../event'
 
 export class TransferHandler {

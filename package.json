@@ -6,9 +6,8 @@
   "scripts": {
     "clean": "/bin/bash ./scripts/clean.sh",
     "dev": "bun --watch --hot ./src/index.ts",
-    "start": "bun --watch --hot dist/index.js",
     "build": "bun build ./src/index.ts --minify --target='bun' --format='esm' --outfile='./dist/index.js'",
-    "database": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans database database-setup",
+    "database": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans database",
     "database:status": "dbmate status",
     "database:drop": "dbmate drop",
     "database:up": "dbmate up && bun database:generate-types",
@@ -34,7 +33,7 @@
     "kysely-postgres-js": "^2.0.0",
     "postgres": "^3.4.3",
     "std-env": "^3.7.0",
-    "viem": "2.0.0-rc.2"
+    "viem": "2.0.0-rc.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",

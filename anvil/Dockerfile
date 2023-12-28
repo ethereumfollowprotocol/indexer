@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM ghcr.io/foundry-rs/foundry:latest
 
 ENV FORK_URL=""

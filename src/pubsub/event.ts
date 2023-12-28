@@ -1,4 +1,4 @@
-import { decodeEventLog, type Log } from 'viem'
+import { type Log, decodeEventLog } from 'viem'
 
 export type Event = {
   chainId: bigint
