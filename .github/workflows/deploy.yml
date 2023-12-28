@@ -39,23 +39,6 @@ jobs:
   checks:
     uses: './.github/workflows/checks.yml'
 
-  # ensure images are buildable before deploying
-  build-images:
-    needs: [checks]
-    name: '🏗 Build Images'
-    runs-on: ['ubuntu-latest']
-    steps:
-      - name: '🔑 Checkout'
-        uses: actions/checkout@v4.1.1
-
-      - name: '🏗 Build Indexer Image'
-        run: |
-          docker compose --file='compose.yml' --project-name='efp' up --build indexer
-
-      - name: '🏗 Build Database Image'
-        run: |
-          docker compose --file='compose.yml' --project-name='efp' up --build database
-
   deploy:
     name: '🚀 Deploy'
     # only deploy if commit message contains `[deploy]`
