@@ -20,6 +20,8 @@ FROM
   AND lm_user.key = 'user'
   AND PUBLIC.is_valid_address (lm_user.value);
 
+
+
 -------------------------------------------------------------------------------
 -- View: view_list_records_with_tag_array
 -------------------------------------------------------------------------------
@@ -47,6 +49,8 @@ GROUP BY
   records.version,
   records.record_type,
   records.data;
+
+
 
 -------------------------------------------------------------------------------
 -- View: view_list_records_with_nft_manager_user_tags
@@ -79,6 +83,8 @@ FROM
   AND nfts.list_storage_location_contract_address = record_tags.contract_address
   AND nfts.list_storage_location_nonce = record_tags.nonce;
 
+
+
 CREATE OR REPLACE VIEW PUBLIC.view__contracts AS
 SELECT
   chain_id,
@@ -89,6 +95,8 @@ FROM
   PUBLIC.contract_events
 WHERE
   event_name = 'OwnershipTransferred';
+
+
 
 -- View for account metadata events
 CREATE OR REPLACE VIEW PUBLIC.view__account_metadata__events AS
@@ -106,6 +114,8 @@ FROM
   PUBLIC.contract_events
 WHERE
   event_name = 'NewAccountMetadataValue';
+
+
 
 CREATE OR REPLACE VIEW PUBLIC.view__account_metadata AS
 SELECT
@@ -141,6 +151,8 @@ FROM
   AND a.key = b.key
   AND PUBLIC.sort_key (a.block_number, a.transaction_index, a.log_index) = b.latest_sort_key;
 
+
+
 CREATE OR REPLACE VIEW PUBLIC.view__list_metadata__events AS
 SELECT
   chain_id,
@@ -156,6 +168,8 @@ FROM
   PUBLIC.contract_events
 WHERE
   event_name = 'NewListMetadataValue';
+
+
 
 CREATE OR REPLACE VIEW PUBLIC.view__list_metadata AS
 SELECT
@@ -191,6 +205,8 @@ FROM
   AND a.key = b.key
   AND PUBLIC.sort_key (a.block_number, a.transaction_index, a.log_index) = b.latest_sort_key;
 
+
+
 CREATE OR REPLACE VIEW PUBLIC.view__list_op__events AS
 SELECT
   chain_id,
@@ -205,5 +221,7 @@ FROM
   PUBLIC.contract_events
 WHERE
   event_name = 'ListOp';
+
+
 
 -- migrate:down

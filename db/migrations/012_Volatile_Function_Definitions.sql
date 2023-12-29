@@ -64,6 +64,8 @@ BEGIN
 END
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: update_updated_at_column
 -- Description: Updates the 'updated_at' column of a table to the current
@@ -78,5 +80,7 @@ BEGIN
     RETURN NEW;
 END;
 $$;
+
+
 
 -- migrate:down

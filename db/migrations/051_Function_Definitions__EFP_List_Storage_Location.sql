@@ -16,6 +16,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: public.decode__efp_list_storage_location__v001__location_type_001
 -- Description: Decodes a list storage location string into its components.
@@ -99,5 +101,7 @@ BEGIN
       );
 END;
 $$;
+
+
 
 -- migrate:down

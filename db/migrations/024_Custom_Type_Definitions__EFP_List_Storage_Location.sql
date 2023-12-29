@@ -8,6 +8,8 @@
 -- TODO: de-couple to it's own table and make NOT NULL
 CREATE DOMAIN types.efp_list_storage_location_nonce AS BIGINT CHECK (VALUE >= 0);
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: types.efp_list_storage_location__v001__location_type_001
 --
@@ -21,5 +23,7 @@ CREATE TYPE types.efp_list_storage_location__v001__location_type_001 AS (
   contract_address types.eth_address,
   nonce types.efp_list_storage_location_nonce
 );
+
+
 
 -- migrate:down

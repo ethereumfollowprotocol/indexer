@@ -32,7 +32,10 @@
   "gitlens.telemetry.enabled": false,
   "docsYaml.telemetry.enableTelemetry": false,
   "database-client.telemetry.usesOnlineServices": false,
+  "sql-formatter.dialect": "postgresql",
+  "sql-formatter.linesBetweenQueries": 3,
+  "sql-formatter.uppercase": true,
   "[sql]": {
-    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+    "editor.defaultFormatter": "lea21st.vscode-sql-formatter"
   }
 }

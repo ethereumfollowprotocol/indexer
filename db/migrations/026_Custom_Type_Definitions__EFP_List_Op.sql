@@ -10,6 +10,8 @@ CREATE TYPE types.efp_list_op AS (
   data types.bytea__not_null
 );
 
+
+
 -- ============================================================================
 -- version 1
 -- ============================================================================
@@ -27,6 +29,8 @@ CREATE TYPE types.efp_list_op__v001 AS (
   data types.bytea__not_null
 );
 
+
+
 -------------------------------------------------------------------------------
 -- Type: types.efp_list_op__v001__opcode_001
 --
@@ -40,6 +44,8 @@ CREATE TYPE types.efp_list_op__v001__opcode_001 AS (
   record types.bytea__not_null
 );
 
+
+
 -------------------------------------------------------------------------------
 -- Type: types.efp_list_op__v001__opcode_002
 --
@@ -52,6 +58,8 @@ CREATE TYPE types.efp_list_op__v001__opcode_002 AS (
   -- remove record operation => data is [record]
   record types.bytea__not_null
 );
+
+
 
 -------------------------------------------------------------------------------
 -- Type: types.efp_list_op__v001__opcode_003
@@ -67,6 +75,8 @@ CREATE TYPE types.efp_list_op__v001__opcode_003 AS (
   tag types.efp_tag
 );
 
+
+
 -------------------------------------------------------------------------------
 -- Type: types.efp_list_op__v001__opcode_004
 --
@@ -80,5 +90,7 @@ CREATE TYPE types.efp_list_op__v001__opcode_004 AS (
   record types.bytea__not_null,
   tag types.efp_tag
 );
+
+
 
 -- migrate:down

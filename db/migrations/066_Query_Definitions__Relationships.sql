@@ -47,6 +47,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: get_outgoing_relationships
 -- Description: Retrieves outgoing relationships from a specified user with a
@@ -124,5 +126,7 @@ BEGIN
         data ASC;
 END;
 $$;
+
+
 
 -- migrate:down

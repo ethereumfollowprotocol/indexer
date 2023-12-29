@@ -27,6 +27,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: get_list_record_tags
 -- Description: Retrieves a list of records for a specified token_id from the
@@ -59,5 +61,7 @@ BEGIN
       AND record_tags.nonce = list_storage_location.nonce;
 END;
 $$;
+
+
 
 -- migrate:down

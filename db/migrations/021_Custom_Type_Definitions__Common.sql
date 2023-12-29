@@ -10,6 +10,8 @@ CREATE DOMAIN types.uint8 AS SMALLINT NOT NULL CHECK (
   AND VALUE <= 255
 );
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: types.uint8__1
 --
@@ -17,6 +19,8 @@ CREATE DOMAIN types.uint8 AS SMALLINT NOT NULL CHECK (
 -- Constraints: Value must be 1.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__1 AS SMALLINT NOT NULL CHECK (VALUE = 1);
+
+
 
 -------------------------------------------------------------------------------
 -- Domain: types.uint8__2
@@ -26,6 +30,8 @@ CREATE DOMAIN types.uint8__1 AS SMALLINT NOT NULL CHECK (VALUE = 1);
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__2 AS SMALLINT NOT NULL CHECK (VALUE = 2);
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: types.uint8__3
 --
@@ -33,6 +39,8 @@ CREATE DOMAIN types.uint8__2 AS SMALLINT NOT NULL CHECK (VALUE = 2);
 -- Constraints: Value must be 3.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__3 AS SMALLINT NOT NULL CHECK (VALUE = 3);
+
+
 
 -------------------------------------------------------------------------------
 -- Domain: types.uint8__4
@@ -42,11 +50,15 @@ CREATE DOMAIN types.uint8__3 AS SMALLINT NOT NULL CHECK (VALUE = 3);
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__4 AS SMALLINT NOT NULL CHECK (VALUE = 4);
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: bytea__not_null
 -- Description: A BYTEA domain that is not nullable.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.bytea__not_null AS BYTEA NOT NULL;
+
+
 
 -------------------------------------------------------------------------------
 -- Domain: types.hexstring
@@ -56,6 +68,8 @@ CREATE DOMAIN types.bytea__not_null AS BYTEA NOT NULL;
 --              function, typically starting with '0x'. Minimum length is 2.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})*$');
+
+
 
 -------------------------------------------------------------------------------
 -- Function: public.hexlify
@@ -71,5 +85,7 @@ BEGIN
     RETURN ('0x' || ENCODE(bytea_data, 'hex'))::types.hexstring;
 END;
 $$;
+
+
 
 -- migrate:down

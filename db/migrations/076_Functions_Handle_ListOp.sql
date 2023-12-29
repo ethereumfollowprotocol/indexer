@@ -51,6 +51,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_002
 -- Description: Handles a list op version 1 opcode 2 (remove record) by
@@ -106,6 +108,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_003
 -- Description: Handles a list op version 1 opcode 3 (add record tag) by
@@ -147,6 +151,8 @@ BEGIN
     );
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_004
@@ -201,6 +207,8 @@ BEGIN
         tag = p_list_op__v001__opcode_004.tag;
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001
@@ -289,6 +297,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp
 -- Description: Inserts a new operation record into the list_ops table. This
@@ -358,5 +368,7 @@ BEGIN
     END CASE;
 END;
 $$;
+
+
 
 -- migrate:down

@@ -9,6 +9,8 @@
 -- TODO: de-couple to it's own table and make NOT NULL
 CREATE DOMAIN types.eth_chain_id AS BIGINT NOT NULL CHECK (VALUE >= 0);
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: types.eth_address
 --
@@ -17,6 +19,8 @@ CREATE DOMAIN types.eth_chain_id AS BIGINT NOT NULL CHECK (VALUE >= 0);
 --              containing 40 lowercase hexadecimal characters.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.eth_address AS VARCHAR(42) CHECK (VALUE ~ '^0x[a-f0-9]{40}$');
+
+
 
 -------------------------------------------------------------------------------
 -- Function: normalize_eth_address
@@ -36,6 +40,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: types.eth_block_hash
 --
@@ -44,6 +50,8 @@ $$;
 --              containing 64 lowercase hexadecimal characters.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) NOT NULL CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
+
+
 
 -------------------------------------------------------------------------------
 -- Function: normalize_eth_block_hash
@@ -63,6 +71,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Domain: types.eth_transaction_hash
 --
@@ -71,6 +81,8 @@ $$;
 --              containing 64 lowercase hexadecimal characters.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.eth_transaction_hash AS VARCHAR(66) NOT NULL CHECK (VALUE ~ '^0x[a-f0-9]{64}$');
+
+
 
 -------------------------------------------------------------------------------
 -- Function: normalize_eth_transaction_hash
@@ -92,6 +104,8 @@ BEGIN
 END;
 $$;
 
+
+
 CREATE
 OR REPLACE FUNCTION public.sort_key (
   p_block_number BIGINT,
@@ -102,5 +116,7 @@ BEGIN
     RETURN p_block_number::TEXT || '-' || p_transaction_index::TEXT || '-' || p_log_index::TEXT;
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 -- migrate:down

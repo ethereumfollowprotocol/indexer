@@ -42,4 +42,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
 -- migrate:down

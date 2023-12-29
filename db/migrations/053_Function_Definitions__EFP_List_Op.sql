@@ -16,6 +16,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_002
 -- Description: Validates the integrity of a list operation specific to version
@@ -32,6 +34,8 @@ BEGIN
     END IF;
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_003
@@ -50,6 +54,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_004
 -- Description: Validates the integrity of a list operation specific to version
@@ -66,6 +72,8 @@ BEGIN
     END IF;
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: public.decode__efp_list_op__v001
@@ -135,6 +143,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: public.decode__efp_list_op
 -- Description: Decodes a list operation string into its components.
@@ -200,5 +210,7 @@ BEGIN
     );
 END;
 $$;
+
+
 
 -- migrate:down

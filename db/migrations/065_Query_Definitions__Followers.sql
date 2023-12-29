@@ -44,6 +44,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: get_unique_followers
 -- Description: Retrieves a distinct list of followers for a specified address,
@@ -84,6 +86,8 @@ BEGIN
         v.list_user ASC;
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: count_unique_followers_by_address
@@ -126,5 +130,7 @@ BEGIN
     LIMIT limit_count;
 END;
 $$;
+
+
 
 -- migrate:down

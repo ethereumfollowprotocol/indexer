@@ -75,6 +75,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: count_unique_following_by_address
 -- Description: Counts the unique addresses that each user is following in the
@@ -117,5 +119,7 @@ BEGIN
     LIMIT limit_count;
 END;
 $$;
+
+
 
 -- migrate:down

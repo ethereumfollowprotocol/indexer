@@ -16,6 +16,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: decode__list_record__v001
 -- Description: This function validates and decodes a byte array representing a
@@ -71,6 +73,8 @@ BEGIN
     RETURN (record_version, record_type, record_data::types.bytea__not_null);
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: decode__list_record
@@ -132,6 +136,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: unpack__list_record_tag
 -- Description: Unpacks a list record tag into its components.
@@ -177,5 +183,7 @@ BEGIN
     RETURN NEXT;
 END;
 $$;
+
+
 
 -- migrate:down

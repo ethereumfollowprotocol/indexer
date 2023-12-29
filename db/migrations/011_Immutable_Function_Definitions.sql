@@ -13,6 +13,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: is_uint8
 -- Description: Validates that the given SMALLINT is [0, 255].
@@ -26,6 +28,8 @@ BEGIN
     RETURN value >= 0 AND value <= 255;
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: is_hexstring
@@ -44,6 +48,8 @@ BEGIN
 END;
 $$;
 
+
+
 -------------------------------------------------------------------------------
 -- Function: is_valid_address
 -- Description: Validates that the given string is a valid Ethereum address.
@@ -60,6 +66,8 @@ BEGIN
     RETURN address ~ '^0x[a-f0-9]{40}$';
 END;
 $$;
+
+
 
 -------------------------------------------------------------------------------
 -- Function: convert_hex_to_bigint
@@ -102,5 +110,7 @@ BEGIN
     RETURN result;
 END;
 $$;
+
+
 
 -- migrate:down
