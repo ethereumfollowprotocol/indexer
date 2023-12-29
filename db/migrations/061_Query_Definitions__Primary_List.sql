@@ -26,7 +26,7 @@ BEGIN
     -- Retrieve the primary list value from account_metadata
     SELECT am.value INTO primary_list
     FROM public.account_metadata AS am
-    WHERE am.address = normalized_addr AND am.key = 'efp.list.primary';
+    WHERE am.address = normalized_addr AND am.key = 'primary-list';
 
     -- Check if a primary list value was found and is valid
     IF primary_list IS NOT NULL THEN
