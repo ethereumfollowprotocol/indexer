@@ -109,4 +109,15 @@ BEGIN
 END;
 $$;
 
+
+CREATE OR REPLACE FUNCTION public.sort_key(
+    p_block_number BIGINT,
+    p_transaction_index NUMERIC,
+    p_log_index NUMERIC
+)
+RETURNS TEXT AS $$
+BEGIN
+    RETURN p_block_number::TEXT || '-' || p_transaction_index::TEXT || '-' || p_log_index::TEXT;
+END;
+$$ LANGUAGE plpgsql;
 -- migrate:down
