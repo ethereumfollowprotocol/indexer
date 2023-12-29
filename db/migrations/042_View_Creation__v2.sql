@@ -148,11 +148,85 @@ SELECT
   contract_address,
   event_name,
   (event_args ->> 'nonce')::TYPES.efp_list_storage_location_nonce AS nonce,
-  event_args ->> 'op' AS op
+  event_args ->> 'op' AS op,
+  PUBLIC.unhexlify (event_args ->> 'op') AS op_bytes
 FROM
   PUBLIC.contract_events
 WHERE
   event_name = 'ListOp';
+
+
+
+-------------------------------------------------------------------------------
+-- View: view__list_ops
+-------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW PUBLIC.view__list_ops AS
+SELECT
+  PUBLIC.view__list_op__events.*,
+  decoded_op.version,
+  decoded_op.opcode,
+  decoded_op.data
+FROM
+  PUBLIC.view__list_op__events,
+  LATERAL (
+    SELECT
+      (PUBLIC.decode__efp_list_op (op)).*
+  ) AS decoded_op (version, opcode, data);
+
+
+
+-------------------------------------------------------------------------------
+-- View: view__list_records
+-------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW PUBLIC.view__list_records AS
+SELECT
+  vlo.chain_id,
+  vlo.contract_address,
+  vlo.nonce,
+  vlo.data as record,
+  GET_BYTE(vlo.data, 0) AS record_version,
+  GET_BYTE(vlo.data, 1) AS record_type,
+  SUBSTRING(
+    vlo.data
+    FROM
+      3
+  ) AS record_data,
+  vlo.block_number,
+  vlo.transaction_index,
+  vlo.log_index
+FROM
+  PUBLIC.view__list_ops vlo
+  INNER JOIN (
+    SELECT
+      chain_id,
+      contract_address,
+      nonce,
+      data as record,
+      MAX(
+        PUBLIC.sort_key (block_number, transaction_index, log_index)
+      ) AS max_sort_key
+    FROM
+      PUBLIC.view__list_ops
+    WHERE
+      -- find the last add/remove record op for each record
+      opcode = 1
+      OR opcode = 2
+    GROUP BY
+      chain_id,
+      contract_address,
+      nonce,
+      data
+  ) AS max_records ON vlo.chain_id = max_records.chain_id
+  AND vlo.contract_address = max_records.contract_address
+  AND vlo.nonce = max_records.nonce
+  AND PUBLIC.sort_key (
+    vlo.block_number,
+    vlo.transaction_index,
+    vlo.log_index
+  ) = max_records.max_sort_key
+WHERE
+  -- only include if last opcode was a add op
+  vlo.opcode = 1;
 
 
 

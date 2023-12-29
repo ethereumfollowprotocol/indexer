@@ -113,7 +113,10 @@ OR REPLACE FUNCTION public.sort_key (
   p_log_index NUMERIC
 ) RETURNS TEXT AS $$
 BEGIN
-    RETURN p_block_number::TEXT || '-' || p_transaction_index::TEXT || '-' || p_log_index::TEXT;
+    RETURN
+        LPAD(p_block_number::TEXT, 12, '0') || '-' ||
+        LPAD(p_transaction_index::TEXT, 6, '0') || '-' ||
+        LPAD(p_log_index::TEXT, 6, '0');
 END;
 $$ LANGUAGE plpgsql;
 

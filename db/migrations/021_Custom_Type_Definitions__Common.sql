@@ -88,4 +88,21 @@ $$;
 
 
 
+-------------------------------------------------------------------------------
+-- Function: public.unhexlify
+-- Description: Converts a hexadecimal string to BYTEA.
+-- Parameters:
+--   - hexstring_data (types.hexstring): The hexadecimal string to be converted.
+-- Returns: The BYTEA representation of the input hexadecimal string.
+-------------------------------------------------------------------------------
+CREATE
+OR REPLACE FUNCTION public.unhexlify (hexstring_data types.hexstring) RETURNS BYTEA LANGUAGE plpgsql IMMUTABLE AS $$
+BEGIN
+    -- Convert hexadecimal string (without '0x' prefix) to BYTEA
+    RETURN DECODE(SUBSTRING(hexstring_data FROM 3), 'hex');
+END;
+$$;
+
+
+
 -- migrate:down
