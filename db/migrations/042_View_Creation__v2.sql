@@ -228,6 +228,54 @@ WHERE
   -- only include if last opcode was a add op
   vlo.opcode = 1;
 
-
+CREATE OR REPLACE VIEW PUBLIC.view__list_records__deleted AS
+SELECT
+  vlo.chain_id,
+  vlo.contract_address,
+  vlo.nonce,
+  vlo.data as record,
+  GET_BYTE(vlo.data, 0) AS record_version,
+  GET_BYTE(vlo.data, 1) AS record_type,
+  SUBSTRING(
+    vlo.data
+    FROM
+      3
+  ) AS record_data,
+  vlo.block_number,
+  vlo.transaction_index,
+  vlo.log_index
+FROM
+  PUBLIC.view__list_ops vlo
+  INNER JOIN (
+    SELECT
+      chain_id,
+      contract_address,
+      nonce,
+      data as record,
+      MAX(
+        PUBLIC.sort_key (block_number, transaction_index, log_index)
+      ) AS max_sort_key
+    FROM
+      PUBLIC.view__list_ops
+    WHERE
+      -- find the last add/remove record op for each record
+      opcode = 1
+      OR opcode = 2
+    GROUP BY
+      chain_id,
+      contract_address,
+      nonce,
+      data
+  ) AS max_records ON vlo.chain_id = max_records.chain_id
+  AND vlo.contract_address = max_records.contract_address
+  AND vlo.nonce = max_records.nonce
+  AND PUBLIC.sort_key (
+    vlo.block_number,
+    vlo.transaction_index,
+    vlo.log_index
+  ) = max_records.max_sort_key
+WHERE
+  -- only include if last opcode was a add op
+  vlo.opcode = 2;
 
 -- migrate:down
