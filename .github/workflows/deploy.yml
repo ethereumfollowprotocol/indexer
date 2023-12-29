@@ -17,6 +17,8 @@ on:
         options:
           - 'indexer'
           - 'anvil'
+          - 'all'
+        default: 'all'
 
 concurrency:
   group: deploy-${{ github.workflow }}-${{ github.ref }}
@@ -40,7 +42,7 @@ jobs:
   deploy:
     name: '🚀 Deploy'
     # only deploy if commit message contains `[deploy]`
-    if: ${{ contains(github.event.head_commit.message, '[deploy]') }}
+    if: ${{ contains(github.event.head_commit.message, '[deploy]') || github.event_name == 'workflow_dispatch' }}
     needs: [checks]
     timeout-minutes: 3
     runs-on: ['ubuntu-latest']
@@ -52,7 +54,7 @@ jobs:
         run: yarn global add @railway/cli
 
       - name: 'Deploy Indexer'
-        if: ${{ contains(env.DEPLOY_SERVICES, 'indexer') }}
+        if: ${{ contains(env.DEPLOY_SERVICES, 'indexer') || contains(env.DEPLOY_SERVICES, 'all') }}
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -62,7 +64,7 @@ jobs:
           railway up --service='${{ env.RAILWAY_SERVICE_NAME }}' --environment='${{ env.RAILWAY_ENVIRONMENT }}'
 
       - name: 'Deploy Anvil'
-        if: ${{ contains(env.DEPLOY_SERVICES, 'anvil') }}
+        if: ${{ contains(env.DEPLOY_SERVICES, 'anvil') || contains(env.DEPLOY_SERVICES, 'all') }}
         working-directory: './anvil'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
