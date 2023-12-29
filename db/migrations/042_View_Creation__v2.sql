@@ -202,13 +202,15 @@ FROM
       contract_address,
       nonce,
       data as record,
+      -- order by block_number, transaction_index, log_index
+      -- This helps in identifying the latest operation for each unique record
       MAX(
         PUBLIC.sort_key (block_number, transaction_index, log_index)
       ) AS max_sort_key
     FROM
       PUBLIC.view__list_ops
     WHERE
-      -- find the last add/remove record op for each record
+      -- restrict to opcodes 1 (add record) or 2 (remove record)
       opcode = 1
       OR opcode = 2
     GROUP BY
@@ -225,9 +227,16 @@ FROM
     vlo.log_index
   ) = max_records.max_sort_key
 WHERE
-  -- only include if last opcode was a add op
-  vlo.opcode = 1;
+  -- Only return records where last operation was opcode 1 (add record)
+  -- this excludes deleted records where the last operation was opcode 2
+  -- (remove record)
+  opcode = 1;
 
+
+
+-------------------------------------------------------------------------------
+-- View: view__list_records__deleted
+-------------------------------------------------------------------------------
 CREATE OR REPLACE VIEW PUBLIC.view__list_records__deleted AS
 SELECT
   vlo.chain_id,
@@ -252,20 +261,26 @@ FROM
       contract_address,
       nonce,
       data as record,
+      -- aggregate opcodes into an array for holistic checks
+      ARRAY_AGG(opcode) AS opcodes,
+      -- order by block_number, transaction_index, log_index
+      -- This helps in identifying the latest operation for each unique record
       MAX(
         PUBLIC.sort_key (block_number, transaction_index, log_index)
       ) AS max_sort_key
     FROM
       PUBLIC.view__list_ops
     WHERE
-      -- find the last add/remove record op for each record
+      -- restrict to opcodes 1 (add record) or 2 (remove record)
       opcode = 1
       OR opcode = 2
     GROUP BY
       chain_id,
       contract_address,
       nonce,
-      data
+      data -- Filter groups to include only those that have an 'add' operation
+    HAVING
+      1 = ANY (ARRAY_AGG(opcode))
   ) AS max_records ON vlo.chain_id = max_records.chain_id
   AND vlo.contract_address = max_records.contract_address
   AND vlo.nonce = max_records.nonce
@@ -275,7 +290,9 @@ FROM
     vlo.log_index
   ) = max_records.max_sort_key
 WHERE
-  -- only include if last opcode was a add op
-  vlo.opcode = 2;
+  -- Only return records where last operation was opcode 2 (remove record)
+  opcode = 2;
+
+
 
 -- migrate:down

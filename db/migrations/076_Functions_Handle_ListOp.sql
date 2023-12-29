@@ -91,11 +91,11 @@ BEGIN
             nonce = p_nonce AND
             record = list_record_hex
     ) THEN
-        RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
-            p_chain_id,
-            p_contract_address,
-            p_nonce,
-            list_record_hex;
+        -- RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
+        --     p_chain_id,
+        --     p_contract_address,
+        --     p_nonce,
+        --     list_record_hex;
     END IF;
 
     -- the record exists, so delete it
