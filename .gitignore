@@ -39,3 +39,7 @@ data.sqld
 .data
 _
 db/schema.sql
+
+
+# JetBrains
+.idea/
