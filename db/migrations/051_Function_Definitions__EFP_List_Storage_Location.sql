@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: is_list_storage_location_hexstring
 -- Description: Validates that the given string is a valid list location
@@ -12,16 +9,12 @@
 --   - hexstring (TEXT): The hexadecimal string to be validated.
 -- Returns: TRUE if the string is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_list_storage_location_hexstring(hexstring TEXT)
-RETURNS BOOLEAN
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.is_list_storage_location_hexstring (hexstring TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     RETURN hexstring ~ '^0x[a-f0-9]{172}$';
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: public.decode__efp_list_storage_location__v001__location_type_001
@@ -39,13 +32,8 @@ $$;
 --                                         be decoded.
 -- Returns: types.efp_list_storage_location__v001__location_type_001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode__efp_list_storage_location__v001__location_type_001(
-    p_list_storage_location_hex VARCHAR(174)
-)
-RETURNS
-  types.efp_list_storage_location__v001__location_type_001
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.decode__efp_list_storage_location__v001__location_type_001 (p_list_storage_location_hex VARCHAR(174)) RETURNS types.efp_list_storage_location__v001__location_type_001 LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     hex_data bytea;
     hex_chain_id VARCHAR(66);
@@ -111,7 +99,5 @@ BEGIN
       );
 END;
 $$;
-
-
 
 -- migrate:down

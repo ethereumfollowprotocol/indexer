@@ -1,5 +1,4 @@
 -- migrate:up
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event
 -- Description: Processes a blockchain event and inserts it into the
@@ -16,21 +15,19 @@
 --   - p_transaction_hash (VARCHAR(42)): The transaction hash.
 -- Returns: VOID
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event(
-    p_chain_id BIGINT,
-    p_block_number BIGINT,
-    p_transaction_index SMALLINT,
-    p_log_index SMALLINT,
-    p_contract_address VARCHAR(42),
-    p_contract_name VARCHAR(255),
-    p_event_name VARCHAR(255),
-    p_event_args JSON,
-    p_block_hash VARCHAR(66),
-    p_transaction_hash VARCHAR(66)
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event (
+  p_chain_id BIGINT,
+  p_block_number BIGINT,
+  p_transaction_index SMALLINT,
+  p_log_index SMALLINT,
+  p_contract_address VARCHAR(42),
+  p_contract_name VARCHAR(255),
+  p_event_name VARCHAR(255),
+  p_event_args JSON,
+  p_block_hash VARCHAR(66),
+  p_transaction_hash VARCHAR(66)
+) RETURNS VOID LANGUAGE plpgsql AS $$
 BEGIN
 
     -- if it already exists, raise exception

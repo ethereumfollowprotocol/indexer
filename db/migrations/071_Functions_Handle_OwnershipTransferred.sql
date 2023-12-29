@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__OwnershipTransferred
 -- Description: Processes an ownership transferred event by either inserting a
@@ -21,16 +18,14 @@
 --        normalization functions for address format validation. Uses the
 --        contracts table for storage.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__OwnershipTransferred(
-    p_chain_id BIGINT,
-    p_contract_address VARCHAR(42),
-    p_contract_name VARCHAR(255),
-    p_previous_owner VARCHAR(42),
-    p_new_owner VARCHAR(42)
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__OwnershipTransferred (
+  p_chain_id BIGINT,
+  p_contract_address VARCHAR(42),
+  p_contract_name VARCHAR(255),
+  p_previous_owner VARCHAR(42),
+  p_new_owner VARCHAR(42)
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
     normalized_previous_owner types.eth_address;
@@ -83,7 +78,5 @@ BEGIN
     END IF;
 END;
 $$;
-
-
 
 -- migrate:down

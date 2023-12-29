@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: get_incoming_relationships
 -- Description: Retrieves incoming relationships for a given address and a
@@ -19,17 +16,12 @@
 --          identifier, the user associated with the list, and the array of
 --          tags associated with each relationship.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_incoming_relationships(
-    address types.eth_address,
-    tag VARCHAR(255)
-)
-RETURNS TABLE(
-    token_id BIGINT,
-    list_user types.eth_address,
-    tags VARCHAR(255)[]
-)
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION query.get_incoming_relationships (address types.eth_address, tag VARCHAR(255)) RETURNS TABLE (
+  token_id BIGINT,
+  list_user types.eth_address,
+  tags VARCHAR(255) []
+) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
 BEGIN
@@ -55,8 +47,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: get_outgoing_relationships
 -- Description: Retrieves outgoing relationships from a specified user with a
@@ -75,20 +65,15 @@ $$;
 --          'tags' (VARCHAR(255)[]), representing the token
 --          identifier, the list record version, type, data, and tags.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_outgoing_relationships(
-    address types.eth_address,
-    tag VARCHAR(255)
-)
-RETURNS TABLE(
-    token_id BIGINT,
-    list_user types.eth_address,
-    version types.uint8,
-    record_type types.uint8,
-    data types.hexstring,
-    tags VARCHAR(255)[]
-)
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION query.get_outgoing_relationships (address types.eth_address, tag VARCHAR(255)) RETURNS TABLE (
+  token_id BIGINT,
+  list_user types.eth_address,
+  version types.uint8,
+  record_type types.uint8,
+  data types.hexstring,
+  tags VARCHAR(255) []
+) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
     primary_list_token_id BIGINT;
@@ -139,4 +124,5 @@ BEGIN
         data ASC;
 END;
 $$;
+
 -- migrate:down

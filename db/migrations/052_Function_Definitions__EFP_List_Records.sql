@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: validate_list_record__v001__record_type_001
 -- Description: Validates the integrity of a list operation specific to version
@@ -10,20 +7,14 @@
 --   - p_record_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_record__v001__record_type_001(
-    p_record_bytea BYTEA
-)
-RETURNS void
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.validate_list_record__v001__record_type_001 (p_record_bytea BYTEA) RETURNS void LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF LENGTH(p_record_bytea) <> 22 THEN
         RAISE EXCEPTION 'validation failed for list op version 1 record_type 1 (expected 22 bytes, got %)', LENGTH(p_record_bytea);
     END IF;
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: decode__list_record__v001
@@ -33,12 +24,8 @@ $$;
 --   - p_record_bytea (BYTEA): The operation data as a byte array.
 -- Returns: types.efp_list_record__v001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode__list_record__v001(
-  p_record_bytea BYTEA
-)
-RETURNS types.efp_list_record__v001
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.decode__list_record__v001 (p_record_bytea BYTEA) RETURNS types.efp_list_record__v001 LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     tmp_record_version INTEGER;
     record_version types.uint8__1 := 1;
@@ -85,8 +72,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: decode__list_record
 -- Description: Decodes a list record string into its components.
@@ -100,12 +85,8 @@ $$;
 --   - p_record_hex (VARCHAR(255)): The operation data as a hex string.
 -- Returns: types.efp_list_record
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode__list_record(
-  p_record_hex VARCHAR(255)
-)
-RETURNS types.efp_list_record
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.decode__list_record (p_record_hex VARCHAR(255)) RETURNS types.efp_list_record LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     record_bytea BYTEA;
     record_version types.uint8 := 0;
@@ -151,8 +132,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: unpack__list_record_tag
 -- Description: Unpacks a list record tag into its components.
@@ -160,15 +139,11 @@ $$;
 --   - p_list_record_tag (BYTEA): The [record (N bytes), tag (M bytes)].
 -- Returns: list_record (BYTEA), tag (types.efp_tag)
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.unpack__list_record_tag(
-  p_list_record_tag types.bytea__not_null
-)
-RETURNS TABLE(
-    list_record_bytea types.bytea__not_null,
-    tag types.efp_tag
-)
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.unpack__list_record_tag (p_list_record_tag types.bytea__not_null) RETURNS TABLE (
+  list_record_bytea types.bytea__not_null,
+  tag types.efp_tag
+) LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     -- check the version byte exists and is 0x01
     IF LENGTH(p_list_record_tag) < 1 THEN
@@ -202,7 +177,5 @@ BEGIN
     RETURN NEXT;
 END;
 $$;
-
-
 
 -- migrate:down

@@ -1,5 +1,4 @@
 -- migrate:up
-
 -------------------------------------------------------------------------------
 -- Function: get_followers
 -- Description: Retrieves a list of followers for a specified address from the
@@ -10,15 +9,8 @@
 -- Returns: A table with 'token_id' (BIGINT) and 'list_user' (VARCHAR(255)),
 --          representing the relationship identifier and the follower's name.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_followers(
-  address types.eth_address
-)
-RETURNS TABLE(
-  token_id BIGINT,
-  list_user types.eth_address
-)
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION query.get_followers (address types.eth_address) RETURNS TABLE (token_id BIGINT, list_user types.eth_address) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
 BEGIN
@@ -52,7 +44,6 @@ BEGIN
 END;
 $$;
 
-
 -------------------------------------------------------------------------------
 -- Function: get_unique_followers
 -- Description: Retrieves a distinct list of followers for a specified address,
@@ -63,14 +54,8 @@ $$;
 -- Returns: A table with 'list_user' (VARCHAR(255)), representing unique names
 --          or identifiers of the followers.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_unique_followers(
-  address types.eth_address
-)
-RETURNS TABLE(
-  list_user types.eth_address
-)
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION query.get_unique_followers (address types.eth_address) RETURNS TABLE (list_user types.eth_address) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
 BEGIN
@@ -100,8 +85,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: count_unique_followers_by_address
 -- Description: Counts the unique followers for each address in the
@@ -115,15 +98,8 @@ $$;
 -- Returns: A table with 'address' (text) and 'follower_count' (BIGINT),
 --          representing each address and its count of unique followers.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.count_unique_followers_by_address(
-  limit_count BIGINT
-)
-RETURNS TABLE(
-  address types.eth_address,
-  followers_count BIGINT
-)
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION query.count_unique_followers_by_address (limit_count BIGINT) RETURNS TABLE (address types.eth_address, followers_count BIGINT) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
     SELECT

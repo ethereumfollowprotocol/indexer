@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__NewListMetadataValue
 -- Description: Inserts or updates a metadata value for a list. If a record
@@ -17,16 +14,14 @@
 -- Returns: VOID
 -- Notes: Uses the list_metadata table for storage.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__NewListMetadataValue(
-    p_chain_id BIGINT,
-    p_contract_address VARCHAR(42),
-    p_nonce BIGINT,
-    p_key VARCHAR(255),
-    p_value types.hexstring
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__NewListMetadataValue (
+  p_chain_id BIGINT,
+  p_contract_address VARCHAR(42),
+  p_nonce BIGINT,
+  p_key VARCHAR(255),
+  p_value types.hexstring
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
 BEGIN
@@ -40,7 +35,5 @@ BEGIN
     DO UPDATE SET value = EXCLUDED.value;
 END;
 $$;
-
-
 
 -- migrate:down

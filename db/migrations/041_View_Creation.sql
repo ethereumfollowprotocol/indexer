@@ -206,7 +206,4 @@ FROM
 WHERE
   event_name = 'ListOp';
 
-SELECT
-  *
-FROM
-  PUBLIC.view__list_op__events;
+-- migrate:down

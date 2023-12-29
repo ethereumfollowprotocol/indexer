@@ -1,6 +1,5 @@
 -- migrate:up
 -- Custom Type Definitions
-
 -------------------------------------------------------------------------------
 -- Domain: types.eth_chain_id
 --
@@ -8,8 +7,7 @@
 -- Constraints: Value must be >= 0.
 -------------------------------------------------------------------------------
 -- TODO: de-couple to it's own table and make NOT NULL
-CREATE DOMAIN
-    types.eth_chain_id AS BIGINT NOT NULL CHECK (VALUE >= 0);
+CREATE DOMAIN types.eth_chain_id AS BIGINT NOT NULL CHECK (VALUE >= 0);
 
 -------------------------------------------------------------------------------
 -- Domain: types.eth_address
@@ -28,13 +26,8 @@ CREATE DOMAIN types.eth_address AS VARCHAR(42) CHECK (VALUE ~ '^0x[a-f0-9]{40}$'
 --   - address (TEXT): The Ethereum address to be normalized and validated.
 -- Returns: The normalized address if valid, otherwise raises an exception.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.normalize_eth_address(
-    address TEXT
-)
-RETURNS
-    types.eth_address
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.normalize_eth_address (address TEXT) RETURNS types.eth_address LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF address IS NULL THEN
         RAISE EXCEPTION 'address cannot be NULL';
@@ -60,13 +53,8 @@ CREATE DOMAIN types.eth_block_hash AS VARCHAR(66) NOT NULL CHECK (VALUE ~ '^0x[a
 --   - block_hash (TEXT): The block hash to be normalized and validated.
 -- Returns: The normalized block hash if valid, otherwise raises an exception.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.normalize_eth_block_hash(
-    block_hash text
-)
-RETURNS
-    types.eth_block_hash
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.normalize_eth_block_hash (block_hash text) RETURNS types.eth_block_hash LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF block_hash IS NULL THEN
         RAISE EXCEPTION 'block_hash cannot be NULL';
@@ -94,13 +82,8 @@ CREATE DOMAIN types.eth_transaction_hash AS VARCHAR(66) NOT NULL CHECK (VALUE ~ 
 -- Returns: The normalized transaction hash if valid, otherwise raises an
 --          exception.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.normalize_eth_transaction_hash(
-    transaction_hash text
-)
-RETURNS
-    types.eth_transaction_hash
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.normalize_eth_transaction_hash (transaction_hash text) RETURNS types.eth_transaction_hash LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF transaction_hash IS NULL THEN
         RAISE EXCEPTION 'transaction_hash cannot be NULL';
@@ -109,15 +92,15 @@ BEGIN
 END;
 $$;
 
-
-CREATE OR REPLACE FUNCTION public.sort_key(
-    p_block_number BIGINT,
-    p_transaction_index NUMERIC,
-    p_log_index NUMERIC
-)
-RETURNS TEXT AS $$
+CREATE
+OR REPLACE FUNCTION public.sort_key (
+  p_block_number BIGINT,
+  p_transaction_index NUMERIC,
+  p_log_index NUMERIC
+) RETURNS TEXT AS $$
 BEGIN
     RETURN p_block_number::TEXT || '-' || p_transaction_index::TEXT || '-' || p_log_index::TEXT;
 END;
 $$ LANGUAGE plpgsql;
+
 -- migrate:down

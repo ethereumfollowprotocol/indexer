@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__Transfer
 -- Description: Processes a transfer event by either inserting a new NFT into
@@ -20,16 +17,14 @@
 --        storage. Relies on external normalization functions for address
 --        format validation.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__Transfer(
-    p_chain_id BIGINT,
-    p_contract_address VARCHAR(42),
-    p_token_id types.efp_list_nft_token_id,
-    p_from_address VARCHAR(42),
-    p_to_address VARCHAR(42)
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__Transfer (
+  p_chain_id BIGINT,
+  p_contract_address VARCHAR(42),
+  p_token_id types.efp_list_nft_token_id,
+  p_from_address VARCHAR(42),
+  p_to_address VARCHAR(42)
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
     normalized_from_address types.eth_address;
@@ -81,7 +76,5 @@ BEGIN
     END IF;
 END;
 $$;
-
-
 
 -- migrate:down

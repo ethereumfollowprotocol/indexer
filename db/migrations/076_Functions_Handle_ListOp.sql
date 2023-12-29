@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_001
 -- Description: Handles a list op version 1 opcode 1 (add record) by
@@ -17,17 +14,14 @@
 --   - p_list_op__v001__opcode_001 (types.efp_list_op__v001__opcode_001):
 --                           The operation data as a record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION
-public.handle_contract_event__ListOp__v001__opcode_001(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_001 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_001 types.efp_list_op__v001__opcode_001
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     list_record_hex types.hexstring;
     list_record types.efp_list_record;
@@ -57,8 +51,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_002
 -- Description: Handles a list op version 1 opcode 2 (remove record) by
@@ -74,17 +66,14 @@ $$;
 --   - p_list_op__v001__opcode_002 (types.efp_list_op__v001__opcode_002):
 --                           The operation data as a record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION
-public.handle_contract_event__ListOp__v001__opcode_002(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_002 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_002 types.efp_list_op__v001__opcode_002
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     list_record_hex types.hexstring;
 BEGIN
@@ -117,8 +106,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_003
 -- Description: Handles a list op version 1 opcode 3 (add record tag) by
@@ -134,17 +121,14 @@ $$;
 --   - p_list_op__v001__opcode_003 (types.efp_list_op__v001__opcode_003):
 --                           The operation data as a record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION
-public.handle_contract_event__ListOp__v001__opcode_003(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_003 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_003 types.efp_list_op__v001__opcode_003
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 BEGIN
     -- if there's a conflict, then this will raise an exception
     INSERT INTO public.list_record_tags (
@@ -164,8 +148,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001__opcode_004
 -- Description: Handles a list op version 1 opcode 4 (remove record tag) by
@@ -181,17 +163,14 @@ $$;
 --   - p_list_op__v001__opcode_004 (types.efp_list_op__v001__opcode_004):
 --                           The operation data as a record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION
-public.handle_contract_event__ListOp__v001__opcode_004(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_004 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_004 types.efp_list_op__v001__opcode_004
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 BEGIN
     -- Check if the record tag exists
     IF NOT EXISTS (
@@ -223,8 +202,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp__v001
 -- Description: TODO write description
@@ -237,16 +214,14 @@ $$;
 --   - p_list_op__v001 (types.efp_list_op__v001): The operation data as a
 --                                                 record.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
   p_nonce BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001 types.efp_list_op__v001
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     pair_list_record_tag RECORD;
 BEGIN
@@ -314,8 +289,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListOp
 -- Description: Inserts a new operation record into the list_ops table. This
@@ -330,15 +303,13 @@ $$;
 -- Returns: VOID
 -- Notes: Uses the list_ops table for storage. Decoding functions are stubbed.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__ListOp(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListOp (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
   p_nonce BIGINT,
   p_list_op_hex types.hexstring
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
     list_op types.efp_list_op;
@@ -387,7 +358,5 @@ BEGIN
     END CASE;
 END;
 $$;
-
-
 
 -- migrate:down

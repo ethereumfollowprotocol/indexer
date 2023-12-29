@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__NewAccountMetadataValue
 -- Description: Inserts or updates an account metadata value. If a record with
@@ -18,16 +15,14 @@
 -- Returns: VOID
 -- Notes: Uses the account_metadata table for storage.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__NewAccountMetadataValue(
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__NewAccountMetadataValue (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
   p_address VARCHAR(42),
   p_key VARCHAR(255),
   p_value VARCHAR(255)
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
     normalized_address types.eth_address;
@@ -44,7 +39,5 @@ BEGIN
     DO UPDATE SET value = EXCLUDED.value;
 END;
 $$;
-
-
 
 -- migrate:down

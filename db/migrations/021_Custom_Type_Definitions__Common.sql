@@ -1,5 +1,4 @@
 -- migrate:up
-
 -------------------------------------------------------------------------------
 -- Domain: types.uint8
 --
@@ -27,7 +26,6 @@ CREATE DOMAIN types.uint8__1 AS SMALLINT NOT NULL CHECK (VALUE = 1);
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__2 AS SMALLINT NOT NULL CHECK (VALUE = 2);
 
-
 -------------------------------------------------------------------------------
 -- Domain: types.uint8__3
 --
@@ -35,7 +33,6 @@ CREATE DOMAIN types.uint8__2 AS SMALLINT NOT NULL CHECK (VALUE = 2);
 -- Constraints: Value must be 3.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__3 AS SMALLINT NOT NULL CHECK (VALUE = 3);
-
 
 -------------------------------------------------------------------------------
 -- Domain: types.uint8__4
@@ -45,15 +42,11 @@ CREATE DOMAIN types.uint8__3 AS SMALLINT NOT NULL CHECK (VALUE = 3);
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.uint8__4 AS SMALLINT NOT NULL CHECK (VALUE = 4);
 
-
-
 -------------------------------------------------------------------------------
 -- Domain: bytea__not_null
 -- Description: A BYTEA domain that is not nullable.
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.bytea__not_null AS BYTEA NOT NULL;
-
-
 
 -------------------------------------------------------------------------------
 -- Domain: types.hexstring
@@ -64,8 +57,6 @@ CREATE DOMAIN types.bytea__not_null AS BYTEA NOT NULL;
 -------------------------------------------------------------------------------
 CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})*$');
 
-
-
 -------------------------------------------------------------------------------
 -- Function: public.hexlify
 -- Description: Converts a BYTEA input to a hexadecimal string.
@@ -73,10 +64,8 @@ CREATE DOMAIN types.hexstring AS VARCHAR(255) CHECK (VALUE ~ '^0x([a-f0-9]{2})*$
 --   - bytea_data (BYTEA): The binary data to be converted.
 -- Returns: The hexadecimal string representation of the input binary data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.hexlify(bytea_data BYTEA)
-RETURNS types.hexstring
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.hexlify (bytea_data BYTEA) RETURNS types.hexstring LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     -- Convert BYTEA to a hexadecimal string with '0x' prefix
     RETURN ('0x' || ENCODE(bytea_data, 'hex'))::types.hexstring;

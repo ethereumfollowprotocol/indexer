@@ -20,8 +20,8 @@ CREATE TABLE public.contracts (
 );
 
 CREATE TRIGGER update_contracts_updated_at BEFORE
-UPDATE
-  ON public.contracts FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.contracts FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: events
@@ -49,8 +49,8 @@ CREATE TABLE public.contract_events (
 );
 
 CREATE TRIGGER update_events_updated_at BEFORE
-UPDATE
-  ON public.contract_events FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.contract_events FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: account_metadata
@@ -63,18 +63,13 @@ CREATE TABLE public.account_metadata (
   value types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    contract_address,
-    address,
-    "key"
-  ),
+  PRIMARY KEY (chain_id, contract_address, address, "key"),
   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_account_metadata_updated_at BEFORE
-UPDATE
-  ON public.account_metadata FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.account_metadata FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: list_nfts
@@ -91,17 +86,13 @@ CREATE TABLE public.list_nfts (
   list_storage_location_nonce types.efp_list_storage_location_nonce,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    contract_address,
-    token_id
-  ),
+  PRIMARY KEY (chain_id, contract_address, token_id),
   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_nfts_updated_at BEFORE
-UPDATE
-  ON public.list_nfts FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.list_nfts FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: list_metadata
@@ -114,18 +105,13 @@ CREATE TABLE public.list_metadata (
   value types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    contract_address,
-    nonce,
-    "key"
-  ),
+  PRIMARY KEY (chain_id, contract_address, nonce, "key"),
   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_metadata_updated_at BEFORE
-UPDATE
-  ON public.list_metadata FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.list_metadata FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: list_ops
@@ -140,18 +126,13 @@ CREATE TABLE public.list_ops (
   data types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    contract_address,
-    nonce,
-    op
-  ),
+  PRIMARY KEY (chain_id, contract_address, nonce, op),
   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_ops_updated_at BEFORE
-UPDATE
-  ON public.list_ops FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.list_ops FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: list_records
@@ -166,18 +147,13 @@ CREATE TABLE public.list_records (
   data types.hexstring NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    contract_address,
-    nonce,
-    record
-  ),
+  PRIMARY KEY (chain_id, contract_address, nonce, record),
   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_records_updated_at BEFORE
-UPDATE
-  ON public.list_records FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.list_records FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -------------------------------------------------------------------------------
 -- Table: list_record_tags
@@ -190,18 +166,12 @@ CREATE TABLE public.list_record_tags (
   tag types.efp_tag NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    contract_address,
-    nonce,
-    record,
-    tag
-  ),
+  PRIMARY KEY (chain_id, contract_address, nonce, record, tag),
   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 );
 
 CREATE TRIGGER update_list_record_tags_updated_at BEFORE
-UPDATE
-  ON public.list_record_tags FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+UPDATE ON public.list_record_tags FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
 
 -- migrate:down

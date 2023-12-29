@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: get_primary_list
 -- Description: Retrieves the primary list value for a given address from the
@@ -16,11 +13,8 @@
 --          address, or the lowest token_id from with list_user equals the
 --          address. Returns NULL if no primary list value is found.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_primary_list(
-  address types.eth_address
-)
-RETURNS BIGINT
-AS $$
+CREATE
+OR REPLACE FUNCTION query.get_primary_list (address types.eth_address) RETURNS BIGINT AS $$
 DECLARE
     primary_list TEXT;
     normalized_addr types.eth_address;
@@ -47,7 +41,5 @@ BEGIN
     RETURN lowest_token_id;
 END;
 $$ LANGUAGE plpgsql;
-
-
 
 -- migrate:down

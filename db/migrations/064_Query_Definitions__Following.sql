@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: get_following
 -- Description: Retrieves a list of addresses followed by a user from the
@@ -19,16 +16,14 @@
 --          relationship identifier. Returns empty table if no primary list is
 --          found.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_following(address types.eth_address)
-RETURNS TABLE(
+CREATE
+OR REPLACE FUNCTION query.get_following (address types.eth_address) RETURNS TABLE (
   token_id BIGINT,
   version types.uint8,
   record_type types.uint8,
   data types.eth_address,
-  tags VARCHAR(255)[]
-)
-LANGUAGE plpgsql
-AS $$
+  tags VARCHAR(255) []
+) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
     primary_list_token_id BIGINT;
@@ -80,8 +75,6 @@ BEGIN
 END;
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: count_unique_following_by_address
 -- Description: Counts the unique addresses that each user is following in the
@@ -96,15 +89,8 @@ $$;
 --          representing each user and their count of unique following
 --          addresses.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.count_unique_following_by_address(
-  limit_count BIGINT
-)
-RETURNS TABLE(
-  address types.eth_address,
-  following_count BIGINT
-)
-LANGUAGE PLPGSQL
-AS $$
+CREATE
+OR REPLACE FUNCTION query.count_unique_following_by_address (limit_count BIGINT) RETURNS TABLE (address types.eth_address, following_count BIGINT) LANGUAGE PLPGSQL AS $$
 BEGIN
     RETURN QUERY
   SELECT

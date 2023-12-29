@@ -1,7 +1,5 @@
 -- migrate:up
-
 -- Volatile Function Definitions
-
 -------------------------------------------------------------------------------
 -- Function: generate_ulid
 -- Description: Generates a ULID (Universally Unique Lexicographically Sortable
@@ -9,10 +7,8 @@
 -- Parameters: None
 -- Returns: A ULID as a text string.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.generate_ulid()
-RETURNS TEXT
-LANGUAGE plpgsql VOLATILE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.generate_ulid () RETURNS TEXT LANGUAGE plpgsql VOLATILE AS $$
 DECLARE
   -- Crockford's Base32
   encoding   BYTEA = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
@@ -68,8 +64,6 @@ BEGIN
 END
 $$;
 
-
-
 -------------------------------------------------------------------------------
 -- Function: update_updated_at_column
 -- Description: Updates the 'updated_at' column of a table to the current
@@ -77,16 +71,12 @@ $$;
 -- Parameters: None
 -- Returns: The updated row.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.update_updated_at_column()
-RETURNS TRIGGER
-LANGUAGE plpgsql VOLATILE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.update_updated_at_column () RETURNS TRIGGER LANGUAGE plpgsql VOLATILE AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
 $$;
-
-
 
 -- migrate:down

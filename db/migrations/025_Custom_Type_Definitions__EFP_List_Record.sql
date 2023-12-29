@@ -1,14 +1,13 @@
 -- migrate:up
-
 -------------------------------------------------------------------------------
 -- Type: types.efp_list_record
 --
 -- Description: An EFP list record
 -------------------------------------------------------------------------------
 CREATE TYPE types.efp_list_record AS (
-    version types.uint8,
-    record_type types.uint8,
-    data types.bytea__not_null
+  version types.uint8,
+  record_type types.uint8,
+  data types.bytea__not_null
 );
 
 -------------------------------------------------------------------------------
@@ -17,9 +16,9 @@ CREATE TYPE types.efp_list_record AS (
 -- Description: An EFP list record with version byte 0x01
 -------------------------------------------------------------------------------
 CREATE TYPE types.efp_list_record__v001 AS (
-    version types.uint8__1,
-    record_type types.uint8,
-    data types.bytea__not_null
+  version types.uint8__1,
+  record_type types.uint8,
+  data types.bytea__not_null
 );
 
 -------------------------------------------------------------------------------
@@ -29,9 +28,9 @@ CREATE TYPE types.efp_list_record__v001 AS (
 --              0x01
 -------------------------------------------------------------------------------
 CREATE TYPE types.efp_list_record__v001__record_type_001 AS (
-    version types.uint8__1,
-    record_type types.uint8__1,
-    data types.bytea__not_null
+  version types.uint8__1,
+  record_type types.uint8__1,
+  data types.bytea__not_null
 );
 
 -------------------------------------------------------------------------------
@@ -56,10 +55,10 @@ CREATE DOMAIN types.efp_tag__nullable AS VARCHAR(255);
 -- Description: A list record with a tag
 -------------------------------------------------------------------------------
 CREATE TYPE types.efp_list_record_tag AS (
-    version types.uint8,
-    record_type types.uint8,
-    data types.bytea__not_null,
-    tag types.efp_tag
+  version types.uint8,
+  record_type types.uint8,
+  data types.bytea__not_null,
+  tag types.efp_tag
 );
 
 -- migrate:down

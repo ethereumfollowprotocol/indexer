@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: handle_contract_event__ListStorageLocationChange
 -- Description: Processes a ListStorageLocationChange event by decoding the
@@ -17,15 +14,13 @@
 -- Notes: Uses the list_nfts and decode__list_storage_location functions for
 --        storage and decoding respectively.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_contract_event__ListStorageLocationChange(
-    p_chain_id BIGINT,
-    p_contract_address VARCHAR(42),
-    p_token_id BIGINT,
-    p_list_storage_location VARCHAR(174)
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
+CREATE
+OR REPLACE FUNCTION public.handle_contract_event__ListStorageLocationChange (
+  p_chain_id BIGINT,
+  p_contract_address VARCHAR(42),
+  p_token_id BIGINT,
+  p_list_storage_location VARCHAR(174)
+) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
     -- {version, location_type, chain_id, contract_address, nonce}
@@ -51,7 +46,5 @@ BEGIN
         AND nft.token_id = p_token_id;
 END;
 $$;
-
-
 
 -- migrate:down

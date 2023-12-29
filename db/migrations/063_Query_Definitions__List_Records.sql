@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: get_list_records
 -- Description: Retrieves a list of records for a specified token_id from the
@@ -13,16 +10,12 @@
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_list_records(
-  token_id BIGINT
-)
-RETURNS TABLE(
+CREATE
+OR REPLACE FUNCTION query.get_list_records (token_id BIGINT) RETURNS TABLE (
   version types.uint8,
   record_type types.uint8,
   data types.hexstring
-)
-LANGUAGE plpgsql
-AS $$
+) LANGUAGE plpgsql AS $$
 BEGIN
   RETURN QUERY
   SELECT lr.version, lr.record_type, lr.data
@@ -33,8 +26,6 @@ BEGIN
     AND lr.nonce = lsl.nonce;
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: get_list_record_tags
@@ -47,17 +38,13 @@ $$;
 --          'data' (varchar(255)), representing the list record version, type,
 --          and data.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_list_record_tags(
-  token_id BIGINT
-)
-RETURNS TABLE(
+CREATE
+OR REPLACE FUNCTION query.get_list_record_tags (token_id BIGINT) RETURNS TABLE (
   version types.uint8,
   record_type types.uint8,
   data types.hexstring,
-  tags VARCHAR(255)[]
-)
-LANGUAGE plpgsql
-AS $$
+  tags VARCHAR(255) []
+) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
     SELECT

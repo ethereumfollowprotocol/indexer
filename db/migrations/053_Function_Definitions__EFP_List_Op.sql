@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_001
 -- Description: Validates the integrity of a list operation specific to version
@@ -10,20 +7,14 @@
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_001(
-    p_op_bytea BYTEA
-)
-RETURNS void
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.validate_list_op__v001__opcode_001 (p_op_bytea BYTEA) RETURNS void LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF LENGTH(p_op_bytea) <> 24 THEN
         RAISE EXCEPTION 'validation failed for list op version 1 opcode 1 (expected 24 bytes, got %)', LENGTH(p_op_bytea);
     END IF;
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_002
@@ -33,19 +24,14 @@ $$;
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_002(
-    p_op_bytea BYTEA
-)
-RETURNS void
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.validate_list_op__v001__opcode_002 (p_op_bytea BYTEA) RETURNS void LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF LENGTH(p_op_bytea) <> 24 THEN
         RAISE EXCEPTION 'validation failed for list op version 1 opcode 2 (expected 24 bytes, got %)', LENGTH(p_op_bytea);
     END IF;
 END;
 $$;
-
 
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_003
@@ -55,19 +41,14 @@ $$;
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_003(
-    p_op_bytea BYTEA
-)
-RETURNS void
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.validate_list_op__v001__opcode_003 (p_op_bytea BYTEA) RETURNS void LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF LENGTH(p_op_bytea) < 25 THEN
         RAISE EXCEPTION 'validation failed for list op version 1 opcode 3 (expected at least 25 bytes, got %)', LENGTH(p_op_bytea);
     END IF;
 END;
 $$;
-
 
 -------------------------------------------------------------------------------
 -- Function: public.validate_list_op__v001__opcode_004
@@ -77,20 +58,14 @@ $$;
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: void
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.validate_list_op__v001__opcode_004(
-    p_op_bytea BYTEA
-)
-RETURNS void
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.validate_list_op__v001__opcode_004 (p_op_bytea BYTEA) RETURNS void LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     IF LENGTH(p_op_bytea) < 25 THEN
         RAISE EXCEPTION 'validation failed for list op version 1 opcode 4 (expected at least 25 bytes, got %)', LENGTH(p_op_bytea);
     END IF;
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: public.decode__efp_list_op__v001
@@ -100,12 +75,8 @@ $$;
 --   - p_op_bytea (BYTEA): The operation data as a byte array.
 -- Returns: types.efp_list_op__v001
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode__efp_list_op__v001(
-  p_op_bytea BYTEA
-)
-RETURNS types.efp_list_op__v001
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.decode__efp_list_op__v001 (p_op_bytea BYTEA) RETURNS types.efp_list_op__v001 LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     tmp_op_version INTEGER;
     list_op_version types.uint8__1 := 1;
@@ -164,9 +135,6 @@ BEGIN
 END;
 $$;
 
-
-
-
 -------------------------------------------------------------------------------
 -- Function: public.decode__efp_list_op
 -- Description: Decodes a list operation string into its components.
@@ -181,12 +149,8 @@ $$;
 -- Returns: A table with 'version' (SMALLINT), 'opcode' (SMALLINT or NULL),
 --          and 'data' (types.hexstring or NULL).
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.decode__efp_list_op(
-  p_list_op_hex VARCHAR(255)
-)
-RETURNS types.efp_list_op
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.decode__efp_list_op (p_list_op_hex VARCHAR(255)) RETURNS types.efp_list_op LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     list_op_bytea BYTEA;
     list_op_version types.uint8 := 0;
@@ -236,7 +200,5 @@ BEGIN
     );
 END;
 $$;
-
-
 
 -- migrate:down

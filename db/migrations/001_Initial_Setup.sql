@@ -16,7 +16,7 @@ SET
   standard_conforming_strings = on;
 
 SELECT
-  pg_catalog.set_config('search_path', '', false);
+  pg_catalog.set_config ('search_path', '', false);
 
 SET
   check_function_bodies = false;

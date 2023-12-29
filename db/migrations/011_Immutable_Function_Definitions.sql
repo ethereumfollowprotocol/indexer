@@ -1,25 +1,17 @@
 -- migrate:up
-
 -- Immutable Function Definitions
-
-
-
 -------------------------------------------------------------------------------
 -- Function: health
 -- Description: Returns 'ok' if the database is healthy
 -- Parameters: None
 -- Returns: 'ok'
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.health()
-RETURNS TEXT
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.health () RETURNS TEXT LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
    RETURN 'ok';
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: is_uint8
@@ -28,16 +20,12 @@ $$;
 --   - value (SMALLINT): The value to be validated.
 -- Returns: TRUE if the value is between 0 and 255, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_uint8(value SMALLINT)
-RETURNS BOOLEAN
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.is_uint8 (value SMALLINT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     RETURN value >= 0 AND value <= 255;
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: is_hexstring
@@ -49,16 +37,12 @@ $$;
 --   - hexstring (TEXT): The hexadecimal string to be validated.
 -- Returns: TRUE if the string is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_hexstring(hexstring TEXT)
-RETURNS BOOLEAN
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.is_hexstring (hexstring TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     RETURN hexstring ~ '^0x([a-f0-9]{2})*$';
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: is_valid_address
@@ -70,16 +54,12 @@ $$;
 --   - address (TEXT): The address to be validated.
 -- Returns: TRUE if the address is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.is_valid_address(address TEXT)
-RETURNS BOOLEAN
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.is_valid_address (address TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
     RETURN address ~ '^0x[a-f0-9]{40}$';
 END;
 $$;
-
-
 
 -------------------------------------------------------------------------------
 -- Function: convert_hex_to_bigint
@@ -93,10 +73,8 @@ $$;
 -- Returns: A bigint representation of the hexadecimal string or NULL if the
 --          input is invalid or the result exceeds MAX_SAFE_INTEGER.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.convert_hex_to_bigint(hexstring TEXT)
-RETURNS BIGINT
-LANGUAGE plpgsql IMMUTABLE
-AS $$
+CREATE
+OR REPLACE FUNCTION public.convert_hex_to_bigint (hexstring TEXT) RETURNS BIGINT LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     trimmed_hex TEXT;
     result BIGINT := 0;
@@ -124,7 +102,5 @@ BEGIN
     RETURN result;
 END;
 $$;
-
-
 
 -- migrate:down

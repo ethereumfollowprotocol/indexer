@@ -1,7 +1,4 @@
 -- migrate:up
-
-
-
 -------------------------------------------------------------------------------
 -- Function: get_list_storage_location
 -- Description: Retrieves the list storage location for a specified token_id
@@ -13,16 +10,12 @@
 --          nonce (BIGINT), representing the list storage location chain ID,
 --          contract address, and nonce.
 -------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION query.get_list_storage_location(
-  input_token_id BIGINT
-)
-RETURNS TABLE(
+CREATE
+OR REPLACE FUNCTION query.get_list_storage_location (input_token_id BIGINT) RETURNS TABLE (
   chain_id BIGINT,
   contract_address types.eth_address,
   nonce BIGINT
-)
-LANGUAGE plpgsql
-AS $$
+) LANGUAGE plpgsql AS $$
 DECLARE
     list_storage_location VARCHAR;
 BEGIN
@@ -39,7 +32,5 @@ BEGIN
     WHERE dlsl.version = 1 AND dlsl.location_type = 1;
 END;
 $$;
-
-
 
 -- migrate:down
