@@ -26,11 +26,11 @@ SELECT
   subquery.efp_list_nft_contract_address,
   subquery.efp_list_nft_token_id,
   subquery.efp_list_storage_location,
-  subquery.version AS list_storage_location_version,
-  subquery.location_type AS list_storage_location_type,
-  subquery.chain_id AS list_storage_location_chain_id,
-  subquery.contract_address AS list_storage_location_contract_address,
-  subquery.nonce AS list_storage_location_nonce
+  subquery.version AS efp_list_storage_location_version,
+  subquery.location_type AS efp_list_storage_location_type,
+  subquery.chain_id AS efp_list_storage_location_chain_id,
+  subquery.contract_address AS efp_list_storage_location_contract_address,
+  subquery.nonce AS efp_list_storage_location_nonce
 FROM
   (
     SELECT

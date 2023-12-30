@@ -153,6 +153,21 @@ export interface ViewEfpListNfts {
   token_id: string | null
 }
 
+export interface ViewEfpListNftsWithManagerUser {
+  efp_list_manager: string | null
+  efp_list_nft_chain_id: Int8 | null
+  efp_list_nft_contract_address: string | null
+  efp_list_nft_owner: string | null
+  efp_list_nft_token_id: string | null
+  efp_list_storage_location: Buffer | null
+  efp_list_storage_location_chain_id: Int8 | null
+  efp_list_storage_location_contract_address: string | null
+  efp_list_storage_location_nonce: Int8 | null
+  efp_list_storage_location_type: number | null
+  efp_list_storage_location_version: number | null
+  efp_list_user: string | null
+}
+
 export interface ViewEfpListOps {
   block_number: Int8 | null
   chain_id: Int8 | null
@@ -253,11 +268,11 @@ export interface ViewEfpListStorageLocations {
   efp_list_nft_contract_address: string | null
   efp_list_nft_token_id: string | null
   efp_list_storage_location: Buffer | null
-  list_storage_location_chain_id: Int8 | null
-  list_storage_location_contract_address: string | null
-  list_storage_location_nonce: Int8 | null
-  list_storage_location_type: number | null
-  list_storage_location_version: number | null
+  efp_list_storage_location_chain_id: Int8 | null
+  efp_list_storage_location_contract_address: string | null
+  efp_list_storage_location_nonce: Int8 | null
+  efp_list_storage_location_type: number | null
+  efp_list_storage_location_version: number | null
 }
 
 export interface ViewLatestRecordTags {
@@ -326,6 +341,7 @@ export interface DB {
   view__efp_contracts: ViewEfpContracts
   view__efp_list_metadata: ViewEfpListMetadata
   view__efp_list_nfts: ViewEfpListNfts
+  view__efp_list_nfts_with_manager_user: ViewEfpListNftsWithManagerUser
   view__efp_list_ops: ViewEfpListOps
   view__efp_list_ops__record_tag: ViewEfpListOpsRecordTag
   view__efp_list_record_tags: ViewEfpListRecordTags
