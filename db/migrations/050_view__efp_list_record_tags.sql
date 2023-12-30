@@ -12,6 +12,7 @@ SELECT
   ops.block_number,
   ops.transaction_index,
   ops.log_index,
+  ops.sort_key,
   unpacked.list_record_bytea AS record,
   unpacked.tag
 FROM
@@ -38,9 +39,7 @@ SELECT
   nonce,
   record,
   tag,
-  MAX(
-    PUBLIC.sort_key (block_number, transaction_index, log_index)
-  ) AS max_sort_key
+  MAX(sort_key) AS max_sort_key
 FROM
   PUBLIC.view__efp_list_ops__record_tag
 GROUP BY
@@ -90,11 +89,7 @@ FROM
       AND ops.nonce = max_records.nonce
       AND ops.record = max_records.record
       AND ops.tag = max_records.tag
-      AND PUBLIC.sort_key (
-        ops.block_number,
-        ops.transaction_index,
-        ops.log_index
-      ) = max_records.max_sort_key
+      AND ops.sort_key = max_records.max_sort_key
     WHERE
       ops.opcode = 3
   ) AS subquery;

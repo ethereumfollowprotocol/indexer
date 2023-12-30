@@ -15,9 +15,7 @@ FROM
       chain_id,
       contract_address,
       event_args ->> 'tokenId' AS token_id,
-      MAX(
-        PUBLIC.sort_key (block_number, transaction_index, log_index)
-      ) AS max_sort_key
+      MAX(sort_key) AS max_sort_key
     FROM
       PUBLIC.contract_events
     WHERE
@@ -29,7 +27,7 @@ FROM
   ) AS latest_events ON e.chain_id = latest_events.chain_id
   AND e.contract_address = latest_events.contract_address
   AND e.event_args ->> 'tokenId' = latest_events.token_id
-  AND PUBLIC.sort_key (e.block_number, e.transaction_index, e.log_index) = latest_events.max_sort_key
+  AND e.sort_key = latest_events.max_sort_key
 WHERE
   e.event_name = 'Transfer';
 

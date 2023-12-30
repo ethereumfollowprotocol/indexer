@@ -23,6 +23,7 @@ CREATE TABLE public.contract_events (
   event_args jsonb NOT NULL,
   block_hash types.eth_block_hash NOT NULL,
   transaction_hash types.eth_transaction_hash NOT NULL,
+  sort_key TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (

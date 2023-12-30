@@ -20,9 +20,7 @@ FROM
       contract_address,
       event_args ->> 'addr' AS address,
       event_args ->> 'key' AS key,
-      MAX(
-        PUBLIC.sort_key (block_number, transaction_index, log_index)
-      ) AS latest_sort_key
+      MAX(sort_key) AS latest_sort_key
     FROM
       PUBLIC.contract_events
     WHERE
@@ -36,7 +34,7 @@ FROM
   AND e.contract_address = latest.contract_address
   AND e.event_args ->> 'addr' = latest.address
   AND e.event_args ->> 'key' = latest.key
-  AND PUBLIC.sort_key (e.block_number, e.transaction_index, e.log_index) = latest.latest_sort_key
+  AND e.sort_key = latest.latest_sort_key
 WHERE
   e.event_name = 'UpdateAccountMetadata';
 

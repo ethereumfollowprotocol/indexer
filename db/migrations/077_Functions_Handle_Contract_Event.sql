@@ -56,7 +56,8 @@ BEGIN
         event_name,
         event_args,
         block_hash,
-        transaction_hash
+        transaction_hash,
+        sort_key
     ) VALUES (
         p_chain_id,
         p_block_number,
@@ -66,7 +67,8 @@ BEGIN
         p_event_name,
         p_event_args::JSON,
         public.normalize_eth_block_hash(p_block_hash),
-        public.normalize_eth_transaction_hash(p_transaction_hash)
+        public.normalize_eth_transaction_hash(p_transaction_hash),
+        PUBLIC.sort_key (p_block_number, p_transaction_index, p_log_index)
     );
 
     CASE p_event_name

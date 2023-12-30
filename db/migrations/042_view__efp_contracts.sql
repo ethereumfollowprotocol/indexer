@@ -24,9 +24,7 @@ FROM
       contract_address,
       -- The MAX function combined with the custom sort_key function determines
       -- the latest event by considering the block number, transaction index, and log index.
-      MAX(
-        PUBLIC.sort_key (block_number, transaction_index, log_index)
-      ) AS max_sort_key
+      MAX(sort_key) AS max_sort_key
     FROM
       PUBLIC.contract_events
     WHERE
@@ -37,7 +35,7 @@ FROM
   ) AS latest_events ON e.chain_id = latest_events.chain_id
   AND e.contract_address = latest_events.contract_address -- Ensures that we only consider the latest 'OwnershipTransferred' event
   -- for each contract.
-  AND PUBLIC.sort_key (e.block_number, e.transaction_index, e.log_index) = latest_events.max_sort_key -- Filters out only the 'OwnershipTransferred' events from the contract_events table.
+  AND e.sort_key = latest_events.max_sort_key -- Filters out only the 'OwnershipTransferred' events from the contract_events table.
 WHERE
   e.event_name = 'OwnershipTransferred';
 

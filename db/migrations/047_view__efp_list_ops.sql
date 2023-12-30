@@ -19,7 +19,8 @@ FROM
       PUBLIC.unhexlify (event_args ->> 'op') AS op_bytes,
       block_number,
       transaction_index,
-      log_index
+      log_index,
+      sort_key
     FROM
       PUBLIC.contract_events
     WHERE

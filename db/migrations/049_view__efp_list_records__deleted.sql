@@ -30,9 +30,7 @@ FROM
       ARRAY_AGG(opcode) AS opcodes,
       -- order by block_number, transaction_index, log_index
       -- This helps in identifying the latest operation for each unique record
-      MAX(
-        PUBLIC.sort_key (block_number, transaction_index, log_index)
-      ) AS max_sort_key
+      MAX(sort_key) AS max_sort_key
     FROM
       PUBLIC.view__efp_list_ops
     WHERE
@@ -51,11 +49,7 @@ FROM
   AND ops.contract_address = max_records.contract_address
   AND ops.nonce = max_records.nonce
   AND ops.data = max_records.record
-  AND PUBLIC.sort_key (
-    ops.block_number,
-    ops.transaction_index,
-    ops.log_index
-  ) = max_records.max_sort_key
+  AND ops.sort_key = max_records.max_sort_key
 WHERE
   -- Only return records where last operation was opcode 2 (remove record)
   opcode = 2;

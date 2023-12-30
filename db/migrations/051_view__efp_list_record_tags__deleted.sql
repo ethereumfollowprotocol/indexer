@@ -31,9 +31,7 @@ FROM
       -- aggregate opcodes into an array for holistic checks
       ARRAY_AGG(opcode) AS opcodes,
       -- order by block_number, transaction_index, log_index
-      MAX(
-        PUBLIC.sort_key (block_number, transaction_index, log_index)
-      ) AS max_sort_key
+      MAX(sort_key) AS max_sort_key
     FROM
       PUBLIC.view__efp_list_ops__record_tag
     WHERE
@@ -53,11 +51,7 @@ FROM
   AND vlo.nonce = max_records.nonce
   AND vlo.record = max_records.record
   AND vlo.tag = max_records.tag
-  AND PUBLIC.sort_key (
-    vlo.block_number,
-    vlo.transaction_index,
-    vlo.log_index
-  ) = max_records.max_sort_key
+  AND vlo.sort_key = max_records.max_sort_key
 WHERE
   -- Only return records/tags where last operation was opcode 4 (remove record/tag)
   vlo.opcode = 4;
