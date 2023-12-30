@@ -14,31 +14,16 @@
 --          address. Returns NULL if no primary list value is found.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_primary_list (address types.eth_address) RETURNS BIGINT AS $$
+OR REPLACE FUNCTION query.get_primary_list (p_address types.eth_address) RETURNS BIGINT AS $$
 DECLARE
-    primary_list TEXT;
-    normalized_addr types.eth_address;
-    lowest_token_id BIGINT;
+    primary_list_token_id BIGINT;
 BEGIN
-    -- Normalize the input address to lowercase
-    normalized_addr := public.normalize_eth_address(address);
+    SELECT v.primary_list_token_id
+    INTO primary_list_token_id
+    FROM public.view__efp_accounts_with_primary_list AS v
+    WHERE v.address = public.normalize_eth_address(p_address);
 
-    -- Retrieve the primary list value from account_metadata
-    SELECT am.value INTO primary_list
-    FROM public.account_metadata AS am
-    WHERE am.address = normalized_addr AND am.key = 'primary-list';
-
-    -- Check if a primary list value was found and is valid
-    IF primary_list IS NOT NULL THEN
-        RETURN public.convert_hex_to_BIGINT(primary_list);
-    END IF;
-
-    -- Fallback: Retrieve the lowest token_id
-    SELECT MIN(token_id) INTO lowest_token_id
-    FROM view_list_nfts_with_manager_user
-    WHERE list_user = normalized_addr;
-
-    RETURN lowest_token_id;
+    RETURN primary_list_token_id;
 END;
 $$ LANGUAGE plpgsql;
 

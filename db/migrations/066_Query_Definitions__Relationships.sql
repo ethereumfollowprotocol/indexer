@@ -81,10 +81,13 @@ DECLARE
     primary_list_token_id BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
-    normalized_addr := public.normalize_address(address);
+    normalized_addr := public.normalize_eth_address(address);
 
     -- Get the primary list token id once
-    primary_list_token_id := query.get_primary_list(normalized_addr);
+    SELECT v.primary_list_token_id
+    INTO primary_list_token_id
+    FROM public.view__efp_accounts_with_primary_list AS v
+    WHERE v.address = normalized_addr;
 
     -- If no primary list token id is found, return an empty result set
     IF primary_list_token_id IS NULL THEN

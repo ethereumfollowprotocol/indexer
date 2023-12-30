@@ -18,8 +18,8 @@ OR REPLACE FUNCTION query.get_list_records (token_id BIGINT) RETURNS TABLE (
 ) LANGUAGE plpgsql AS $$
 BEGIN
   RETURN QUERY
-  SELECT lr.version, lr.record_type, lr.data
-  FROM public.list_records AS lr
+  SELECT lr.record_version, lr.record_type, lr.record_data
+  FROM public.view__list_records AS lr
   JOIN query.get_list_storage_location(token_id) AS lsl
   ON lr.chain_id = lsl.chain_id
     AND lr.contract_address = lsl.contract_address
@@ -54,11 +54,11 @@ BEGIN
       record_tags.record_type,
       record_tags.data,
       record_tags.tags
-    FROM public.view_list_records_with_tag_array AS record_tags
+    FROM public.view__list_records_with_tags AS record_tags
     JOIN query.get_list_storage_location(token_id) AS list_storage_location
-    ON record_tags.chain_id = list_storage_location.chain_id
-      AND record_tags.contract_address = list_storage_location.contract_address
-      AND record_tags.nonce = list_storage_location.nonce;
+    ON record_tags.chain_id = list_storage_location.efp_list_storage_location_chain_id
+      AND record_tags.contract_address = list_storage_location.efp_list_storage_location_contract_address
+      AND record_tags.nonce = list_storage_location.efp_list_storage_location_nonce;
 END;
 $$;
 
