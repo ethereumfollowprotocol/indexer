@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_records_with_nft_manager_user_tags
 -------------------------------------------------------------------------------
-CREATE VIEW PUBLIC.view__efp_list_records_with_nft_manager_user_tags AS
+CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records_with_nft_manager_user_tags AS
 SELECT
   nfts.efp_list_nft_chain_id,
   nfts.efp_list_nft_contract_address,

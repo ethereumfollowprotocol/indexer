@@ -36,7 +36,7 @@ FROM
     SELECT
       e.chain_id AS efp_list_nft_chain_id,
       e.contract_address AS efp_list_nft_contract_address,
-      event_args ->> 'tokenId' AS efp_list_nft_token_id,
+      (event_args ->> 'tokenId')::bigint AS efp_list_nft_token_id,
       PUBLIC.unhexlify (e.event_args ->> 'listStorageLocation') AS efp_list_storage_location,
       (
         PUBLIC.decode__efp_list_storage_location__v001__location_type_001 (e.event_args ->> 'listStorageLocation')

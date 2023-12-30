@@ -1,6 +1,6 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_record_tags_agg
+-- View: view__efp_list_records_with_tags
 -------------------------------------------------------------------------------
 CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records_with_tags AS
 SELECT
