@@ -1,6 +1,6 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- Function: handle_contract_event__NewListMetadataValue
+-- Function: handle_contract_event__UpdateListMetadata
 -- Description: Inserts or updates a metadata value for a list. If a record
 --              with the same chain_id, contract_address, and nonce exists,
 --              it updates the existing metadata value. Otherwise, it inserts
@@ -15,7 +15,7 @@
 -- Notes: Uses the list_metadata table for storage.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.handle_contract_event__NewListMetadataValue (
+OR REPLACE FUNCTION public.handle_contract_event__UpdateListMetadata (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
   p_nonce BIGINT,

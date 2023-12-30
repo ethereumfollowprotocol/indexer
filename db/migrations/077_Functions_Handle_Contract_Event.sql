@@ -78,34 +78,8 @@ BEGIN
                 p_event_args->>'op'
             );
 
-        WHEN 'ListStorageLocationChange' THEN
-            PERFORM public.handle_contract_event__ListStorageLocationChange(
-                p_chain_id,
-                p_contract_address,
-                (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
-                p_event_args->>'listStorageLocation'
-            );
-
         WHEN 'MintStateChange' THEN
             -- skip
-
-        WHEN 'NewAccountMetadataValue' THEN
-            PERFORM public.handle_contract_event__NewAccountMetadataValue(
-                p_chain_id,
-                p_contract_address,
-                public.normalize_eth_address(p_event_args->>'addr'),
-                p_event_args->>'key',
-                (p_event_args->>'value')::types.hexstring
-            );
-
-        WHEN 'NewListMetadataValue' THEN
-            PERFORM public.handle_contract_event__NewListMetadataValue(
-                p_chain_id,
-                p_contract_address,
-                (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
-                p_event_args->>'key',
-                (p_event_args->>'value')::types.hexstring
-            );
 
         WHEN 'OwnershipTransferred' THEN
             PERFORM public.handle_contract_event__OwnershipTransferred(
@@ -126,6 +100,32 @@ BEGIN
                 (p_event_args->>'tokenId')::types.efp_list_nft_token_id,
                 public.normalize_eth_address(p_event_args->>'from'),
                 public.normalize_eth_address(p_event_args->>'to')
+            );
+
+        WHEN 'UpdateAccountMetadata' THEN
+            PERFORM public.handle_contract_event__UpdateAccountMetadata(
+                p_chain_id,
+                p_contract_address,
+                public.normalize_eth_address(p_event_args->>'addr'),
+                p_event_args->>'key',
+                (p_event_args->>'value')::types.hexstring
+            );
+
+        WHEN 'UpdateListMetadata' THEN
+            PERFORM public.handle_contract_event__UpdateListMetadata(
+                p_chain_id,
+                p_contract_address,
+                (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
+                p_event_args->>'key',
+                (p_event_args->>'value')::types.hexstring
+            );
+
+        WHEN 'UpdateListStorageLocation' THEN
+            PERFORM public.handle_contract_event__UpdateListStorageLocation(
+                p_chain_id,
+                p_contract_address,
+                (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
+                p_event_args->>'listStorageLocation'
             );
 
         ELSE

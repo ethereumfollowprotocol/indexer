@@ -3,8 +3,7 @@
 -- View: view__efp_contracts
 -------------------------------------------------------------------------------
 -- Creating a view to list the latest ownership details of Ethereum contracts
-CREATE
-OR REPLACE VIEW PUBLIC.view__efp_contracts AS -- Selects the necessary columns to represent a contract and its latest owner.
+CREATE OR REPLACE VIEW PUBLIC.view__efp_contracts AS -- Selects the necessary columns to represent a contract and its latest owner.
 -- The view filters and presents data from the 'contract_events' table,
 -- focusing specifically on 'OwnershipTransferred' events, which indicate
 -- changes in contract ownership.
@@ -45,29 +44,24 @@ WHERE
 
 
 -- Comment on the view
-COMMENT
-  ON VIEW public.view__efp_contracts IS 'View to list the latest ownership details of EFP contracts.';
+COMMENT ON VIEW public.view__efp_contracts IS 'View to list the latest ownership details of EFP contracts.';
 
 
 
 -- Comment on the columns
-COMMENT
-  ON COLUMN public.view__efp_contracts.chain_id IS 'Chain ID of the deployed contract.';
+COMMENT ON COLUMN public.view__efp_contracts.chain_id IS 'Chain ID of the deployed contract.';
 
 
 
-COMMENT
-  ON COLUMN public.view__efp_contracts.address IS 'Contract address.';
+COMMENT ON COLUMN public.view__efp_contracts.address IS 'Contract address.';
 
 
 
-COMMENT
-  ON COLUMN public.view__efp_contracts.name IS 'Contract name.';
+COMMENT ON COLUMN public.view__efp_contracts.name IS 'Contract name.';
 
 
 
-COMMENT
-  ON COLUMN public.view__efp_contracts.owner IS 'Contract owner.';
+COMMENT ON COLUMN public.view__efp_contracts.owner IS 'Contract owner.';
 
 
 

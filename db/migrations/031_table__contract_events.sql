@@ -11,7 +11,7 @@ SET
 
 
 -------------------------------------------------------------------------------
--- Table: events
+-- Table: contract_events
 -------------------------------------------------------------------------------
 CREATE TABLE public.contract_events (
   chain_id types.eth_chain_id NOT NULL,
@@ -35,18 +35,10 @@ CREATE TABLE public.contract_events (
 
 
 
-CREATE TRIGGER update_events_updated_at BEFORE
-UPDATE ON public.contract_events FOR EACH ROW
-EXECUTE FUNCTION public.update_updated_at_column ();
-
-
-
--- Comment on the table
 COMMENT ON TABLE public.contract_events IS 'Stores EFP contract events across multiple blockchains.';
 
 
 
--- Comment on the columns
 COMMENT ON COLUMN public.contract_events.chain_id IS 'Identifier for the blockchain network where the event occurred. This includes mainnets, testnets, and Layer 2 networks.';
 
 
@@ -91,8 +83,28 @@ COMMENT ON COLUMN public.contract_events.updated_at IS 'Timestamp when the recor
 
 
 
+-------------------------------------------------------------------------------
+-- Triggers
+-------------------------------------------------------------------------------
+CREATE TRIGGER trigger__contract_events__update_updated_at_column BEFORE
+UPDATE ON public.contract_events FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column ();
+
+
+
 -- Comment on the trigger
-COMMENT ON TRIGGER update_events_updated_at ON public.contract_events IS 'Trigger to automatically update the updated_at timestamp column before any update operation on the contract_events table.';
+COMMENT ON TRIGGER trigger__contract_events__update_updated_at_column ON public.contract_events IS 'Trigger to automatically update the updated_at timestamp column before any update operation on the contract_events table.';
+
+
+
+-------------------------------------------------------------------------------
+-- Indexes
+-------------------------------------------------------------------------------
+CREATE INDEX idx__contract_events__event_name ON public.contract_events (event_name);
+
+
+
+COMMENT ON INDEX public.idx__contract_events__event_name IS 'Index on event_name to optimize queries filtering by specific event names in contract_events table.';
 
 
 

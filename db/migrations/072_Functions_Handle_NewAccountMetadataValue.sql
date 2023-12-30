@@ -1,6 +1,6 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- Function: handle_contract_event__NewAccountMetadataValue
+-- Function: handle_contract_event__UpdateAccountMetadata
 -- Description: Inserts or updates an account metadata value. If a record with
 --              the same chain_id, contract_address, address, and key exists,
 --              it updates the existing metadata value. Otherwise, it inserts
@@ -16,7 +16,7 @@
 -- Notes: Uses the account_metadata table for storage.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.handle_contract_event__NewAccountMetadataValue (
+OR REPLACE FUNCTION public.handle_contract_event__UpdateAccountMetadata (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
   p_address VARCHAR(42),

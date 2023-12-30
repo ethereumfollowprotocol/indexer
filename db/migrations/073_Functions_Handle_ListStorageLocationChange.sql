@@ -1,7 +1,7 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- Function: handle_contract_event__ListStorageLocationChange
--- Description: Processes a ListStorageLocationChange event by decoding the
+-- Function: handle_contract_event__UpdateListStorageLocation
+-- Description: Processes a UpdateListStorageLocation event by decoding the
 --              list storage location and updating the corresponding fields in
 --              the list_nfts table.
 -- Parameters:
@@ -11,11 +11,11 @@
 --   - p_list_storage_location (VARCHAR(174)): The list storage location to be
 --                                             decoded and updated.
 -- Returns: VOID
--- Notes: Uses the list_nfts and decode__list_storage_location functions for
---        storage and decoding respectively.
+-- Notes: Uses the list_nfts and decode__efp_list_storage_location functions
+--        for storage and decoding respectively.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.handle_contract_event__ListStorageLocationChange (
+OR REPLACE FUNCTION public.handle_contract_event__UpdateListStorageLocation (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
   p_token_id BIGINT,

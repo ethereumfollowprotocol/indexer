@@ -2,8 +2,7 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_record_tags__deleted
 -------------------------------------------------------------------------------
-CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_record_tags__deleted AS
+CREATE OR REPLACE VIEW PUBLIC.view__efp_list_record_tags__deleted AS
 SELECT
   vlo.chain_id,
   vlo.contract_address,

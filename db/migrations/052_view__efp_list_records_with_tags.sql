@@ -2,8 +2,7 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_record_tags_agg
 -------------------------------------------------------------------------------
-CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_records_with_tags AS
+CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records_with_tags AS
 SELECT
   r.chain_id,
   r.contract_address,

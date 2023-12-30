@@ -1,7 +1,7 @@
-import { type QueryResult, type RawBuilder, sql } from 'kysely'
 import { database } from '#/database'
 import { logger } from '#/logger'
 import { colors } from '#/utilities/colors'
+import { sql, type QueryResult, type RawBuilder } from 'kysely'
 import type { Event } from '../event'
 
 /**
@@ -65,7 +65,7 @@ export class EventUploader implements EventSubscriber {
       case 'ListOp':
         s = `${colors.LIGHT_MAGENTA}${eventSignature}${colors.ENDC}`
         break
-      case 'ListStorageLocationChange':
+      case 'UpdateListStorageLocation':
         s = `${colors.LIGHT_BLUE}${eventSignature}${colors.ENDC}`
         break
       case 'MintStateChange':
