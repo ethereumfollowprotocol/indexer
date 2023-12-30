@@ -41,6 +41,7 @@ export interface ContractEvents {
   event_args: Json
   event_name: string
   log_index: Numeric
+  sort_key: string
   transaction_hash: string
   transaction_index: Numeric
   updated_at: Generated<Timestamp | null>
@@ -163,6 +164,7 @@ export interface ViewEfpListOps {
   op: string | null
   op_bytes: Buffer | null
   opcode: number | null
+  sort_key: string | null
   transaction_index: Numeric | null
   version: number | null
 }
@@ -176,6 +178,7 @@ export interface ViewEfpListOpsRecordTag {
   nonce: Int8 | null
   opcode: number | null
   record: Buffer | null
+  sort_key: string | null
   tag: string | null
   transaction_index: Numeric | null
 }

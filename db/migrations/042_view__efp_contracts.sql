@@ -2,41 +2,46 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_contracts
 -------------------------------------------------------------------------------
--- Creating a view to list the latest ownership details of Ethereum contracts
-CREATE OR REPLACE VIEW PUBLIC.view__efp_contracts AS -- Selects the necessary columns to represent a contract and its latest owner.
--- The view filters and presents data from the 'contract_events' table,
--- focusing specifically on 'OwnershipTransferred' events, which indicate
--- changes in contract ownership.
+/*
+| View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                    | Influence on Index Structure                                | Index                                                        |
+|--------------------------------|--------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------|--------------------------------------------------------------|
+| `view__efp_contracts`          | `OwnershipTransferred`         | 1. Filter on `OwnershipTransferred` events                      | Start index with `event_name` for filtering                 | Step 1: `(event_name)`                                       |
+|                                |                                | 2. Group by `chain_id` and `contract_address`                   | Add `chain_id` and `contract_address` for grouping          | Step 2: `(event_name, chain_id, contract_address)`           |
+|                                |                                | 3. Sort by `sort_key` within each group                         | Append `sort_key` for sorting                               | Step 3: `(event_name, chain_id, contract_address, sort_key)` |
+*/
+CREATE INDEX idx__efp_contracts_events__efp_contracts ON PUBLIC.contract_events (chain_id, contract_address, sort_key)
+WHERE
+  event_name = 'OwnershipTransferred';
+
+
+
+CREATE OR REPLACE VIEW PUBLIC.view__efp_contracts AS
 SELECT
   e.chain_id,
   e.contract_address AS address,
-  'TODO' AS name,
   -- Placeholder for contract name, to be implemented.
-  PUBLIC.normalize_eth_address (e.event_args ->> 'newOwner') AS owner -- The source table containing all contract events.
+  'TODO' AS name,
+  PUBLIC.normalize_eth_address (e.event_args ->> 'newOwner') AS owner
 FROM
-  PUBLIC.contract_events e -- Joining with a subquery to ensure we only get the latest ownership event
-  -- for each contract.
+  PUBLIC.contract_events e
   INNER JOIN (
-    -- This subquery identifies the latest 'OwnershipTransferred' event for each
-    -- contract (identified by chain_id and contract_address) using a sort key.
     SELECT
       chain_id,
       contract_address,
-      -- The MAX function combined with the custom sort_key function determines
-      -- the latest event by considering the block number, transaction index, and log index.
+      -- latest event for each contract.
       MAX(sort_key) AS max_sort_key
     FROM
       PUBLIC.contract_events
     WHERE
-      event_name = 'OwnershipTransferred' -- Grouping by contract and chain ID to calculate the latest event for each.
+      event_name = 'OwnershipTransferred'
     GROUP BY
       chain_id,
       contract_address
   ) AS latest_events ON e.chain_id = latest_events.chain_id
-  AND e.contract_address = latest_events.contract_address -- Ensures that we only consider the latest 'OwnershipTransferred' event
-  -- for each contract.
-  AND e.sort_key = latest_events.max_sort_key -- Filters out only the 'OwnershipTransferred' events from the contract_events table.
+  AND e.contract_address = latest_events.contract_address
+  AND e.sort_key = latest_events.max_sort_key -- latest event for each contract.
 WHERE
+  -- Filters out only the 'OwnershipTransferred' events from the contract_events table.
   e.event_name = 'OwnershipTransferred';
 
 

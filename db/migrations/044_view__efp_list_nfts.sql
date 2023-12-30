@@ -2,6 +2,24 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_nfts
 -------------------------------------------------------------------------------
+/*
+| View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                         | Influence on Index Structure                                                  | Index                                                                                    |
+|--------------------------------|--------------------------------|----------------------------------------------------------------------|-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| `view__efp_list_nfts`          | `Transfer`                     | 1. Filter on `Transfer` events                                       | Start index with `event_name` for filtering                                   | Step 1: `(event_name)`                                                                   |
+|                                |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'tokenId'` | Add `chain_id`, `contract_address`, and `event_args->>'tokenId'` for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'))`           |
+|                                |                                | 3. Sort by `sort_key` within each group                              | Append `sort_key` for sorting                                                 | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'), sort_key)` |
+*/
+CREATE INDEX idx__efp_contract_events__efp_list_nfts ON PUBLIC.contract_events (
+  chain_id,
+  contract_address,
+  (event_args ->> 'tokenId'),
+  sort_key
+)
+WHERE
+  event_name = 'Transfer';
+
+
+
 CREATE OR REPLACE VIEW PUBLIC.view__efp_list_nfts AS
 SELECT
   e.chain_id,
