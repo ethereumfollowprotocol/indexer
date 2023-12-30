@@ -1,9 +1,9 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__account_metadata__events
+-- View: view__efp_account_metadata__events
 -------------------------------------------------------------------------------
--- View for account metadata events
-CREATE OR REPLACE VIEW PUBLIC.view__account_metadata__events AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_account_metadata__events AS
 SELECT
   chain_id,
   block_number,

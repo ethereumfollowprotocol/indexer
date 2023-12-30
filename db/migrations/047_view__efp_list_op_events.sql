@@ -1,8 +1,8 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__list_op__events
+-- View: view__efp_list_op__events
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__list_op__events AS
+CREATE OR REPLACE VIEW PUBLIC.view__efp_list_op__events AS
 SELECT
   chain_id,
   block_number,

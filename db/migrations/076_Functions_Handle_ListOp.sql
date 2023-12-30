@@ -91,6 +91,11 @@ BEGIN
             nonce = p_nonce AND
             record = list_record_hex
     ) THEN
+        RAISE WARNING 'Attempt to remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
+            p_chain_id,
+            p_contract_address,
+            p_nonce,
+            list_record_hex;
         -- RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
         --     p_chain_id,
         --     p_contract_address,
@@ -189,12 +194,18 @@ BEGIN
             record = public.hexlify(p_list_op__v001__opcode_004.record) AND
             tag = p_list_op__v001__opcode_004.tag
     ) THEN
-        RAISE EXCEPTION 'Cannot remove non-existent list_record_tags row (chain_id=%, contract_address=%, nonce=%, record=%, tag=%)',
+        RAISE WARNING 'Attempt to remove non-existent list_record_tags row (chain_id=%, contract_address=%, nonce=%, record=%, tag=%)',
             p_chain_id,
             p_contract_address,
             p_nonce,
             public.hexlify(p_list_op__v001__opcode_004.record),
             p_list_op__v001__opcode_004.tag;
+        -- RAISE EXCEPTION 'Cannot remove non-existent list_record_tags row (chain_id=%, contract_address=%, nonce=%, record=%, tag=%)',
+        --     p_chain_id,
+        --     p_contract_address,
+        --     p_nonce,
+        --     public.hexlify(p_list_op__v001__opcode_004.record),
+        --     p_list_op__v001__opcode_004.tag;
     END IF;
 
     -- Record tag exists, so delete it

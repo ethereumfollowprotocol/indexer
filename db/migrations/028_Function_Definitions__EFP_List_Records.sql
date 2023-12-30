@@ -178,7 +178,7 @@ BEGIN
     END IF;
 
     list_record_bytea := SUBSTRING(p_list_record_tag FROM 1 FOR 22)::types.bytea__not_null;
-    tag := SUBSTRING(p_list_record_tag FROM 23)::types.efp_tag;
+    tag := convert_from(SUBSTRING(p_list_record_tag FROM 23), 'UTF-8')::types.efp_tag;
 
     RETURN NEXT;
 END;

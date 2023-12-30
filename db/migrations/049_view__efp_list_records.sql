@@ -1,25 +1,25 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__list_records
+-- View: view__efp_list_records
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__list_records AS
+CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records AS
 SELECT
-  vlo.chain_id,
-  vlo.contract_address,
-  vlo.nonce,
-  vlo.data as record,
-  GET_BYTE(vlo.data, 0) AS record_version,
-  GET_BYTE(vlo.data, 1) AS record_type,
+  ops.chain_id,
+  ops.contract_address,
+  ops.nonce,
+  ops.data as record,
+  GET_BYTE(ops.data, 0) AS record_version,
+  GET_BYTE(ops.data, 1) AS record_type,
   SUBSTRING(
-    vlo.data
+    ops.data
     FROM
       3
   ) AS record_data,
-  vlo.block_number,
-  vlo.transaction_index,
-  vlo.log_index
+  ops.block_number,
+  ops.transaction_index,
+  ops.log_index
 FROM
-  PUBLIC.view__list_ops vlo
+  PUBLIC.view__efp_list_ops ops
   INNER JOIN (
     SELECT
       chain_id,
@@ -32,7 +32,7 @@ FROM
         PUBLIC.sort_key (block_number, transaction_index, log_index)
       ) AS max_sort_key
     FROM
-      PUBLIC.view__list_ops
+      PUBLIC.view__efp_list_ops
     WHERE
       -- restrict to opcodes 1 (add record) or 2 (remove record)
       opcode = 1
@@ -42,14 +42,14 @@ FROM
       contract_address,
       nonce,
       data
-  ) AS max_records ON vlo.chain_id = max_records.chain_id
-  AND vlo.contract_address = max_records.contract_address
-  AND vlo.nonce = max_records.nonce
-  AND vlo.data = max_records.record
+  ) AS max_records ON ops.chain_id = max_records.chain_id
+  AND ops.contract_address = max_records.contract_address
+  AND ops.nonce = max_records.nonce
+  AND ops.data = max_records.record
   AND PUBLIC.sort_key (
-    vlo.block_number,
-    vlo.transaction_index,
-    vlo.log_index
+    ops.block_number,
+    ops.transaction_index,
+    ops.log_index
   ) = max_records.max_sort_key
 WHERE
   -- Only return records where last operation was opcode 2 (remove record)

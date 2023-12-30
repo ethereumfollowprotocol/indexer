@@ -1,8 +1,8 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__list_metadata
+-- View: view__efp_list_metadata
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__list_metadata AS
+CREATE OR REPLACE VIEW PUBLIC.view__efp_list_metadata AS
 SELECT
   a.chain_id,
   a.contract_address,
@@ -13,7 +13,7 @@ SELECT
   a.transaction_index,
   a.log_index
 FROM
-  PUBLIC.view__list_metadata__events a
+  PUBLIC.view__efp_list_metadata__events a
   INNER JOIN (
     SELECT
       chain_id,
@@ -24,7 +24,7 @@ FROM
         PUBLIC.sort_key (block_number, transaction_index, log_index)
       ) AS latest_sort_key
     FROM
-      PUBLIC.view__list_metadata__events
+      PUBLIC.view__efp_list_metadata__events
     GROUP BY
       chain_id,
       contract_address,

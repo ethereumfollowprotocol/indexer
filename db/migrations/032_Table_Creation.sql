@@ -32,39 +32,6 @@ EXECUTE FUNCTION public.update_updated_at_column ();
 
 
 -------------------------------------------------------------------------------
--- Table: events
--------------------------------------------------------------------------------
-CREATE TABLE public.contract_events (
-  chain_id types.eth_chain_id NOT NULL,
-  block_number BIGINT NOT NULL,
-  transaction_index NUMERIC NOT NULL,
-  log_index NUMERIC NOT NULL,
-  contract_address types.eth_address NOT NULL,
-  event_name VARCHAR(255) NOT NULL,
-  event_args jsonb NOT NULL,
-  block_hash types.eth_block_hash NOT NULL,
-  transaction_hash types.eth_transaction_hash NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (
-    chain_id,
-    block_number,
-    transaction_index,
-    log_index
-  )
-  -- contracts won't exist in the database until after the indexer has seen them
-  -- , FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
-);
-
-
-
-CREATE TRIGGER update_events_updated_at BEFORE
-UPDATE ON public.contract_events FOR EACH ROW
-EXECUTE FUNCTION public.update_updated_at_column ();
-
-
-
--------------------------------------------------------------------------------
 -- Table: account_metadata
 -------------------------------------------------------------------------------
 CREATE TABLE public.account_metadata (
