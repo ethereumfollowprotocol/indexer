@@ -9,9 +9,9 @@
 --              version and type, excluding blocked or muted relationships.
 -- Parameters:
 --   - limit_count (BIGINT): The maximum number of rows to return.
--- Returns: A table with 'address' (text) and 'following_count' (BIGINT),
---          representing each user and their count of unique following
---          addresses.
+-- Returns: A table with 'address' (types.eth_address) and 'following_count'
+--          (BIGINT), representing each user and their count of unique
+--          following addresses.
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_leaderboard_following (limit_count BIGINT) RETURNS TABLE (address types.eth_address, following_count BIGINT) LANGUAGE PLPGSQL AS $$
