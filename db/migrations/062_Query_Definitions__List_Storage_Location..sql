@@ -10,7 +10,7 @@
 --          contract address, and nonce.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_list_storage_location(p_token_id BIGINT) RETURNS TABLE (
+OR REPLACE FUNCTION query.get_list_storage_location (p_token_id BIGINT) RETURNS TABLE (
   chain_id BIGINT,
   contract_address types.eth_address,
   nonce types.efp_list_storage_location_nonce

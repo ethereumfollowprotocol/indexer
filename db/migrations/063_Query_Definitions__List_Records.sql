@@ -6,20 +6,20 @@
 -- Parameters:
 --   - param_token_id (BIGINT): The token_id for which to retrieve the list
 --                              records.
--- Returns: A table with 'version' (SMALLINT), 'record_type' (SMALLINT), and
---          'data' (varchar(255)), representing the list record version, type,
---          and data.
+-- Returns: A table with 'record_version' (types.uint8), 'record_type'
+--          (types.uint8), and 'data' (BYTEA), representing the list record
+--          version, type, and data.
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_list_records (token_id BIGINT) RETURNS TABLE (
-  version types.uint8,
+  record_version types.uint8,
   record_type types.uint8,
-  data types.hexstring
+  record_data BYTEA
 ) LANGUAGE plpgsql AS $$
 BEGIN
   RETURN QUERY
   SELECT lr.record_version, lr.record_type, lr.record_data
-  FROM public.view__list_records AS lr
+  FROM public.view__efp_list_records AS lr
   JOIN query.get_list_storage_location(token_id) AS lsl
   ON lr.chain_id = lsl.chain_id
     AND lr.contract_address = lsl.contract_address
@@ -36,29 +36,29 @@ $$;
 -- Parameters:
 --   - param_token_id (BIGINT): The token_id for which to retrieve the list
 --                              records.
--- Returns: A table with 'version' (SMALLINT), 'record_type' (SMALLINT), and
---          'data' (varchar(255)), representing the list record version, type,
---          and data.
+-- Returns: A table with 'version' (types.uint8), 'record_type' (types.uint8),
+--          and 'record_data' (BYTEA), representing the list record version,
+--          type, and data.
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_list_record_tags (token_id BIGINT) RETURNS TABLE (
-  version types.uint8,
+  record_version types.uint8,
   record_type types.uint8,
-  data types.hexstring,
-  tags VARCHAR(255) []
+  record_data BYTEA,
+  tags types.efp_tag[]
 ) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
     SELECT
-      record_tags.version,
+      record_tags.record_version,
       record_tags.record_type,
-      record_tags.data,
+      record_tags.record_data,
       record_tags.tags
-    FROM public.view__list_records_with_tags AS record_tags
+    FROM public.view__efp_list_records_with_tags AS record_tags
     JOIN query.get_list_storage_location(token_id) AS list_storage_location
-    ON record_tags.chain_id = list_storage_location.efp_list_storage_location_chain_id
-      AND record_tags.contract_address = list_storage_location.efp_list_storage_location_contract_address
-      AND record_tags.nonce = list_storage_location.efp_list_storage_location_nonce;
+    ON record_tags.chain_id = list_storage_location.chain_id
+      AND record_tags.contract_address = list_storage_location.contract_address
+      AND record_tags.nonce = list_storage_location.nonce;
 END;
 $$;
 

@@ -8,8 +8,8 @@ SELECT
   ops.contract_address,
   ops.nonce,
   ops.data as record,
-  GET_BYTE(ops.data, 0) AS record_version,
-  GET_BYTE(ops.data, 1) AS record_type,
+  GET_BYTE(ops.data, 0)::types.uint8 AS record_version,
+  GET_BYTE(ops.data, 1)::types.uint8 AS record_type,
   SUBSTRING(
     ops.data
     FROM

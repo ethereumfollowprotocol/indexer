@@ -60,8 +60,8 @@ SELECT
   subquery.contract_address,
   subquery.nonce,
   subquery.record,
-  GET_BYTE(subquery.record, 0) AS record_version,
-  GET_BYTE(subquery.record, 1) AS record_type,
+  GET_BYTE(subquery.record, 0)::types.uint8 AS record_version,
+  GET_BYTE(subquery.record, 1)::types.uint8 AS record_type,
   SUBSTRING(
     subquery.record
     FROM

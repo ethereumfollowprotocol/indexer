@@ -19,13 +19,13 @@ $$;
 -- Function: is_uint8
 -- Description: Validates that the given SMALLINT is [0, 255].
 -- Parameters:
---   - value (SMALLINT): The value to be validated.
+--   - p_value (SMALLINT): The value to be validated.
 -- Returns: TRUE if the value is between 0 and 255, FALSE otherwise.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.is_uint8 (value SMALLINT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
+OR REPLACE FUNCTION public.is_uint8 (p_value SMALLINT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
-    RETURN value >= 0 AND value <= 255;
+    RETURN p_value >= 0 AND p_value <= 255;
 END;
 $$;
 
@@ -38,13 +38,13 @@ $$;
 --              hexadecimal characters.
 --              The function uses a regular expression to validate the format.
 -- Parameters:
---   - hexstring (TEXT): The hexadecimal string to be validated.
+--   - p_hexstring (TEXT): The hexadecimal string to be validated.
 -- Returns: TRUE if the string is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.is_hexstring (hexstring TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
+OR REPLACE FUNCTION public.is_hexstring (p_hexstring TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
-    RETURN hexstring ~ '^0x([a-f0-9]{2})*$';
+    RETURN p_hexstring ~ '^0x([a-f0-9]{2})*$';
 END;
 $$;
 
@@ -57,13 +57,30 @@ $$;
 --              hexadecimal characters.
 --              The function uses a regular expression to validate the format.
 -- Parameters:
---   - address (TEXT): The address to be validated.
+--   - p_address (TEXT): The address to be validated.
 -- Returns: TRUE if the address is valid, FALSE otherwise.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.is_valid_address (address TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
+OR REPLACE FUNCTION public.is_valid_address (p_address TEXT) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
 BEGIN
-    RETURN address ~ '^0x[a-f0-9]{40}$';
+    RETURN p_address ~ '^0x[a-f0-9]{40}$';
+END;
+$$;
+
+
+
+-------------------------------------------------------------------------------
+-- Function: is_valid_address
+-- Description: Validates that the given byte array is a valid Ethereum
+--              address by checking that it is 20 bytes long.
+-- Parameters:
+--   - p_address_bytea (BYTEA): The byte array to be validated.
+-- Returns: TRUE if the address is valid, FALSE otherwise.
+-------------------------------------------------------------------------------
+CREATE
+OR REPLACE FUNCTION public.is_valid_address (p_address_bytea BYTEA) RETURNS BOOLEAN LANGUAGE plpgsql IMMUTABLE AS $$
+BEGIN
+    RETURN LENGTH(p_address_bytea) = 20;
 END;
 $$;
 
@@ -77,24 +94,24 @@ $$;
 --              the resulting bigint does not exceed JavaScript's
 --              MAX_SAFE_INTEGER.
 -- Parameters:
---   - hexstring (TEXT): The hexadecimal string to be converted.
+--   - p_hexstring (TEXT): The hexadecimal string to be converted.
 -- Returns: A bigint representation of the hexadecimal string or NULL if the
 --          input is invalid or the result exceeds MAX_SAFE_INTEGER.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION public.convert_hex_to_bigint (hexstring TEXT) RETURNS BIGINT LANGUAGE plpgsql IMMUTABLE AS $$
+OR REPLACE FUNCTION public.convert_hex_to_bigint (p_hexstring TEXT) RETURNS BIGINT LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE
     trimmed_hex TEXT;
     result BIGINT := 0;
     i INTEGER;
 BEGIN
-    -- Check if the hexstring is valid
-    IF hexstring IS NULL OR NOT (hexstring ~ '^0x[a-f0-9]{64}$') THEN
+    -- Check if the p_hexstring is valid
+    IF p_hexstring IS NULL OR NOT (p_hexstring ~ '^0x[a-f0-9]{64}$') THEN
         RETURN NULL;
     END IF;
 
     -- Remove '0x' prefix
-    trimmed_hex := right(hexstring, 64);
+    trimmed_hex := right(p_hexstring, 64);
 
     -- Convert hex string to bigint
     FOR i IN 1..64 LOOP
