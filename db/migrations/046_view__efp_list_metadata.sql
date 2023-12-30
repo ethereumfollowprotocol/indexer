@@ -2,6 +2,25 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_metadata
 -------------------------------------------------------------------------------
+/*
+| View Name                      | Event Type Filtered       | Sub-Steps in Query Execution                                        | Influence on Index Structure                                                    | Index Building Progress                                                                                        |
+|--------------------------------|---------------------------|---------------------------------------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `view__efp_list_metadata`      | `UpdateListMetadata`      | 1. Filter on `UpdateListMetadata` events                            | Start index with `event_name` for filtering                                     | Step 1: `(event_name)`                                                                                         |
+|                                |                           | 2. Group by `chain_id`, `contract_address`, `event_args->>'nonce'`, `event_args->>'key'` | Add `chain_id`, `contract_address`, and specific `event_args` fields for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'nonce'), (event_args ->> 'key'))`            |
+|                                |                           | 3. Sort by `sort_key` within each group                             | Append `sort_key` for sorting                                                   | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'nonce'), (event_args ->> 'key'), sort_key)`  |
+*/
+CREATE INDEX idx__efp_contract_events__list_metadata ON PUBLIC.contract_events (
+  chain_id,
+  contract_address,
+  (event_args ->> 'nonce'),
+  (event_args ->> 'key'),
+  sort_key
+)
+WHERE
+  event_name = 'UpdateListMetadata';
+
+
+
 CREATE OR REPLACE VIEW PUBLIC.view__efp_list_metadata AS
 SELECT
   e.chain_id,

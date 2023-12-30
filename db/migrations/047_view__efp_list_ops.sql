@@ -2,6 +2,24 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_ops
 -------------------------------------------------------------------------------
+/*
+| View Name                  | Event Type Filtered | Sub-Steps in Query Execution                           | Influence on Index Structure                                   | Index Building Progress                                                 |
+|----------------------------|---------------------|--------------------------------------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------|
+| `view__efp_list_ops`       | `ListOp`            | 1. Filter on `ListOp` events                           | Start index with `event_name` for filtering                   | Step 1: `(event_name)`                                                  |
+|                            |                     | 2. Project `chain_id`, `contract_address`, `nonce`, `op`, and other relevant fields | Include `chain_id`, `contract_address`, and `event_args` fields for efficient data retrieval | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'nonce'), (event_args ->> 'op'))` |
+|                            |                     |                                                        |                                                               |                                                                          |
+*/
+CREATE INDEX idx__efp_contract_events__list_ops ON PUBLIC.contract_events (
+  chain_id,
+  contract_address,
+  (event_args ->> 'nonce'),
+  (event_args ->> 'op')
+)
+WHERE
+  event_name = 'ListOp';
+
+
+
 CREATE OR REPLACE VIEW PUBLIC.view__efp_list_ops AS
 SELECT
   list_op_events.*,
