@@ -43,3 +43,6 @@ db/schema.sql
 
 # JetBrains
 .idea/
+
+# migrations
+db/migrations/*
