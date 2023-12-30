@@ -69,11 +69,11 @@ $$;
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_outgoing_relationships (address types.eth_address, tag VARCHAR(255)) RETURNS TABLE (
-  token_id BIGINT,
-  list_user types.eth_address,
-  version types.uint8,
+  efp_list_nft_token_id BIGINT,
+  efp_list_user types.eth_address,
+  record_version types.uint8,
   record_type types.uint8,
-  data types.hexstring,
+  record_data types.hexstring,
   tags VARCHAR(255) []
 ) LANGUAGE plpgsql AS $$
 DECLARE
@@ -98,35 +98,35 @@ BEGIN
     RETURN QUERY
     WITH primary_list AS (
         SELECT
-            v.token_id,
-            v.list_user,
-            v.version,
+            v.efp_list_nft_token_id,
+            v.efp_list_user,
+            v.record_version,
             v.record_type,
-            v.data,
+            v.record_data,
             v.tags
         FROM
-            public.view_list_records_with_nft_manager_user_tags AS v
+            public.view__efp_list_records_with_nft_manager_user_tags AS v
         WHERE
             -- only list record version 1
-            v.version = 1 AND
+            v.record_version = 1 AND
             -- address record type (1)
             v.record_type = 1 AND
             -- valid address format
-            public.is_valid_address(v.data) AND
+            public.is_valid_address(v.record_data) AND
             -- who is followed by the list user
-            v.list_user = normalized_addr AND
+            v.efp_list_user = normalized_addr AND
             -- from their primary list
-            v.token_id = primary_list_token_id AND
+            v.efp_list_nft_token_id = primary_list_token_id AND
             -- okay if blocked/muted we are looking at tags in general
             -- tag is in the list of tags
             v.tags @> ARRAY[tag]::varchar(255)[]
     )
     SELECT * FROM primary_list
     ORDER BY
-        token_id ASC,
-        version ASC,
+        efp_list_nft_token_id ASC,
+        record_version ASC,
         record_type ASC,
-        data ASC;
+        record_data ASC;
 END;
 $$;
 

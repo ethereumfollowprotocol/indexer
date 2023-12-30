@@ -90,7 +90,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: count_unique_followers_by_address
+-- Function: get_leaderboard_followers
 -- Description: Counts the unique followers for each address in the
 --              view_list_records_with_nft_manager_user_tags, groups the results by address,
 --              and orders them by the number of unique followers in descending
@@ -103,30 +103,30 @@ $$;
 --          representing each address and its count of unique followers.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.count_unique_followers_by_address (limit_count BIGINT) RETURNS TABLE (address types.eth_address, followers_count BIGINT) LANGUAGE plpgsql AS $$
+OR REPLACE FUNCTION query.get_leaderboard_followers (limit_count BIGINT) RETURNS TABLE (address types.eth_address, followers_count BIGINT) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        v.data::types.eth_address AS address,
-        COUNT(DISTINCT v.list_user) AS followers_count
+        public.hexlify(v.record_data)::types.eth_address AS address,
+        COUNT(DISTINCT v.efp_list_user) AS followers_count
     FROM
-        public.view_list_records_with_nft_manager_user_tags AS v
+        public.view__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
-        v.version = 1 AND
+        v.record_version = 1 AND
         -- address record type (1)
         v.record_type = 1 AND
         -- valid address format
-        public.is_valid_address(v.data) AND
+        public.is_valid_address(v.record_data) AND
         -- NOT blocked
         v.has_block_tag = FALSE AND
         -- NOT muted
         v.has_mute_tag = FALSE
     GROUP BY
-        v.data
+        v.record_data
     ORDER BY
         followers_count DESC,
-        v.data ASC
+        v.record_data ASC
     LIMIT limit_count;
 END;
 $$;

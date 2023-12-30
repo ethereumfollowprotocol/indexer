@@ -81,7 +81,7 @@ $$;
 
 
 -------------------------------------------------------------------------------
--- Function: count_unique_following_by_address
+-- Function: get_leaderboard_following
 -- Description: Counts the unique addresses that each user is following in the
 --              view_list_records_with_nft_manager_user_tags, groups the
 --              results by user, and orders them by the number of unique
@@ -95,17 +95,17 @@ $$;
 --          addresses.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.count_unique_following_by_address (limit_count BIGINT) RETURNS TABLE (address types.eth_address, following_count BIGINT) LANGUAGE PLPGSQL AS $$
+OR REPLACE FUNCTION query.get_leaderboard_following (limit_count BIGINT) RETURNS TABLE (address types.eth_address, following_count BIGINT) LANGUAGE PLPGSQL AS $$
 BEGIN
     RETURN QUERY
   SELECT
-        v.list_user AS address,
-        COUNT(DISTINCT v.data) AS following_count
+        v.efp_list_user AS address,
+        COUNT(DISTINCT v.record_data) AS following_count
     FROM
-        public.view_list_records_with_nft_manager_user_tags AS v
+        public.view__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only version 1
-        v.version = 1 AND
+        v.record_version = 1 AND
         -- address record type (1)
         v.record_type = 1 AND
         -- NOT blocked
@@ -113,12 +113,12 @@ BEGIN
         -- NOT muted
         v.has_mute_tag = FALSE AND
         -- valid address format
-        public.is_valid_address(v.data)
+        public.is_valid_address(v.record_data)
     GROUP BY
-        v.list_user
+        v.efp_list_user
     ORDER BY
         following_count DESC,
-        v.list_user ASC
+        v.efp_list_user ASC
     LIMIT limit_count;
 END;
 $$;
