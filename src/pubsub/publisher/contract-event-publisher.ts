@@ -98,13 +98,7 @@ export class ContractEventPublisher implements EventPublisher {
     let n = 0
     let promises: Promise<void>[] = []
     for (const log of logs) {
-      // Assuming logIndex validation and other checks are done here
       const event: Event = decodeLogtoEvent(this.chainId, this.contractName, this.abi, log)
-      // old way all at once:
-      // const promises: Promise<void>[] = this.subscribers.map(subscriber => subscriber.onEvent(event))
-
-      // new way: batched
-      // wait for all promises to resolve but only do max 100 at a time
       for (const subscriber of this.subscribers) {
         promises.push(subscriber.onEvent(event))
         if (promises.length >= 10) {
