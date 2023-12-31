@@ -12,6 +12,9 @@ export type Event = {
   eventParameters: { eventName: string; args: Record<string, any> }
   data: string
   topics: string[]
+
+  serializeArgs: () => string
+  sortKey: () => string
 }
 
 export function decodeLogtoEvent(chainId: bigint, contractName: string, abi: any, log: Log): Event {
@@ -55,7 +58,23 @@ export function decodeLogtoEvent(chainId: bigint, contractName: string, abi: any
     logIndex,
     eventParameters: decodedTopics,
     data,
-    topics
+    topics,
+    serializeArgs: () =>
+      JSON.stringify(decodedTopics.args, (_: string, value: any) => {
+        if (typeof value === 'bigint') {
+          return value.toString()
+        }
+        // Convert bigint to number if within the safe range
+        if (value <= BigInt(Number.MAX_SAFE_INTEGER)) {
+          return Number(value)
+        }
+        return value
+      }),
+    // signature: () => createEventSignature(decodedTopics),
+    sortKey: () =>
+      `${blockNumber.toString().padStart(12, '0')}-${transactionIndex.toString().padStart(6, '0')}-${logIndex
+        .toString()
+        .padStart(6, '0')}`
   }
 }
 
@@ -84,7 +103,10 @@ export function compareEvents(a: OrderableEventLog, b: OrderableEventLog): numbe
   return a.logIndex - b.logIndex
 }
 
-export function createEventSignature(abiObject: any): string {
+export function createEventSignature(abiObject: any): `${string}(${string})` {
+  if (abiObject === undefined) {
+    throw new Error('abiObject is undefined')
+  }
   const params = abiObject.inputs
     .map((input: any) => {
       return `${input.type}${input.indexed ? ' indexed' : ''} ${input.name}`

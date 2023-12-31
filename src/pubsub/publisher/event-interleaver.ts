@@ -74,7 +74,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
         this.isProcessing = true
         try {
           // Process events in the queue.
-          await this.processQueue()
+          await this.#processQueue()
         } catch (error) {
           // Log and handle any errors during processing.
           logger.error('Error processing queue:', error)
@@ -112,57 +112,43 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
     return Promise.resolve()
   }
 
-  /**
-   * Process the event queue.
-   * Dequeues and propagates events that are ready based on the propagation delay.
-   */
-  private async processQueue(): Promise<void> {
-    const total = this.priorityQueue.length
-    if (total === 0) {
-      // Nothing to do.
-      return
+  onEvents(events: Event[]): Promise<void> {
+    for (const event of events) {
+      this.onEvent(event)
     }
+    return Promise.resolve()
+  }
 
-    logger.info(
-      `Interleaving ${this.priorityQueue.length} event${
-        this.priorityQueue.length === 1 ? '' : 's'
-      } by block number, transaction index, and log index`
-    )
-
-    let promises: Promise<void>[] = []
+  async #processQueue(): Promise<void> {
     const now = new Date()
-    while (this.priorityQueue.length > 0) {
-      const receivedEvent = this.priorityQueue[0] as ReceivedEvent
-      const elapsedWaitTime = now.getTime() - receivedEvent.receivedAt.getTime()
-      // Check if the event has waited long enough based on the propagation delay.
-      if (elapsedWaitTime < this.propagationDelay) {
-        // If not ready, exit the loop to wait more.
-        break
+    const batchSize = 10 // Define your batch size
+    let batch = []
+
+    while (this.priorityQueue.length > 0 && this.#isEventReady(now)) {
+      const receivedEvent = this.priorityQueue.shift()
+      if (receivedEvent === undefined) {
+        continue
       }
-      // Process the event for each subscriber.
-      for (const subscriber of this.subscribers) {
-        promises.push(subscriber.onEvent(receivedEvent.event))
-        if ((total - promises.length) % 10 === 0) {
-          // Wait for all promises to resolve but only do max 10 at a time.
-          await Promise.all(promises)
-          promises = []
-          if ((total - promises.length) % 100 === 0) {
-            console.log(
-              `Interleaver published ${this.priorityQueue.length.toLocaleString()}/${total.toLocaleString()} events`
-            )
-          }
-        }
+      batch.push(receivedEvent.event)
+
+      if (batch.length >= batchSize) {
+        await this.#propagateBatch(batch)
+        batch = []
       }
-      // Remove the processed event from the queue.
-      this.priorityQueue = this.priorityQueue.slice(1)
     }
-    if (promises.length > 0) {
-      // Wait for any remaining promises to resolve.
-      await Promise.all(promises)
-      console.log(
-        `Interleaver published ${this.priorityQueue.length.toLocaleString()}/${total.toLocaleString()} events`
-      )
+
+    // Propagate any remaining events in the last batch
+    if (batch.length > 0) {
+      await this.#propagateBatch(batch)
     }
-    console.log(`Interleaver published ${total.toLocaleString()}/${total} events`)
+  }
+
+  #isEventReady(now: Date): boolean {
+    const receivedEvent = this.priorityQueue[0]
+    return receivedEvent !== undefined && now.getTime() - receivedEvent.receivedAt.getTime() >= this.propagationDelay
+  }
+
+  async #propagateBatch(events: Event[]): Promise<void> {
+    await Promise.allSettled(this.subscribers.map(subscriber => subscriber.onEvents(events)))
   }
 }
