@@ -1,14 +1,60 @@
 import { logger } from '#/logger'
-import type { EventSubscriber } from '../subscriber'
+import type { EventSubscriber } from '#/pubsub/subscriber/interface'
 import type { EventPublisher } from './interface'
 
-import { type Event, compareEvents } from '#/pubsub/event'
+import { compareEvents, type Event } from '#/pubsub/event'
 
 type ReceivedEvent = {
-  // the event
   event: Event
-  // the time it was received
   receivedAt: Date
+}
+type LinkedListNode = {
+  value: ReceivedEvent
+  next: LinkedListNode | null
+}
+
+type PriorityQueue = {
+  queue: LinkedListNode | null
+  length: number
+  insert: (receivedEvent: ReceivedEvent) => PriorityQueue
+  pop: () => ReceivedEvent | undefined
+  peek: () => ReceivedEvent | undefined
+}
+
+const createPriorityQueue = (): PriorityQueue => {
+  let queue: LinkedListNode | null = null
+  let length = 0
+
+  const insert = (receivedEvent: ReceivedEvent): PriorityQueue => {
+    const newNode: LinkedListNode = { value: receivedEvent, next: null }
+    if (!queue || compareEvents(receivedEvent.event, queue.value.event) < 0) {
+      newNode.next = queue
+      queue = newNode
+    } else {
+      let current = queue
+      while (current.next && compareEvents(receivedEvent.event, current.next.value.event) >= 0) {
+        current = current.next
+      }
+      newNode.next = current.next
+      current.next = newNode
+    }
+    length++
+    return { queue, length, insert, pop, peek }
+  }
+
+  const pop = (): ReceivedEvent | undefined => {
+    if (!queue) return undefined
+    const poppedValue = queue.value
+    queue = queue.next
+    length--
+    return poppedValue
+  }
+
+  const peek = (): ReceivedEvent | undefined => {
+    return queue?.value
+  }
+
+  return { queue, length, insert, pop, peek }
 }
 
 /**
@@ -17,7 +63,7 @@ type ReceivedEvent = {
  * time-ordered stream of events.
  */
 export class EventInterleaver implements EventPublisher, EventSubscriber {
-  private priorityQueue: ReceivedEvent[] = []
+  private priorityQueue: PriorityQueue = createPriorityQueue()
   private subscribers: EventSubscriber[] = []
 
   // Delay before propagating events to ensure time ordering.
@@ -105,10 +151,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
    * @param event - The event to be handled.
    */
   onEvent(event: Event): Promise<void> {
-    // Add event to the queue with the current timestamp.
-    this.priorityQueue.push({ event, receivedAt: new Date() })
-    // Sort the queue to ensure time ordering.
-    this.priorityQueue.sort((a: ReceivedEvent, b: ReceivedEvent) => compareEvents(a.event, b.event))
+    this.priorityQueue = this.priorityQueue.insert({ event, receivedAt: new Date() })
     return Promise.resolve()
   }
 
@@ -121,11 +164,11 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
 
   async #processQueue(): Promise<void> {
     const now = new Date()
-    const batchSize = 10 // Define your batch size
+    const batchSize = 100
     let batch = []
 
     while (this.priorityQueue.length > 0 && this.#isEventReady(now)) {
-      const receivedEvent = this.priorityQueue.shift()
+      const receivedEvent = this.priorityQueue.pop()
       if (receivedEvent === undefined) {
         continue
       }
@@ -144,7 +187,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
   }
 
   #isEventReady(now: Date): boolean {
-    const receivedEvent = this.priorityQueue[0]
+    const receivedEvent = this.priorityQueue.peek()
     return receivedEvent !== undefined && now.getTime() - receivedEvent.receivedAt.getTime() >= this.propagationDelay
   }
 

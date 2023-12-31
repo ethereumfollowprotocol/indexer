@@ -1,4 +1,4 @@
-import type { EventSubscriber } from '../subscriber'
+import type { EventSubscriber } from '#/pubsub/subscriber/interface'
 
 /**
  * Interface defining the structure and methods for an EventPublisher.

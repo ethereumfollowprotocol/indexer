@@ -1,14 +1,7 @@
 import { database } from '#/database'
 import { logger } from '#/logger'
-import type { Event } from '../event'
-
-/**
- * Interface defining the structure and methods for an EventSubscriber.
- */
-export interface EventSubscriber {
-  onEvent(event: Event): Promise<void>
-  onEvents(events: Event[]): Promise<void>
-}
+import type { Event } from '#/pubsub/event'
+import type { EventSubscriber } from './interface'
 
 export class EventUploader implements EventSubscriber {
   async onEvent(event: Event): Promise<void> {
@@ -58,7 +51,7 @@ export class EventUploader implements EventSubscriber {
       log_index: event.logIndex,
       contract_address: event.contractAddress,
       event_name: event.eventParameters.eventName,
-      event_args: event.serializeArgs(),
+      event_args: JSON.parse(event.serializeArgs()) as any,
       block_hash: event.blockHash,
       transaction_hash: event.transactionHash,
       sort_key: event.sortKey()

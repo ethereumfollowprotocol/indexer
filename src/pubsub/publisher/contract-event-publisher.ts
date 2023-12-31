@@ -1,9 +1,9 @@
-import { type Abi, type Log, parseAbiItem } from 'viem'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
-import { type Event, compareEvents, createEventSignature, decodeLogtoEvent } from '#/pubsub/event'
-import type { EventSubscriber } from '#/pubsub/subscriber'
+import { compareEvents, createEventSignature, decodeLogtoEvent, type Event } from '#/pubsub/event'
+import type { EventSubscriber } from '#/pubsub/subscriber/interface'
 import { raise } from '#/utilities'
+import { parseAbiItem, type Abi, type Log } from 'viem'
 import type { EventPublisher } from './interface'
 
 /**
