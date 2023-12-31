@@ -90,7 +90,7 @@ async function main() {
       }
     }
     // logger.box(`🗄️`, `dbmate up`)
-    runSetupDbScript()
+    await runSetupDbScript()
     // await runDbmateCommand('up')
     // logger.box(`🗄️`, `dbmate status`)
     // await runDbmateCommand('status')
