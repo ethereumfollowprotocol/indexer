@@ -1,9 +1,9 @@
-import { type Abi, type Log, parseAbiItem } from 'viem'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
-import { type Event, compareEvents, createEventSignature, decodeLogtoEvent } from '#/pubsub/event'
+import { compareEvents, createEventSignature, decodeLogtoEvent, type Event } from '#/pubsub/event'
 import type { EventSubscriber } from '#/pubsub/subscriber'
 import { raise } from '#/utilities'
+import { parseAbiItem, type Abi, type Log } from 'viem'
 import type { EventPublisher } from './interface'
 
 /**
@@ -57,9 +57,12 @@ export class ContractEventPublisher implements EventPublisher {
     const eventSignatures: string[] = this.abi
       .filter((item: any) => item.type === 'event')
       .map((item: any) => createEventSignature(item))
-
+    let i = 0
     const logs: Log[] = []
     for (const eventSignature of eventSignatures) {
+      console.log(
+        `Fetching historical logs for ${this.contractName} ${eventSignature} (${++i}/${eventSignatures.length})`
+      )
       try {
         const eventLogs = await this.client.getLogs({
           event: parseAbiItem(eventSignature) as any,
@@ -72,7 +75,9 @@ export class ContractEventPublisher implements EventPublisher {
             eventLogs.length === 1 ? '' : 's'
           } from block ${fromBlock} to ${toBlock} for ${this.contractName} ${eventSignature}`
         )
-        logs.push(...eventLogs)
+        for (const log of eventLogs) {
+          logs.push(log)
+        }
       } catch (error) {
         logger.error(`Error fetching historical logs for ${this.contractName}:`, error)
         throw error
@@ -83,13 +88,51 @@ export class ContractEventPublisher implements EventPublisher {
   }
 
   private async processLogs(logs: Log[]): Promise<void> {
+    console.log(`Sorting ${logs.length} log${logs.length === 1 ? '' : 's'} for ${this.contractName}`)
     logs.sort(compareEvents)
 
     // Process each log
+    console.log(
+      `Processing ${logs.length.toLocaleString()} log${logs.length === 1 ? '' : 's'} for ${this.contractName}`
+    )
+    let n = 0
+    let promises: Promise<void>[] = []
     for (const log of logs) {
       // Assuming logIndex validation and other checks are done here
       const event: Event = decodeLogtoEvent(this.chainId, this.contractName, this.abi, log)
-      await Promise.all(this.subscribers.map(subscriber => subscriber.onEvent(event)))
+      // old way all at once:
+      // const promises: Promise<void>[] = this.subscribers.map(subscriber => subscriber.onEvent(event))
+
+      // new way: batched
+      // wait for all promises to resolve but only do max 100 at a time
+      for (const subscriber of this.subscribers) {
+        promises.push(subscriber.onEvent(event))
+        if (promises.length >= 10) {
+          await Promise.all(promises)
+          n += promises.length
+          promises = []
+          if (n % 100 === 0) {
+            console.log(
+              `${
+                this.contractName
+              } event publisher published ${n.toLocaleString()}/${logs.length.toLocaleString()} logs for ${
+                this.contractName
+              }`
+            )
+          }
+        }
+      }
+    }
+
+    // Ensure any remaining promises are resolved
+    if (promises.length > 0) {
+      await Promise.all(promises)
+      n += promises.length
+      console.log(
+        `${
+          this.contractName
+        } event publisher published ${n.toLocaleString()}/${logs.length.toLocaleString()} logs for ${this.contractName}`
+      )
     }
   }
 

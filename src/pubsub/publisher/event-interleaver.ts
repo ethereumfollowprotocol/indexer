@@ -2,7 +2,7 @@ import { logger } from '#/logger'
 import type { EventSubscriber } from '../subscriber'
 import type { EventPublisher } from './interface'
 
-import { type Event, compareEvents } from '#/pubsub/event'
+import { compareEvents, type Event } from '#/pubsub/event'
 
 type ReceivedEvent = {
   // the event
@@ -17,7 +17,7 @@ type ReceivedEvent = {
  * time-ordered stream of events.
  */
 export class EventInterleaver implements EventPublisher, EventSubscriber {
-  private readonly priorityQueue: ReceivedEvent[] = []
+  private priorityQueue: ReceivedEvent[] = []
   private subscribers: EventSubscriber[] = []
 
   // Delay before propagating events to ensure time ordering.
@@ -117,7 +117,19 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
    * Dequeues and propagates events that are ready based on the propagation delay.
    */
   private async processQueue(): Promise<void> {
-    logger.info(`Processing queue with ${this.priorityQueue.length} event${this.priorityQueue.length === 1 ? '' : 's'}`)
+    const total = this.priorityQueue.length
+    if (total === 0) {
+      // Nothing to do.
+      return
+    }
+
+    logger.info(
+      `Interleaving ${this.priorityQueue.length} event${
+        this.priorityQueue.length === 1 ? '' : 's'
+      } by block number, transaction index, and log index`
+    )
+
+    let promises: Promise<void>[] = []
     const now = new Date()
     while (this.priorityQueue.length > 0) {
       const receivedEvent = this.priorityQueue[0] as ReceivedEvent
@@ -129,10 +141,28 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
       }
       // Process the event for each subscriber.
       for (const subscriber of this.subscribers) {
-        await subscriber.onEvent(receivedEvent.event)
+        promises.push(subscriber.onEvent(receivedEvent.event))
+        if ((total - promises.length) % 10 === 0) {
+          // Wait for all promises to resolve but only do max 10 at a time.
+          await Promise.all(promises)
+          promises = []
+          if ((total - promises.length) % 100 === 0) {
+            console.log(
+              `Interleaver published ${this.priorityQueue.length.toLocaleString()}/${total.toLocaleString()} events`
+            )
+          }
+        }
       }
       // Remove the processed event from the queue.
-      this.priorityQueue.shift()
+      this.priorityQueue = this.priorityQueue.slice(1)
     }
+    if (promises.length > 0) {
+      // Wait for any remaining promises to resolve.
+      await Promise.all(promises)
+      console.log(
+        `Interleaver published ${this.priorityQueue.length.toLocaleString()}/${total.toLocaleString()} events`
+      )
+    }
+    console.log(`Interleaver published ${total.toLocaleString()}/${total} events`)
   }
 }

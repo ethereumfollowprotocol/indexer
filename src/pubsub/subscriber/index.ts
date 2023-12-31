@@ -65,17 +65,8 @@ export class EventUploader implements EventSubscriber {
       case 'ListOp':
         s = `${colors.LIGHT_MAGENTA}${eventSignature}${colors.ENDC}`
         break
-      case 'UpdateListStorageLocation':
-        s = `${colors.LIGHT_BLUE}${eventSignature}${colors.ENDC}`
-        break
       case 'MintStateChange':
         s = `${colors.LIGHT_MAGENTA}${eventSignature}${colors.ENDC}`
-        break
-      case 'NewAccountMetadataValue':
-        s = `${colors.LIGHT_BLUE}${eventSignature}${colors.ENDC}`
-        break
-      case 'NewListMetadataValue':
-        s = `${colors.CYAN}${eventSignature}${colors.ENDC}`
         break
       case 'OwnershipTransferred':
         s = `${colors.ORANGE}${eventSignature}${colors.ENDC}`
@@ -89,6 +80,15 @@ export class EventUploader implements EventSubscriber {
         } else {
           s = `${colors.BLUE}${eventSignature}${colors.ENDC}`
         }
+        break
+      case 'UpdateAccountMetadata':
+        s = `${colors.LIGHT_BLUE}${eventSignature}${colors.ENDC}`
+        break
+      case 'UpdateListMetadataValue':
+        s = `${colors.CYAN}${eventSignature}${colors.ENDC}`
+        break
+      case 'UpdateListStorageLocation':
+        s = `${colors.LIGHT_BLUE}${eventSignature}${colors.ENDC}`
         break
       default:
         break
