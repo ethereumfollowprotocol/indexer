@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
-import { evmClients, type EvmClient } from '#/clients'
+import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
+import { gracefulExit } from 'exit-hook'
+import { type EvmClient, evmClients } from '#/clients'
 import { env } from '#/env'
 import { logger } from '#/logger'
 import { sleep } from '#/utilities'
 import { colors } from '#/utilities/colors'
 import { pingRpc } from '#/utilities/ping'
 import { watchAllEfpContractEvents } from '#/watch'
-import { gracefulExit } from 'exit-hook'
-import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 
 async function waitForPingSuccess(client: EvmClient): Promise<void> {
   async function tryAttempt(attempt: number): Promise<void> {

@@ -1,7 +1,7 @@
+import { type QueryResult, type RawBuilder, sql } from 'kysely'
 import { database } from '#/database'
 import { logger } from '#/logger'
 import { colors } from '#/utilities/colors'
-import { sql, type QueryResult, type RawBuilder } from 'kysely'
 import type { Event } from '../event'
 
 /**
