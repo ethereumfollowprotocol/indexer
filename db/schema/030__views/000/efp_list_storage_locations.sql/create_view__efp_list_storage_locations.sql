@@ -3,24 +3,26 @@
 -- View: view__efp_list_storage_location
 -------------------------------------------------------------------------------
 /*
-| View Name                            | Event Type Filtered            | Sub-Steps in Query Execution                                         | Influence on Index Structure                                                      | Index Building Progress                                                                  |
-|--------------------------------------|--------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| `view__efp_list_storage_locations`   | `UpdateListStorageLocation`    | 1. Filter on `UpdateListStorageLocation` events                      | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                   |
-|                                      |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'tokenId'` | Add `chain_id`, `contract_address`, and `event_args->>'tokenId'` for grouping     | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'))`           |
-|                                      |                                | 3. Sort by `sort_key` within each group                              | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'), sort_key)` |
-*/
-CREATE INDEX idx__efp_contract_events__list_storage_locations ON PUBLIC.contract_events (
-  chain_id,
-  contract_address,
-  (event_args ->> 'tokenId'),
-  sort_key
-)
+ | View Name                            | Event Type Filtered            | Sub-Steps in Query Execution                                         | Influence on Index Structure                                                      | Index Building Progress                                                                  |
+ |--------------------------------------|--------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+ | `view__efp_list_storage_locations`   | `UpdateListStorageLocation`    | 1. Filter on `UpdateListStorageLocation` events                      | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                   |
+ |                                      |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'tokenId'` | Add `chain_id`, `contract_address`, and `event_args->>'tokenId'` for grouping     | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'))`           |
+ |                                      |                                | 3. Sort by `sort_key` within each group                              | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'), sort_key)` |
+ */
+CREATE INDEX
+  idx__efp_events__list_storage_locations ON PUBLIC.events (
+    chain_id,
+    contract_address,
+    (event_args ->> 'tokenId'),
+    sort_key
+  )
 WHERE
   event_name = 'UpdateListStorageLocation';
 
 
 
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_storage_locations AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_storage_locations AS
 SELECT
   subquery.efp_list_nft_chain_id,
   subquery.efp_list_nft_contract_address,
@@ -36,13 +38,13 @@ FROM
     SELECT
       e.chain_id AS efp_list_nft_chain_id,
       e.contract_address AS efp_list_nft_contract_address,
-      (event_args ->> 'tokenId')::bigint AS efp_list_nft_token_id,
+      (event_args ->> 'tokenId') :: bigint AS efp_list_nft_token_id,
       PUBLIC.unhexlify (e.event_args ->> 'listStorageLocation') AS efp_list_storage_location,
       (
         PUBLIC.decode__efp_list_storage_location__v001__location_type_001 (e.event_args ->> 'listStorageLocation')
       ).*
     FROM
-      PUBLIC.contract_events e
+      PUBLIC.events e
       INNER JOIN (
         SELECT
           chain_id,
@@ -50,7 +52,7 @@ FROM
           event_args ->> 'tokenId' AS token_id,
           MAX(sort_key) AS max_sort_key
         FROM
-          PUBLIC.contract_events
+          PUBLIC.events
         WHERE
           event_name = 'UpdateListStorageLocation'
         GROUP BY

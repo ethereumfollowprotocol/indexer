@@ -3,25 +3,27 @@
 -- View: view__efp_account_metadata
 -------------------------------------------------------------------------------
 /*
-| View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                                            | Influence on Index Structure                                                      | Index                                                                                                         |
-|--------------------------------|--------------------------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| `view__efp_account_metadata`   | `UpdateAccountMetadata`        | 1. Filter on `UpdateAccountMetadata` events                                             | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                                        |
-|                                |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'addr'`, `event_args->>'key'` | Add `chain_id`, `contract_address`, and specific `event_args` fields for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'))`           |
-|                                |                                | 3. Sort by `sort_key` within each group                                                 | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'), sort_key)` |
-*/
-CREATE INDEX idx__efp_contract_events__efp_account_metadata ON PUBLIC.contract_events (
-  chain_id,
-  contract_address,
-  (event_args ->> 'addr'),
-  (event_args ->> 'key'),
-  sort_key
-)
+ | View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                                            | Influence on Index Structure                                                      | Index                                                                                                         |
+ |--------------------------------|--------------------------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+ | `view__efp_account_metadata`   | `UpdateAccountMetadata`        | 1. Filter on `UpdateAccountMetadata` events                                             | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                                        |
+ |                                |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'addr'`, `event_args->>'key'` | Add `chain_id`, `contract_address`, and specific `event_args` fields for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'))`           |
+ |                                |                                | 3. Sort by `sort_key` within each group                                                 | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'), sort_key)` |
+ */
+CREATE INDEX
+  idx__efp_events__efp_account_metadata ON PUBLIC.events (
+    chain_id,
+    contract_address,
+    (event_args ->> 'addr'),
+    (event_args ->> 'key'),
+    sort_key
+  )
 WHERE
   event_name = 'UpdateAccountMetadata';
 
 
 
-CREATE OR REPLACE VIEW PUBLIC.view__efp_account_metadata AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_account_metadata AS
 SELECT
   e.chain_id,
   e.contract_address,
@@ -32,7 +34,7 @@ SELECT
   e.transaction_index,
   e.log_index
 FROM
-  PUBLIC.contract_events e
+  PUBLIC.events e
   INNER JOIN (
     SELECT
       chain_id,
@@ -41,7 +43,7 @@ FROM
       event_args ->> 'key' AS key,
       MAX(sort_key) AS latest_sort_key
     FROM
-      PUBLIC.contract_events
+      PUBLIC.events
     WHERE
       event_name = 'UpdateAccountMetadata'
     GROUP BY
