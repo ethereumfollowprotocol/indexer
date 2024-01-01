@@ -1,9 +1,9 @@
-import { type Abi, type Log, parseAbiItem } from 'viem'
 import type { EvmClient } from '#/clients'
 import { logger } from '#/logger'
-import { type Event, compareEvents, createEventSignature, decodeLogtoEvent } from '#/pubsub/event'
+import { compareEvents, createEventSignature, decodeLogtoEvent, type Event } from '#/pubsub/event'
 import type { EventSubscriber } from '#/pubsub/subscriber/interface'
 import { raise } from '#/utilities'
+import { parseAbiItem, type Abi, type Log } from 'viem'
 import type { EventPublisher } from './interface'
 
 /**
@@ -90,44 +90,39 @@ export class ContractEventPublisher implements EventPublisher {
   private async processLogs(logs: Log[]): Promise<void> {
     console.log(`Sorting ${logs.length} log${logs.length === 1 ? '' : 's'} for ${this.contractName}`)
     logs.sort(compareEvents)
-
-    // Process each log
     console.log(
       `Processing ${logs.length.toLocaleString()} log${logs.length === 1 ? '' : 's'} for ${this.contractName}`
     )
-    let n = 0
-    let promises: Promise<void>[] = []
-    for (const log of logs) {
-      const event: Event = decodeLogtoEvent(this.chainId, this.contractName, this.abi, log)
+
+    const events: Event[] = this.#decodeLogs(logs)
+    for (let i = 0; i < events.length; i++) {
+      const event: Event = events[i] as Event
       for (const subscriber of this.subscribers) {
-        promises.push(subscriber.onEvent(event))
-        if (promises.length >= 10) {
-          await Promise.all(promises)
-          n += promises.length
-          promises = []
-          if (n % 100 === 0) {
-            console.log(
-              `${
-                this.contractName
-              } event publisher published ${n.toLocaleString()}/${logs.length.toLocaleString()} logs for ${
-                this.contractName
-              }`
-            )
-          }
-        }
+        await subscriber.onEvent(event)
+      }
+      if (i % 1000 === 0) {
+        logger.info(
+          `${
+            this.contractName
+          } event publisher published ${i.toLocaleString()}/${logs.length.toLocaleString()} logs for ${
+            this.contractName
+          }`
+        )
       }
     }
+    logger.info(`Processed ${logs.length.toLocaleString()} logs for ${this.contractName}`)
+  }
 
-    // Ensure any remaining promises are resolved
-    if (promises.length > 0) {
-      await Promise.all(promises)
-      n += promises.length
-      console.log(
-        `${
-          this.contractName
-        } event publisher published ${n.toLocaleString()}/${logs.length.toLocaleString()} logs for ${this.contractName}`
-      )
+  #decodeLogs(logs: Log[]): Event[] {
+    const events: Event[] = []
+    for (let i = 0; i < logs.length; i++) {
+      events.push(decodeLogtoEvent(this.chainId, this.contractName, this.abi, logs[i] as Log))
+      if (i % 1000 === 0) {
+        logger.info(`Decoded ${i.toLocaleString()}/${logs.length.toLocaleString()} logs for ${this.contractName}`)
+      }
     }
+    logger.info(`Decoded ${logs.length.toLocaleString()} logs for ${this.contractName}`)
+    return events
   }
 
   /**

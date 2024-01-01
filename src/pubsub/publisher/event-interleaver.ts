@@ -2,7 +2,7 @@ import { logger } from '#/logger'
 import type { EventSubscriber } from '#/pubsub/subscriber/interface'
 import type { EventPublisher } from './interface'
 
-import { type Event, compareEvents } from '#/pubsub/event'
+import { compareEvents, type Event } from '#/pubsub/event'
 
 type ReceivedEvent = {
   event: Event
