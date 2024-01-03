@@ -24,6 +24,9 @@
     "lint:format": "bun lint:format:sql && bun lint:format:ts",
     "lint:typecheck": "tsc --project tsconfig.json --noEmit",
     "reup": "bun drop && bun up",
+    "test": "vitest --run",
+    "test:ui": "vitest --ui",
+    "test:typecheck": "vitest --typecheck",
     "up": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans --always-recreate-deps database indexer",
     "upd": "docker compose --file='compose.yml' --project-name='efp' up --build --detach --force-recreate --remove-orphans --always-recreate-deps database indexer",
     "update-dependencies": "bun ./scripts/update-dependencies.ts"
@@ -42,17 +45,16 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bun": "^1.0.0",
     "@types/node": "^20.10.6",
+    "@vitest/ui": "^1.1.1",
     "bun": "^1.0.21",
     "dbmate": "^2.10.0",
     "kysely-codegen": "^0.11.0",
     "pg": "^8.11.3",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "latest"
   },
   "repository": "github:ethereumfollowprotocol/indexer",
   "homepage": "github:ethereumfollowprotocol/indexer#README.md",
-  "contributors": [
-    "Cory Gabrielsen <cory@ethfollow.xyz> cory.eth",
-    "Omar Aziz <omar@ethfollow.xyz> esm.eth"
-  ],
+  "contributors": ["Cory Gabrielsen <cory@ethfollow.xyz> cory.eth", "Omar Aziz <omar@ethfollow.xyz> esm.eth"],
   "sideEffects": false
 }
