@@ -38,7 +38,7 @@
     "kysely-postgres-js": "^2.0.0",
     "postgres": "^3.4.3",
     "std-env": "^3.7.0",
-    "viem": "2.0.0-rc.4"
+    "viem": "^2.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
@@ -51,10 +51,13 @@
     "kysely-codegen": "^0.11.0",
     "pg": "^8.11.3",
     "typescript": "^5.3.3",
-    "vitest": "latest"
+    "vitest": "^1.1.1"
   },
   "repository": "github:ethereumfollowprotocol/indexer",
   "homepage": "github:ethereumfollowprotocol/indexer#README.md",
-  "contributors": ["Cory Gabrielsen <cory@ethfollow.xyz> cory.eth", "Omar Aziz <omar@ethfollow.xyz> esm.eth"],
+  "contributors": [
+    "Cory Gabrielsen <cory@ethfollow.xyz> cory.eth",
+    "Omar Aziz <omar@ethfollow.xyz> esm.eth"
+  ],
   "sideEffects": false
 }
