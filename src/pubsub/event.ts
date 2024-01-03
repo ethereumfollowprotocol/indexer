@@ -62,11 +62,8 @@ export function decodeLogtoEvent(chainId: bigint, contractName: string, abi: any
     serializeArgs: () =>
       JSON.stringify(decodedTopics.args, (_: string, value: any) => {
         if (typeof value === 'bigint') {
-          return value.toString()
-        }
-        // Convert bigint to number if within the safe range
-        if (value <= BigInt(Number.MAX_SAFE_INTEGER)) {
-          return Number(value)
+          // 32-byte hex string
+          return `0x${value.toString(16).padStart(64, '0')}`
         }
         return value
       }),

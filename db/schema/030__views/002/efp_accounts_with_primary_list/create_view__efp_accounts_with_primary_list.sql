@@ -2,7 +2,8 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_accounts_with_primary_list
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW public.view__efp_accounts_with_primary_list AS
+CREATE
+OR REPLACE VIEW public.view__efp_accounts_with_primary_list AS
 SELECT
   am.address,
   PUBLIC.convert_hex_to_bigint (am.value) AS primary_list_token_id

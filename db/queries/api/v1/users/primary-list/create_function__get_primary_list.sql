@@ -7,14 +7,13 @@
 --              list_user equals the address. Converts valid hex string values
 --              to BIGINT.
 -- Parameters:
---   - addr (types.eth_address): The address for which to retrieve the
---          primary list value.
+--   - addr (VARCHAR(42)): The address for which to retrieve the primary list.
 -- Returns: The BIGINT representation of the primary list value for the given
 --          address, or the lowest token_id from with list_user equals the
 --          address. Returns NULL if no primary list value is found.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_primary_list (p_address types.eth_address) RETURNS BIGINT AS $$
+OR REPLACE FUNCTION query.get_primary_list (p_address VARCHAR(42)) RETURNS BIGINT AS $$
 DECLARE
     primary_list_token_id BIGINT;
 BEGIN
