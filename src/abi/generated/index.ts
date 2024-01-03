@@ -210,17 +210,10 @@ export const efpListMinterAbi = [
     ]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'listRecordsL1',
-    outputs: [{ name: '', internalType: 'contract IEFPListRecords', type: 'address' }]
-  },
-  {
     stateMutability: 'payable',
     type: 'function',
     inputs: [{ name: 'listStorageLocation', internalType: 'bytes', type: 'bytes' }],
-    name: 'mintAndSetAsDefaultList',
+    name: 'easyMint',
     outputs: []
   },
   {
@@ -230,8 +223,15 @@ export const efpListMinterAbi = [
       { name: 'to', internalType: 'address', type: 'address' },
       { name: 'listStorageLocation', internalType: 'bytes', type: 'bytes' }
     ],
-    name: 'mintToAndSetAsDefaultList',
+    name: 'easyMintTo',
     outputs: []
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'listRecordsL1',
+    outputs: [{ name: '', internalType: 'contract IEFPListRecords', type: 'address' }]
   },
   {
     stateMutability: 'view',
@@ -526,6 +526,14 @@ export const efpListRecordsAbi = [
       { name: 'value', internalType: 'bytes', type: 'bytes', indexed: false }
     ],
     name: 'UpdateListMetadata'
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'nonce', internalType: 'uint256', type: 'uint256' },
+      { name: 'manager', internalType: 'address', type: 'address' }
+    ],
+    name: 'NonceAlreadyClaimed'
   }
 ] as const
 
@@ -1204,6 +1212,14 @@ export const listMetadataAbi = [
       { name: 'value', internalType: 'bytes', type: 'bytes', indexed: false }
     ],
     name: 'UpdateListMetadata'
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'nonce', internalType: 'uint256', type: 'uint256' },
+      { name: 'manager', internalType: 'address', type: 'address' }
+    ],
+    name: 'NonceAlreadyClaimed'
   }
 ] as const
 
@@ -1405,5 +1421,13 @@ export const listRecordsAbi = [
       { name: 'value', internalType: 'bytes', type: 'bytes', indexed: false }
     ],
     name: 'UpdateListMetadata'
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'nonce', internalType: 'uint256', type: 'uint256' },
+      { name: 'manager', internalType: 'address', type: 'address' }
+    ],
+    name: 'NonceAlreadyClaimed'
   }
 ] as const

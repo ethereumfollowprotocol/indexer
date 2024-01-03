@@ -42,7 +42,7 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bun": "^1.0.0",
     "@types/node": "^20.10.6",
-    "bun": "^1.0.20",
+    "bun": "^1.0.21",
     "dbmate": "^2.10.0",
     "kysely-codegen": "^0.11.0",
     "pg": "^8.11.3",

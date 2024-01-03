@@ -60,8 +60,11 @@ jobs:
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           RAILWAY_SERVICE_NAME: 'indexer'
         run: |
-          railway link $RAILWAY_PROJECT_ID ${{ env.RAILWAY_SERVICE_NAME }} --environment='${{ env.RAILWAY_ENVIRONMENT }}'
-          railway up --service='${{ env.RAILWAY_SERVICE_NAME }}' --environment='${{ env.RAILWAY_ENVIRONMENT }}'
+          railway link $RAILWAY_PROJECT_ID ${{ env.RAILWAY_SERVICE_NAME }} \
+            --environment='${{ env.RAILWAY_ENVIRONMENT }}'
+
+          RAILWAY_DOCKERFILE="./Dockerfile" railway up --service='${{ env.RAILWAY_SERVICE_NAME }}' \
+            --environment='${{ env.RAILWAY_ENVIRONMENT }}'
 
       - name: 'Deploy Anvil'
         if: ${{ contains(env.DEPLOY_SERVICES, 'anvil') || contains(env.DEPLOY_SERVICES, 'all') }}
@@ -71,5 +74,8 @@ jobs:
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           RAILWAY_SERVICE_NAME: 'anvil'
         run: |
-          railway link $RAILWAY_PROJECT_ID ${{ env.RAILWAY_SERVICE_NAME }} --environment='${{ env.RAILWAY_ENVIRONMENT }}'
-          railway up --service='${{ env.RAILWAY_SERVICE_NAME }}' --environment='${{ env.RAILWAY_ENVIRONMENT }}'
+          railway link $RAILWAY_PROJECT_ID ${{ env.RAILWAY_SERVICE_NAME }} \
+            --environment='${{ env.RAILWAY_ENVIRONMENT }}'
+
+          RAILWAY_DOCKERFILE="./Dockerfile" railway up --service='${{ env.RAILWAY_SERVICE_NAME }}' \
+            --environment='${{ env.RAILWAY_ENVIRONMENT }}'
