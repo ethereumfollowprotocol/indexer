@@ -1,6 +1,4 @@
 --migrate:up
-
-
 -------------------------------------------------------------------------------
 -- Function: get_unique_followers
 -- Description: Retrieves a distinct list of followers for a specified address,
@@ -12,7 +10,11 @@
 --          names or identifiers of the followers.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_unique_followers (p_address types.eth_address) RETURNS TABLE (efp_list_user types.eth_address) LANGUAGE plpgsql AS $$
+OR REPLACE FUNCTION query.get_unique_followers(p_address types.eth_address) RETURNS TABLE (
+  follower types.eth_address,
+  efp_list_nft_token_id BIGINT,
+  tags types.efp_tag []
+) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
 BEGIN
@@ -20,8 +22,10 @@ BEGIN
     normalized_addr := public.normalize_eth_address(p_address);
 
     RETURN QUERY
-    SELECT DISTINCT
-        v.efp_list_user
+    SELECT
+        v.efp_list_user AS follower,
+        v.efp_list_nft_token_id,
+        v.tags
     FROM
         public.view__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
@@ -37,10 +41,20 @@ BEGIN
         v.has_mute_tag = FALSE AND
         -- match the address parameter
         v.record_data = public.unhexlify(normalized_addr)
+    GROUP BY
+        v.efp_list_user,
+        v.efp_list_nft_token_id,
+        v.record_version,
+        v.record_type,
+        v.record_data,
+        v.tags
+    HAVING
+        (SELECT get_primary_list FROM query.get_primary_list(v.efp_list_user)) = v.efp_list_nft_token_id
     ORDER BY
         v.efp_list_user ASC;
 END;
 $$;
+
 
 
 --migrate:down
