@@ -27,6 +27,9 @@ OR REPLACE FUNCTION query.get_following__record_type_001 (p_address types.eth_ad
 DECLARE
     normalized_addr types.eth_address;
     primary_list_token_id BIGINT;
+    list_storage_location_chain_id BIGINT;
+    list_storage_location_contract_address VARCHAR(42);
+    list_storage_location_storage_nonce BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
     normalized_addr := public.normalize_eth_address(p_address);
@@ -42,38 +45,48 @@ BEGIN
         RETURN QUERY SELECT NULL::BIGINT, NULL::types.uint8, NULL::types.uint8, NULL::types.eth_address, NULL::VARCHAR(255) [];
     END IF;
 
-    -- else return the following addresses
+    -- Now determine the list storage location for the primary list token id
+    SELECT
+      v.efp_list_storage_location_chain_id,
+      v.efp_list_storage_location_contract_address,
+      v.efp_list_storage_location_nonce
+    INTO
+      list_storage_location_chain_id,
+      list_storage_location_contract_address,
+      list_storage_location_storage_nonce
+    FROM
+      public.view__efp_list_storage_locations AS v
+    WHERE
+      v.efp_list_nft_token_id = primary_list_token_id;
+
+    -- following query
     RETURN QUERY
-    WITH primary_list AS (
-        SELECT
-            v.efp_list_nft_token_id,
-            v.record_version,
-            v.record_type,
-            PUBLIC.hexlify(v.record_data)::types.eth_address AS following_address,
-            v.tags
-        FROM
-            public.view__efp_list_records_with_nft_manager_user_tags AS v
-        WHERE
-            -- only version 1
-            v.record_version = 1 AND
-            -- address record type (1)
-            v.record_type = 1 AND
-            -- NOT blocked
-            v.has_block_tag = FALSE AND
-            -- NOT muted
-            v.has_mute_tag = FALSE AND
-            -- where the list user is the address we are looking for
-            v.efp_list_user = normalized_addr AND
-            -- from their primary list
-            v.efp_list_nft_token_id = primary_list_token_id AND
-            -- where the address record data field is a valid address
-            public.is_valid_address(v.record_data)
-    )
-    SELECT * FROM primary_list
+    SELECT
+        (primary_list_token_id)::BIGINT AS efp_list_nft_token_id,
+        v.record_version,
+        v.record_type,
+        PUBLIC.hexlify(v.record_data)::types.eth_address AS following_address,
+        v.tags
+    FROM
+        public.view__efp_list_records_with_tags AS v
+    WHERE
+        v.chain_id = list_storage_location_chain_id AND
+        v.contract_address = list_storage_location_contract_address AND
+        v.nonce = list_storage_location_storage_nonce AND
+        -- only version 1
+        v.record_version = 1 AND
+        -- address record type (1)
+        v.record_type = 1 AND
+        -- where the address record data field is a valid address
+        public.is_valid_address(v.record_data) AND
+        -- NOT blocked or muted
+        NOT EXISTS (
+            SELECT 1 FROM unnest(v.tags) as tag
+            WHERE tag IN ('block', 'mute')
+        )
     ORDER BY
-        efp_list_nft_token_id ASC,
-        record_version ASC,
-        record_type ASC,
+        v.record_version ASC,
+        v.record_type ASC,
         following_address ASC;
 END;
 $$;
