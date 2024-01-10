@@ -25,7 +25,7 @@ BEGIN
     SELECT
         v.efp_list_user AS follower,
         v.efp_list_nft_token_id,
-        v.tags
+        COALESCE(v.tags, '{}') AS tags
     FROM
         public.view__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
