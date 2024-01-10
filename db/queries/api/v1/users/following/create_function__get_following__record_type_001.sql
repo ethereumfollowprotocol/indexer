@@ -42,7 +42,7 @@ BEGIN
 
     -- If no primary list token id is found, return an empty result set
     IF primary_list_token_id IS NULL THEN
-        RETURN QUERY SELECT NULL::BIGINT, NULL::types.uint8, NULL::types.uint8, NULL::types.eth_address, NULL::VARCHAR(255) [];
+        RETURN; -- Exit the function without returning any rows
     END IF;
 
     -- Now determine the list storage location for the primary list token id
