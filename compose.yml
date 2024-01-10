@@ -43,7 +43,7 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
     ports:
-      - 5001:5432
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
