@@ -23,7 +23,7 @@ BEGIN
   JOIN query.get_list_storage_location(token_id) AS lsl
   ON lr.chain_id = lsl.chain_id
     AND lr.contract_address = lsl.contract_address
-    AND lr.nonce = lsl.nonce;
+    AND lr.slot = lsl.slot;
 END;
 $$;
 

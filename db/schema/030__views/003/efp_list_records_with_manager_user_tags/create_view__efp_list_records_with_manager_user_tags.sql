@@ -2,7 +2,8 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_records_with_nft_manager_user_tags
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records_with_nft_manager_user_tags AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_records_with_nft_manager_user_tags AS
 SELECT
   nfts.efp_list_nft_chain_id,
   nfts.efp_list_nft_contract_address,
@@ -12,7 +13,7 @@ SELECT
   nfts.efp_list_user,
   nfts.efp_list_storage_location_chain_id,
   nfts.efp_list_storage_location_contract_address,
-  nfts.efp_list_storage_location_nonce,
+  nfts.efp_list_storage_location_slot,
   record_tags.record,
   record_tags.record_version,
   record_tags.record_type,
@@ -30,7 +31,7 @@ FROM
   PUBLIC.view__efp_list_records_with_tags AS record_tags
   LEFT JOIN PUBLIC.view__efp_list_nfts_with_manager_user AS nfts ON nfts.efp_list_storage_location_chain_id = record_tags.chain_id
   AND nfts.efp_list_storage_location_contract_address = record_tags.contract_address
-  AND nfts.efp_list_storage_location_nonce = record_tags.nonce;
+  AND nfts.efp_list_storage_location_slot = record_tags.slot;
 
 
 

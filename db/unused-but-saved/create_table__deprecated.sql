@@ -48,7 +48,7 @@
 --   list_storage_location types.hexstring,
 --   list_storage_location_chain_id BIGINT,
 --   list_storage_location_contract_address types.eth_address,
---   list_storage_location_nonce types.efp_list_storage_location_nonce,
+--   list_storage_location_slot types.efp_list_storage_location_slot,
 --   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 --   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 --   PRIMARY KEY (chain_id, contract_address, token_id),
@@ -63,12 +63,12 @@
 -- CREATE TABLE public.list_metadata (
 --   chain_id types.eth_chain_id NOT NULL,
 --   contract_address types.eth_address NOT NULL,
---   nonce types.efp_list_storage_location_nonce NOT NULL,
+--   slot types.efp_list_storage_location_slot NOT NULL,
 --   "key" VARCHAR(255) NOT NULL,
 --   value types.hexstring NOT NULL,
 --   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 --   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
---   PRIMARY KEY (chain_id, contract_address, nonce, "key"),
+--   PRIMARY KEY (chain_id, contract_address, slot, "key"),
 --   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 -- );
 -- CREATE TRIGGER update_list_metadata_updated_at BEFORE
@@ -80,14 +80,14 @@
 -- CREATE TABLE public.list_ops (
 --   chain_id types.eth_chain_id NOT NULL,
 --   contract_address types.eth_address NOT NULL,
---   nonce types.efp_list_storage_location_nonce NOT NULL,
+--   slot types.efp_list_storage_location_slot NOT NULL,
 --   op types.hexstring NOT NULL,
 --   version types.uint8 NOT NULL,
 --   opcode types.uint8 NOT NULL,
 --   data types.hexstring NOT NULL,
 --   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 --   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
---   PRIMARY KEY (chain_id, contract_address, nonce, op),
+--   PRIMARY KEY (chain_id, contract_address, slot, op),
 --   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 -- );
 -- CREATE TRIGGER update_list_ops_updated_at BEFORE
@@ -99,14 +99,14 @@
 -- CREATE TABLE public.list_records (
 --   chain_id types.eth_chain_id NOT NULL,
 --   contract_address types.eth_address NOT NULL,
---   nonce types.efp_list_storage_location_nonce NOT NULL,
+--   slot types.efp_list_storage_location_slot NOT NULL,
 --   record types.hexstring NOT NULL,
 --   version types.uint8 NOT NULL,
 --   record_type types.uint8 NOT NULL,
 --   data types.hexstring NOT NULL,
 --   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 --   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
---   PRIMARY KEY (chain_id, contract_address, nonce, record),
+--   PRIMARY KEY (chain_id, contract_address, slot, record),
 --   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 -- );
 -- CREATE TRIGGER update_list_records_updated_at BEFORE
@@ -118,12 +118,12 @@
 -- CREATE TABLE public.list_record_tags (
 --   chain_id types.eth_chain_id NOT NULL,
 --   contract_address types.eth_address NOT NULL,
---   nonce types.efp_list_storage_location_nonce NOT NULL,
+--   slot types.efp_list_storage_location_slot NOT NULL,
 --   record types.hexstring NOT NULL,
 --   tag types.efp_tag NOT NULL,
 --   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 --   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
---   PRIMARY KEY (chain_id, contract_address, nonce, record, tag),
+--   PRIMARY KEY (chain_id, contract_address, slot, record, tag),
 --   FOREIGN KEY (chain_id, contract_address) REFERENCES public.contracts (chain_id, address)
 -- );
 -- CREATE TRIGGER update_list_record_tags_updated_at BEFORE

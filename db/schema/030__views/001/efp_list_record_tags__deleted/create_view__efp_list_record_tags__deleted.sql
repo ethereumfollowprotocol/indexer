@@ -2,11 +2,12 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_record_tags__deleted
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_record_tags__deleted AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_record_tags__deleted AS
 SELECT
   vlo.chain_id,
   vlo.contract_address,
-  vlo.nonce,
+  vlo.slot,
   vlo.record,
   GET_BYTE(vlo.record, 0) AS record_version,
   GET_BYTE(vlo.record, 1) AS record_type,
@@ -25,7 +26,7 @@ FROM
     SELECT
       chain_id,
       contract_address,
-      nonce,
+      slot,
       record,
       tag,
       -- aggregate opcodes into an array for holistic checks
@@ -40,7 +41,7 @@ FROM
     GROUP BY
       chain_id,
       contract_address,
-      nonce,
+      slot,
       record,
       tag
     HAVING
@@ -48,7 +49,7 @@ FROM
       3 = ANY (ARRAY_AGG(opcode))
   ) AS max_records ON vlo.chain_id = max_records.chain_id
   AND vlo.contract_address = max_records.contract_address
-  AND vlo.nonce = max_records.nonce
+  AND vlo.slot = max_records.slot
   AND vlo.record = max_records.record
   AND vlo.tag = max_records.tag
   AND vlo.sort_key = max_records.max_sort_key

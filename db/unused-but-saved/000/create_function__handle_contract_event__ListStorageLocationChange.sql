@@ -23,7 +23,7 @@ OR REPLACE FUNCTION public.handle_contract_event__UpdateListStorageLocation (
 ) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
     normalized_contract_address types.eth_address;
-    -- {version, location_type, chain_id, contract_address, nonce}
+    -- {version, location_type, chain_id, contract_address, slot}
     decoded_location types.efp_list_storage_location__v001__location_type_001;
 BEGIN
     -- Normalize the input addresses to lowercase
@@ -39,7 +39,7 @@ BEGIN
         list_storage_location = p_list_storage_location,
         list_storage_location_chain_id = decoded_location.chain_id,
         list_storage_location_contract_address = decoded_location.contract_address,
-        list_storage_location_nonce = decoded_location.nonce
+        list_storage_location_slot = decoded_location.slot
     WHERE
         nft.chain_id = p_chain_id
         AND nft.contract_address = normalized_contract_address

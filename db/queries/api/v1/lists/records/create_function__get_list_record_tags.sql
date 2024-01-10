@@ -28,7 +28,7 @@ BEGIN
     JOIN query.get_list_storage_location(token_id) AS list_storage_location
     ON record_tags.chain_id = list_storage_location.chain_id
       AND record_tags.contract_address = list_storage_location.contract_address
-      AND record_tags.nonce = list_storage_location.nonce;
+      AND record_tags.slot = list_storage_location.slot;
 END;
 $$;
 

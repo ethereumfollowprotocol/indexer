@@ -9,7 +9,7 @@
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (types.eth_address): The contract address associated
 --                                             with the event.
---   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_slot (BIGINT): The slot associated with the event.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 --   - p_list_op__v001__opcode_001 (types.efp_list_op__v001__opcode_001):
 --                           The operation data as a record.
@@ -18,7 +18,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_001 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
-  p_nonce BIGINT,
+  p_slot BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_001 types.efp_list_op__v001__opcode_001
 ) RETURNS VOID LANGUAGE plpgsql AS $$
@@ -33,7 +33,7 @@ BEGIN
     INSERT INTO public.list_records (
         chain_id,
         contract_address,
-        nonce,
+        slot,
         record,
         version,
         record_type,
@@ -42,7 +42,7 @@ BEGIN
     VALUES (
         p_chain_id,
         p_contract_address,
-        p_nonce,
+        p_slot,
         list_record_hex,
         list_record.version,
         list_record.record_type,
@@ -63,7 +63,7 @@ $$;
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (types.eth_address): The contract address associated
 --                                             with the event.
---   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_slot (BIGINT): The slot associated with the event.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 --   - p_list_op__v001__opcode_002 (types.efp_list_op__v001__opcode_002):
 --                           The operation data as a record.
@@ -72,7 +72,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_002 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
-  p_nonce BIGINT,
+  p_slot BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_002 types.efp_list_op__v001__opcode_002
 ) RETURNS VOID LANGUAGE plpgsql AS $$
@@ -88,18 +88,18 @@ BEGIN
         WHERE
             chain_id = p_chain_id AND
             contract_address = p_contract_address AND
-            nonce = p_nonce AND
+            slot = p_slot AND
             record = list_record_hex
     ) THEN
-        -- RAISE WARNING 'Attempt to remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
+        -- RAISE WARNING 'Attempt to remove non-existent list_records row (chain_id=%, contract_address=%, slot=%, record=%)',
         --     p_chain_id,
         --     p_contract_address,
-        --     p_nonce,
+        --     p_slot,
         --     list_record_hex;
-        -- RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, nonce=%, record=%)',
+        -- RAISE EXCEPTION 'Cannot remove non-existent list_records row (chain_id=%, contract_address=%, slot=%, record=%)',
         --     p_chain_id,
         --     p_contract_address,
-        --     p_nonce,
+        --     p_slot,
         --     list_record_hex;
     END IF;
 
@@ -108,7 +108,7 @@ BEGIN
     WHERE
         chain_id = p_chain_id AND
         contract_address = p_contract_address AND
-        nonce = p_nonce AND
+        slot = p_slot AND
         record = list_record_hex;
 END;
 $$;
@@ -125,7 +125,7 @@ $$;
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (types.eth_address): The contract address associated
 --                                             with the event.
---   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_slot (BIGINT): The slot associated with the event.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 --   - p_list_op__v001__opcode_003 (types.efp_list_op__v001__opcode_003):
 --                           The operation data as a record.
@@ -134,7 +134,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_003 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
-  p_nonce BIGINT,
+  p_slot BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_003 types.efp_list_op__v001__opcode_003
 ) RETURNS VOID LANGUAGE plpgsql AS $$
@@ -143,14 +143,14 @@ BEGIN
     INSERT INTO public.list_record_tags (
         chain_id,
         contract_address,
-        nonce,
+        slot,
         record,
         tag
     )
     VALUES (
         p_chain_id,
         p_contract_address,
-        p_nonce,
+        p_slot,
         public.hexlify(p_list_op__v001__opcode_003.record),
         p_list_op__v001__opcode_003.tag
     );
@@ -169,7 +169,7 @@ $$;
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (types.eth_address): The contract address associated
 --                                             with the event.
---   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_slot (BIGINT): The slot associated with the event.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 --   - p_list_op__v001__opcode_004 (types.efp_list_op__v001__opcode_004):
 --                           The operation data as a record.
@@ -178,7 +178,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_004 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
-  p_nonce BIGINT,
+  p_slot BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_004 types.efp_list_op__v001__opcode_004
 ) RETURNS VOID LANGUAGE plpgsql AS $$
@@ -190,20 +190,20 @@ BEGIN
         WHERE
             chain_id = p_chain_id AND
             contract_address = p_contract_address AND
-            nonce = p_nonce AND
+            slot = p_slot AND
             record = public.hexlify(p_list_op__v001__opcode_004.record) AND
             tag = p_list_op__v001__opcode_004.tag
     ) THEN
-        -- RAISE WARNING 'Attempt to remove non-existent list_record_tags row (chain_id=%, contract_address=%, nonce=%, record=%, tag=%)',
+        -- RAISE WARNING 'Attempt to remove non-existent list_record_tags row (chain_id=%, contract_address=%, slot=%, record=%, tag=%)',
         --     p_chain_id,
         --     p_contract_address,
-        --     p_nonce,
+        --     p_slot,
         --     public.hexlify(p_list_op__v001__opcode_004.record),
         --     p_list_op__v001__opcode_004.tag;
-        -- RAISE EXCEPTION 'Cannot remove non-existent list_record_tags row (chain_id=%, contract_address=%, nonce=%, record=%, tag=%)',
+        -- RAISE EXCEPTION 'Cannot remove non-existent list_record_tags row (chain_id=%, contract_address=%, slot=%, record=%, tag=%)',
         --     p_chain_id,
         --     p_contract_address,
-        --     p_nonce,
+        --     p_slot,
         --     public.hexlify(p_list_op__v001__opcode_004.record),
         --     p_list_op__v001__opcode_004.tag;
     END IF;
@@ -213,7 +213,7 @@ BEGIN
     WHERE
         chain_id = p_chain_id AND
         contract_address = p_contract_address AND
-        nonce = p_nonce AND
+        slot = p_slot AND
         record = public.hexlify(p_list_op__v001__opcode_004.record) AND
         tag = p_list_op__v001__opcode_004.tag;
 END;
@@ -228,7 +228,7 @@ $$;
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (types.eth_address): The contract address associated
 --                                        with the event.
---   - p_nonce (BIGINT): The nonce associated with the event.
+--   - p_slot (BIGINT): The slot associated with the event.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 --   - p_list_op__v001 (types.efp_list_op__v001): The operation data as a
 --                                                 record.
@@ -237,7 +237,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001 (
   p_chain_id BIGINT,
   p_contract_address types.eth_address,
-  p_nonce BIGINT,
+  p_slot BIGINT,
   p_list_op_hex types.hexstring,
   p_list_op__v001 types.efp_list_op__v001
 ) RETURNS VOID LANGUAGE plpgsql AS $$
@@ -249,7 +249,7 @@ BEGIN
             PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
               p_chain_id,
               p_contract_address,
-              p_nonce,
+              p_slot,
               p_list_op_hex,
               (
                   p_list_op__v001.version,
@@ -261,7 +261,7 @@ BEGIN
             PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
               p_chain_id,
               p_contract_address,
-              p_nonce,
+              p_slot,
               p_list_op_hex,
               (
                   p_list_op__v001.version,
@@ -276,7 +276,7 @@ BEGIN
             PERFORM public.handle_contract_event__ListOp__v001__opcode_003(
               p_chain_id,
               p_contract_address,
-              p_nonce,
+              p_slot,
               p_list_op_hex,
               (
                   p_list_op__v001.version,
@@ -292,7 +292,7 @@ BEGIN
             PERFORM public.handle_contract_event__ListOp__v001__opcode_004(
               p_chain_id,
               p_contract_address,
-              p_nonce,
+              p_slot,
               p_list_op_hex,
               (
                   p_list_op__v001.version,
@@ -319,7 +319,7 @@ $$;
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (VARCHAR(42)): The contract address associated with
 --                                        the operation.
---   - p_nonce (BIGINT): The nonce associated with the operation.
+--   - p_slot (BIGINT): The slot associated with the operation.
 --   - p_list_op_hex (types.hexstring): The operation data as a hex string.
 -- Returns: VOID
 -- Notes: Uses the list_ops table for storage. Decoding functions are stubbed.
@@ -328,7 +328,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__ListOp (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
-  p_nonce BIGINT,
+  p_slot BIGINT,
   p_list_op_hex types.hexstring
 ) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
@@ -343,7 +343,7 @@ BEGIN
     INSERT INTO public.list_ops (
         chain_id,
         contract_address,
-        nonce,
+        slot,
         op,
         version,
         opcode,
@@ -352,13 +352,13 @@ BEGIN
     VALUES (
         p_chain_id,
         normalized_contract_address,
-        p_nonce,
+        p_slot,
         p_list_op_hex,
         list_op.version,
         list_op.opcode,
         public.hexlify(list_op.data)
     )
-    ON CONFLICT (chain_id, contract_address, nonce, op) DO NOTHING;
+    ON CONFLICT (chain_id, contract_address, slot, op) DO NOTHING;
 
     CASE list_op.version
       WHEN 1 THEN
@@ -370,7 +370,7 @@ BEGIN
           PERFORM public.handle_contract_event__ListOp__v001(
             p_chain_id,
             p_contract_address,
-            p_nonce,
+            p_slot,
             p_list_op_hex,
             list_op__v001
           );

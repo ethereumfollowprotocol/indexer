@@ -2,11 +2,12 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_records_with_tags
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records_with_tags AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_records_with_tags AS
 SELECT
   r.chain_id,
   r.contract_address,
-  r.nonce,
+  r.slot,
   r.record,
   r.record_version,
   r.record_type,
@@ -19,12 +20,12 @@ FROM
   PUBLIC.view__efp_list_records r
   LEFT JOIN PUBLIC.view__efp_list_record_tags t ON r.chain_id = t.chain_id
   AND r.contract_address = t.contract_address
-  AND r.nonce = t.nonce
+  AND r.slot = t.slot
   AND r.record = t.record
 GROUP BY
   r.chain_id,
   r.contract_address,
-  r.nonce,
+  r.slot,
   r.record,
   r.record_version,
   r.record_type,

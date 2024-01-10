@@ -1,13 +1,13 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- Domain: types.efp_list_storage_location_nonce
+-- Domain: types.efp_list_storage_location_slot
 --
--- Description: EFP List Storage Location Nonce.
+-- Description: EFP List Storage Location Slot.
 -- Constraints: Value must be >= 0.
 -------------------------------------------------------------------------------
 -- TODO: de-couple to it's own table and make NOT NULL
 CREATE DOMAIN
-  types.efp_list_storage_location_nonce AS BIGINT CHECK (VALUE >= 0);
+  types.efp_list_storage_location_slot AS BIGINT CHECK (VALUE >= 0);
 
 
 
@@ -23,7 +23,7 @@ CREATE TYPE
     location_type types.uint8__1,
     chain_id BIGINT,
     contract_address types.eth_address,
-    nonce types.efp_list_storage_location_nonce
+    slot types.efp_list_storage_location_slot
   );
 
 
@@ -55,7 +55,7 @@ $$;
 --              - locationType (1 byte)
 --              - chainId (32 bytes)
 --              - contractAddress (20 bytes)
---              - nonce (32 bytes)
+--              - slot (32 bytes)
 --              The function validates the length of the input string and
 --              extracts the components.
 -- Parameters:
@@ -72,7 +72,7 @@ DECLARE
     location_type types.uint8 := 0;
     chain_id BIGINT;
     contract_address types.eth_address;
-    nonce BIGINT;
+    slot BIGINT;
 BEGIN
     -- Check if the length is valid
     IF NOT public.is_list_storage_location_hexstring(p_list_storage_location_hex) THEN
@@ -114,11 +114,11 @@ BEGIN
     contract_address := ('0x' || ENCODE(SUBSTRING(hex_data FROM 35 FOR 20), 'hex'))::types.eth_address;
 
     ----------------------------------------
-    -- nonce
+    -- slot
     ----------------------------------------
 
-    -- Extract nonce (32 bytes to TEXT)
-    nonce := public.convert_hex_to_bigint('0x' || ENCODE(SUBSTRING(hex_data FROM 55 FOR 32), 'hex'));
+    -- Extract slot (32 bytes to TEXT)
+    slot := public.convert_hex_to_bigint('0x' || ENCODE(SUBSTRING(hex_data FROM 55 FOR 32), 'hex'));
 
     -- Return the decoded list storage location
     RETURN (
@@ -126,7 +126,7 @@ BEGIN
         location_type::types.uint8__1,
         chain_id,
         contract_address,
-        nonce::types.efp_list_storage_location_nonce
+        slot::types.efp_list_storage_location_slot
       );
 END;
 $$;

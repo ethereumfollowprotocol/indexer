@@ -32,7 +32,7 @@ SELECT
   subquery.location_type AS efp_list_storage_location_type,
   subquery.chain_id AS efp_list_storage_location_chain_id,
   subquery.contract_address AS efp_list_storage_location_contract_address,
-  subquery.nonce AS efp_list_storage_location_nonce
+  subquery.slot AS efp_list_storage_location_slot
 FROM
   (
     SELECT

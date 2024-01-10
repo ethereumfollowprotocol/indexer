@@ -2,11 +2,12 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_ops__record_tag
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_ops__record_tag AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_ops__record_tag AS
 SELECT
   ops.chain_id,
   ops.contract_address,
-  ops.nonce,
+  ops.slot,
   ops.data,
   ops.opcode,
   ops.block_number,
@@ -32,11 +33,12 @@ WHERE
 -------------------------------------------------------------------------------
 -- View: view__latest_record_tags
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__latest_record_tags AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__latest_record_tags AS
 SELECT
   chain_id,
   contract_address,
-  nonce,
+  slot,
   record,
   tag,
   MAX(sort_key) AS max_sort_key
@@ -45,7 +47,7 @@ FROM
 GROUP BY
   chain_id,
   contract_address,
-  nonce,
+  slot,
   record,
   tag;
 
@@ -54,14 +56,15 @@ GROUP BY
 -------------------------------------------------------------------------------
 -- View: view__efp_list_record_tags
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_record_tags AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_record_tags AS
 SELECT
   subquery.chain_id,
   subquery.contract_address,
-  subquery.nonce,
+  subquery.slot,
   subquery.record,
-  GET_BYTE(subquery.record, 0)::types.uint8 AS record_version,
-  GET_BYTE(subquery.record, 1)::types.uint8 AS record_type,
+  GET_BYTE(subquery.record, 0) :: types.uint8 AS record_version,
+  GET_BYTE(subquery.record, 1) :: types.uint8 AS record_type,
   SUBSTRING(
     subquery.record
     FROM
@@ -76,7 +79,7 @@ FROM
     SELECT
       ops.chain_id,
       ops.contract_address,
-      ops.nonce,
+      ops.slot,
       ops.record,
       ops.tag,
       ops.block_number,
@@ -86,7 +89,7 @@ FROM
       PUBLIC.view__efp_list_ops__record_tag ops
       INNER JOIN PUBLIC.view__latest_record_tags max_records ON ops.chain_id = max_records.chain_id
       AND ops.contract_address = max_records.contract_address
-      AND ops.nonce = max_records.nonce
+      AND ops.slot = max_records.slot
       AND ops.record = max_records.record
       AND ops.tag = max_records.tag
       AND ops.sort_key = max_records.max_sort_key

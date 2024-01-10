@@ -29,7 +29,7 @@ DECLARE
     primary_list_token_id BIGINT;
     list_storage_location_chain_id BIGINT;
     list_storage_location_contract_address VARCHAR(42);
-    list_storage_location_storage_nonce BIGINT;
+    list_storage_location_storage_slot BIGINT;
 BEGIN
     -- Normalize the input address to lowercase
     normalized_addr := public.normalize_eth_address(p_address);
@@ -49,11 +49,11 @@ BEGIN
     SELECT
       v.efp_list_storage_location_chain_id,
       v.efp_list_storage_location_contract_address,
-      v.efp_list_storage_location_nonce
+      v.efp_list_storage_location_slot
     INTO
       list_storage_location_chain_id,
       list_storage_location_contract_address,
-      list_storage_location_storage_nonce
+      list_storage_location_storage_slot
     FROM
       public.view__efp_list_storage_locations AS v
     WHERE
@@ -72,7 +72,7 @@ BEGIN
     WHERE
         v.chain_id = list_storage_location_chain_id AND
         v.contract_address = list_storage_location_contract_address AND
-        v.nonce = list_storage_location_storage_nonce AND
+        v.slot = list_storage_location_storage_slot AND
         -- only version 1
         v.record_version = 1 AND
         -- address record type (1)

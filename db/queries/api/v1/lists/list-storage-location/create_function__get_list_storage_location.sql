@@ -6,21 +6,21 @@
 --   - p_token_id (BIGINT): The token_id for which to retrieve the list
 --                          storage location.
 -- Returns: A table with chain_id (BIGINT), contract_address (varchar(42)), and
---          nonce (BIGINT), representing the list storage location chain ID,
---          contract address, and nonce.
+--          slot (BIGINT), representing the list storage location chain ID,
+--          contract address, and slot.
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_list_storage_location (p_token_id BIGINT) RETURNS TABLE (
   chain_id BIGINT,
   contract_address types.eth_address,
-  nonce types.efp_list_storage_location_nonce
+  slot types.efp_list_storage_location_slot
 ) LANGUAGE plpgsql AS $$
 BEGIN
   RETURN QUERY
   SELECT
     efp_list_storage_location_chain_id,
     efp_list_storage_location_contract_address,
-    efp_list_storage_location_nonce
+    efp_list_storage_location_slot
   FROM
     public.view__efp_list_storage_locations
   WHERE

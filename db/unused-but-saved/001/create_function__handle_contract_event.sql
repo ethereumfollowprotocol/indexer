@@ -73,7 +73,7 @@
 --     --         PERFORM public.handle_contract_event__ListOp(
 --     --             p_chain_id,
 --     --             p_contract_address,
---     --             (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
+--     --             (p_event_args->>'slot')::types.efp_list_storage_location_slot,
 --     --             p_event_args->>'op'
 --     --         );
 --     --     WHEN 'MintStateChange' THEN
@@ -108,7 +108,7 @@
 --     --         PERFORM public.handle_contract_event__UpdateListMetadata(
 --     --             p_chain_id,
 --     --             p_contract_address,
---     --             (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
+--     --             (p_event_args->>'slot')::types.efp_list_storage_location_slot,
 --     --             p_event_args->>'key',
 --     --             (p_event_args->>'value')::types.hexstring
 --     --         );
@@ -116,7 +116,7 @@
 --     --         PERFORM public.handle_contract_event__UpdateListStorageLocation(
 --     --             p_chain_id,
 --     --             p_contract_address,
---     --             (p_event_args->>'nonce')::types.efp_list_storage_location_nonce,
+--     --             (p_event_args->>'slot')::types.efp_list_storage_location_slot,
 --     --             p_event_args->>'listStorageLocation'
 --     --         );
 --     --     ELSE

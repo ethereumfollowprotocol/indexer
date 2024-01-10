@@ -2,14 +2,15 @@
 -------------------------------------------------------------------------------
 -- View: view__efp_list_records__deleted
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW PUBLIC.view__efp_list_records__deleted AS
+CREATE
+OR REPLACE VIEW PUBLIC.view__efp_list_records__deleted AS
 SELECT
   ops.chain_id,
   ops.contract_address,
-  ops.nonce,
+  ops.slot,
   ops.data as record,
-  GET_BYTE(ops.data, 0)::types.uint8 AS record_version,
-  GET_BYTE(ops.data, 1)::types.uint8 AS record_type,
+  GET_BYTE(ops.data, 0) :: types.uint8 AS record_version,
+  GET_BYTE(ops.data, 1) :: types.uint8 AS record_type,
   SUBSTRING(
     ops.data
     FROM
@@ -24,7 +25,7 @@ FROM
     SELECT
       chain_id,
       contract_address,
-      nonce,
+      slot,
       data as record,
       -- aggregate opcodes into an array for holistic checks
       ARRAY_AGG(opcode) AS opcodes,
@@ -40,14 +41,14 @@ FROM
     GROUP BY
       chain_id,
       contract_address,
-      nonce,
+      slot,
       data
     HAVING
       -- Filter groups to include only those that have an 'add' operation
       1 = ANY (ARRAY_AGG(opcode))
   ) AS max_records ON ops.chain_id = max_records.chain_id
   AND ops.contract_address = max_records.contract_address
-  AND ops.nonce = max_records.nonce
+  AND ops.slot = max_records.slot
   AND ops.data = max_records.record
   AND ops.sort_key = max_records.max_sort_key
 WHERE
