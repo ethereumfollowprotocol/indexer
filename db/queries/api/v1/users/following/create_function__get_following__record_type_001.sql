@@ -29,7 +29,7 @@ DECLARE
     primary_list_token_id BIGINT;
     list_storage_location_chain_id BIGINT;
     list_storage_location_contract_address VARCHAR(42);
-    list_storage_location_storage_slot BIGINT;
+    list_storage_location_storage_slot types.efp_list_storage_location_slot;
 BEGIN
     -- Normalize the input address to lowercase
     normalized_addr := public.normalize_eth_address(p_address);
