@@ -34,7 +34,14 @@ FROM
       chain_id,
       contract_address,
       event_name,
-      (event_args ->> 'slot') :: TYPES.efp_list_storage_location_slot AS slot,
+      DECODE(
+        SUBSTRING(
+          (event_args ->> 'slot')
+          FROM
+            3
+        ),
+        'hex'
+      ) :: TYPES.efp_list_storage_location_slot AS slot,
       event_args ->> 'op' AS op,
       PUBLIC.unhexlify (event_args ->> 'op') AS op_bytes,
       block_number,

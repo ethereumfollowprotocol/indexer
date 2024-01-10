@@ -3,11 +3,10 @@
 -- Domain: types.efp_list_storage_location_slot
 --
 -- Description: EFP List Storage Location Slot.
--- Constraints: Value must be >= 0.
+-- Constraints: Value must be 32-byte array.
 -------------------------------------------------------------------------------
--- TODO: de-couple to it's own table and make NOT NULL
 CREATE DOMAIN
-  types.efp_list_storage_location_slot AS BIGINT CHECK (VALUE >= 0);
+  types.efp_list_storage_location_slot AS BYTEA CHECK (octet_length(VALUE) = 32);
 
 
 
@@ -72,7 +71,7 @@ DECLARE
     location_type types.uint8 := 0;
     chain_id BIGINT;
     contract_address types.eth_address;
-    slot BIGINT;
+    slot types.efp_list_storage_location_slot;
 BEGIN
     -- Check if the length is valid
     IF NOT public.is_list_storage_location_hexstring(p_list_storage_location_hex) THEN
@@ -117,8 +116,8 @@ BEGIN
     -- slot
     ----------------------------------------
 
-    -- Extract slot (32 bytes to TEXT)
-    slot := public.convert_hex_to_bigint('0x' || ENCODE(SUBSTRING(hex_data FROM 55 FOR 32), 'hex'));
+    -- Extract slot (32 bytes)
+    slot := SUBSTRING(hex_data FROM 55 FOR 32)::types.efp_list_storage_location_slot;
 
     -- Return the decoded list storage location
     RETURN (
@@ -126,7 +125,7 @@ BEGIN
         location_type::types.uint8__1,
         chain_id,
         contract_address,
-        slot::types.efp_list_storage_location_slot
+        slot
       );
 END;
 $$;
