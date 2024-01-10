@@ -1,60 +1,44 @@
+import BinaryHeap from 'heap-js'
 import { logger } from '#/logger'
+import { type Event, compareEvents } from '#/pubsub/event'
 import type { EventSubscriber } from '#/pubsub/subscriber/interface'
 import type { EventPublisher } from './interface'
-
-import { type Event, compareEvents } from '#/pubsub/event'
 
 type ReceivedEvent = {
   event: Event
   receivedAt: Date
 }
-type LinkedListNode = {
-  value: ReceivedEvent
-  next: LinkedListNode | null
-}
 
 type PriorityQueue = {
-  queue: LinkedListNode | null
-  length: number
-  insert: (receivedEvent: ReceivedEvent) => PriorityQueue
+  heap: BinaryHeap<ReceivedEvent>
+  size: () => number
+  insert: (receivedEvent: ReceivedEvent) => void
   pop: () => ReceivedEvent | undefined
   peek: () => ReceivedEvent | undefined
 }
 
-const createPriorityQueue = (): PriorityQueue => {
-  let queue: LinkedListNode | null = null
-  let length = 0
+const customComparator = (a: ReceivedEvent, b: ReceivedEvent) => compareEvents(a.event, b.event)
 
-  const insert = (receivedEvent: ReceivedEvent): PriorityQueue => {
-    const newNode: LinkedListNode = { value: receivedEvent, next: null }
-    if (!queue || compareEvents(receivedEvent.event, queue.value.event) < 0) {
-      newNode.next = queue
-      queue = newNode
-    } else {
-      let current = queue
-      while (current.next && compareEvents(receivedEvent.event, current.next.value.event) >= 0) {
-        current = current.next
-      }
-      newNode.next = current.next
-      current.next = newNode
-    }
-    length++
-    return { queue, length, insert, pop, peek }
+const createPriorityQueue = (): PriorityQueue => {
+  const heap = new BinaryHeap<ReceivedEvent>(customComparator)
+
+  const insert = (receivedEvent: ReceivedEvent) => {
+    heap.push(receivedEvent)
   }
 
   const pop = (): ReceivedEvent | undefined => {
-    if (!queue) return undefined
-    const poppedValue = queue.value
-    queue = queue.next
-    length--
-    return poppedValue
+    return heap.pop()
   }
 
   const peek = (): ReceivedEvent | undefined => {
-    return queue?.value
+    return heap.peek()
   }
 
-  return { queue, length, insert, pop, peek }
+  const size = (): number => {
+    return heap.size()
+  }
+
+  return { heap, size, insert, pop, peek }
 }
 
 /**
@@ -151,7 +135,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
    * @param event - The event to be handled.
    */
   onEvent(event: Event): Promise<void> {
-    this.priorityQueue = this.priorityQueue.insert({ event, receivedAt: new Date() })
+    this.priorityQueue.insert({ event, receivedAt: new Date() })
     return Promise.resolve()
   }
 
@@ -167,7 +151,8 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
     const batchSize = 100
     let batch = []
 
-    while (this.priorityQueue.length > 0 && this.#isEventReady(now)) {
+    // drain the queue of "ready" events
+    while (this.priorityQueue.size() > 0 && this.#isEventReady(now)) {
       const receivedEvent = this.priorityQueue.pop()
       if (receivedEvent === undefined) {
         continue
