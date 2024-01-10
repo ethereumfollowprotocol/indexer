@@ -39,14 +39,15 @@ services:
     restart: always
     networks:
       - default
+    command: postgres -c wal_level=logical -c max_replication_slots=20
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5001:5432
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=efp
-    volumes:
-      - database:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
 
   indexer:
     container_name: efp-indexer

@@ -11,8 +11,8 @@
     "database:status": "dbmate status",
     "database:drop": "dbmate drop",
     "database:up": "./scripts/setup-database.sh",
-    "database:reset": "bun database:drop && bun database:up",
-    "database:generate-types": "kysely-codegen --dialect='postgres' --type-only-imports --log-level='error' --out-file='./src/database/generated/index.ts' && bun lint:format && (cp ./src/database/generated/index.ts ../api/src/types/generated/index.ts || true)",
+    "database:reset": "bun database:drop && bun database:up && bun database:generate-types",
+    "database:generate-types": "kysely-codegen --dialect='postgres' --type-only-imports --log-level='error' --out-file='./src/database/generated/index.ts' && bun lint:format:ts && (cp ./src/database/generated/index.ts ../api/src/types/generated/index.ts || true)",
     "db": "bun database",
     "down": "docker compose --file='compose.yml' --project-name='efp' down --remove-orphans",
     "drop": "bun down && docker volume rm --force efp_database",
@@ -34,24 +34,24 @@
   "dependencies": {
     "consola": "^3.2.3",
     "exit-hook": "^4.0.0",
-    "kysely": "^0.26.3",
+    "kysely": "^0.27.2",
     "kysely-postgres-js": "^2.0.0",
     "postgres": "^3.4.3",
     "std-env": "^3.7.0",
-    "viem": "^2.0.0"
+    "viem": "^2.0.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.4.1",
+    "@biomejs/biome": "^1.5.0",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bun": "^1.0.0",
-    "@types/node": "^20.10.6",
-    "@vitest/ui": "^1.1.1",
+    "@types/node": "^20.10.8",
+    "@vitest/ui": "^1.1.3",
     "bun": "^1.0.21",
     "dbmate": "^2.10.0",
     "kysely-codegen": "^0.11.0",
     "pg": "^8.11.3",
     "typescript": "^5.3.3",
-    "vitest": "^1.1.1"
+    "vitest": "^1.1.3"
   },
   "repository": "github:ethereumfollowprotocol/indexer",
   "homepage": "github:ethereumfollowprotocol/indexer#README.md",

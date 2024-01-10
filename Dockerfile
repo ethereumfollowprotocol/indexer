@@ -10,6 +10,8 @@ RUN apt-get update --yes \
 
 COPY bun.lockb package.json ./
 
+ENV NODE_ENV="production"
+
 RUN bun install --production --frozen-lockfile
 
 COPY . .

@@ -36,7 +36,8 @@
         "all": true,
         "useAwait": "off",
         "noUnusedImports": "off",
-        "noDefaultExport": "off",
+        "noUselessTernary": "off",
+        "noNodejsModules": "off",
         "useImportRestrictions": "off",
         "noEmptyBlockStatements": "off"
       },
@@ -48,6 +49,7 @@
       },
       "correctness": {
         "all": true,
+        "noUnusedVariables": "off",
         "noUndeclaredVariables": "off"
       },
       "performance": {

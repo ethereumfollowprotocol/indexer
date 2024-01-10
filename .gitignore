@@ -40,9 +40,10 @@ data.sqld
 _
 db/schema.sql
 
-
 # JetBrains
 .idea/
 
 # migrations
 db/migrations/*
+dist
+_
