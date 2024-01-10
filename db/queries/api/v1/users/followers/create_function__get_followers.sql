@@ -6,12 +6,16 @@
 --              type, excluding blocked or muted relationships.
 -- Parameters:
 --   - address (text): Address used to identify and filter followers.
--- Returns: A table with 'efp_list_nft_token_id' (BIGINT) and 'efp_list_user'
---          (types.eth_address), representing the relationship identifier and
---          the follower's name.
+-- Returns: A table with 'efp_list_nft_token_id' (BIGINT), 'efp_list_user'
+--          (types.eth_address), tags (types.efp_tag []), representing the
+--          list token ID, list user, and tags.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_followers (address types.eth_address) RETURNS TABLE (efp_list_nft_token_id BIGINT, efp_list_user types.eth_address) LANGUAGE plpgsql AS $$
+OR REPLACE FUNCTION query.get_followers (address types.eth_address) RETURNS TABLE (
+  efp_list_nft_token_id BIGINT,
+  efp_list_user types.eth_address,
+  tags types.efp_tag []
+) LANGUAGE plpgsql AS $$
 DECLARE
     normalized_addr types.eth_address;
 BEGIN
@@ -23,7 +27,8 @@ BEGIN
         -- the token id that follows the <address>
         v.efp_list_nft_token_id,
         -- the list user of the EFP List that follows the <address>
-        v.efp_list_user
+        v.efp_list_user AS follower,
+        v.tags
     FROM
         public.view__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
