@@ -1,5 +1,25 @@
 -- migrate:up
 -------------------------------------------------------------------------------
+-- Table: contracts
+-------------------------------------------------------------------------------
+CREATE TABLE
+  public.contracts (
+    chain_id types.eth_chain_id NOT NULL,
+    address types.eth_address NOT NULL,
+    name VARCHAR(255),
+    owner types.eth_address NOT NULL,
+    created_at TIMESTAMP
+    WITH
+      TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP
+    WITH
+      TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (chain_id, address)
+  );
+
+
+
+-------------------------------------------------------------------------------
 -- Function: handle_contract_event__OwnershipTransferred
 -- Description: Processes an ownership transferred event by either inserting a
 --              new contract into the contracts table or updating the owner of
@@ -81,4 +101,34 @@ $$;
 
 
 
+-------------------------------------------------------------------------------
+-- Triggers
+-------------------------------------------------------------------------------
+CREATE TRIGGER
+  update_contracts_updated_at BEFORE
+UPDATE
+  ON public.contracts FOR EACH ROW
+EXECUTE
+  FUNCTION public.update_updated_at_column ();
+
+
+
 -- migrate:down
+DROP FUNCTION
+  IF EXISTS public.handle_contract_event__OwnershipTransferred (
+    p_chain_id BIGINT,
+    p_contract_address VARCHAR(42),
+    p_contract_name VARCHAR(255),
+    p_previous_owner VARCHAR(42),
+    p_new_owner VARCHAR(42)
+  );
+
+
+
+DROP TABLE
+  IF EXISTS public.contracts CASCADE;
+
+
+
+DROP TRIGGER
+  IF EXISTS update_contracts_updated_at ON public.contracts;

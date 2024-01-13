@@ -8,7 +8,7 @@ SELECT
   am.address,
   PUBLIC.convert_hex_to_bigint (am.value) AS primary_list_token_id
 FROM
-  PUBLIC.view__events__efp_account_metadata am
+  PUBLIC.efp_account_metadata am
 WHERE
   am.key = 'primary-list'
 UNION
@@ -22,7 +22,7 @@ WHERE
     SELECT
       1
     FROM
-      PUBLIC.view__events__efp_account_metadata am
+      PUBLIC.efp_account_metadata am
     WHERE
       am.address = nft.efp_list_user
       AND am.key = 'primary-list'

@@ -7,7 +7,8 @@
 -- Parameters:
 --   - p_chain_id (BIGINT): The blockchain network identifier.
 --   - p_contract_address (VARCHAR(42)): The contract address of the NFT.
---   - p_token_id (BIGINT): The unique identifier of the NFT.
+--   - p_token_id (types.efp_list_nft_token_id): The unique identifier of the
+--                                               NFT.
 --   - p_list_storage_location (VARCHAR(174)): The list storage location to be
 --                                             decoded and updated.
 -- Returns: VOID
@@ -18,7 +19,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__UpdateListStorageLocation (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
-  p_token_id BIGINT,
+  p_token_id types.efp_list_nft_token_id,
   p_list_storage_location VARCHAR(174)
 ) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE
@@ -34,7 +35,7 @@ BEGIN
     decoded_location := public.decode__efp_list_storage_location__v001__location_type_001(p_list_storage_location);
 
     -- Update list_nfts with the decoded values
-    UPDATE public.list_nfts nft
+    UPDATE public.efp_list_nfts nft
     SET
         list_storage_location = p_list_storage_location,
         list_storage_location_chain_id = decoded_location.chain_id,
@@ -50,3 +51,13 @@ $$;
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo Function: handle_contract_event__UpdateListStorageLocation
+-------------------------------------------------------------------------------
+DROP FUNCTION
+  IF EXISTS public.handle_contract_event__UpdateListStorageLocation (
+    p_chain_id BIGINT,
+    p_contract_address VARCHAR(42),
+    p_token_id BIGINT,
+    p_list_storage_location VARCHAR(174)
+  ) CASCADE;

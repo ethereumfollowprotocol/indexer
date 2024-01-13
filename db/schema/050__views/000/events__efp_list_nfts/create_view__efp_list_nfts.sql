@@ -25,7 +25,7 @@ CREATE
 OR REPLACE VIEW PUBLIC.view__events__efp_list_nfts AS
 SELECT
   e.chain_id,
-  e.contract_address AS address,
+  e.contract_address,
   (event_args ->> 'tokenId') :: BIGINT AS token_id,
   PUBLIC.normalize_eth_address (e.event_args ->> 'to') AS owner
 FROM

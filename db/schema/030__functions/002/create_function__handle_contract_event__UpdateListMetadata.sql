@@ -18,7 +18,7 @@ CREATE
 OR REPLACE FUNCTION public.handle_contract_event__UpdateListMetadata (
   p_chain_id BIGINT,
   p_contract_address VARCHAR(42),
-  p_slot BIGINT,
+  p_slot types.efp_list_storage_location_slot,
   p_key VARCHAR(255),
   p_value types.hexstring
 ) RETURNS VOID LANGUAGE plpgsql AS $$
@@ -29,7 +29,7 @@ BEGIN
     normalized_contract_address := public.normalize_eth_address(p_contract_address);
 
     -- Upsert metadata value
-    INSERT INTO public.list_metadata (chain_id, contract_address, slot, key, value)
+    INSERT INTO public.efp_list_metadata (chain_id, contract_address, slot, key, value)
     VALUES (p_chain_id, normalized_contract_address, p_slot, p_key, p_value)
     ON CONFLICT (chain_id, contract_address, slot, key)
     DO UPDATE SET value = EXCLUDED.value;
@@ -39,3 +39,14 @@ $$;
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo Function: handle_contract_event__UpdateListMetadata
+-------------------------------------------------------------------------------
+DROP FUNCTION
+  IF EXISTS public.handle_contract_event__UpdateListMetadata (
+    p_chain_id BIGINT,
+    p_contract_address VARCHAR(42),
+    p_slot types.efp_list_storage_location_slot,
+    p_key VARCHAR(255),
+    p_value types.hexstring
+  ) CASCADE;
