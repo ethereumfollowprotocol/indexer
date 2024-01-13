@@ -1,9 +1,9 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_records_with_nft_manager_user_tags
+-- View: view__events__efp_list_records_with_nft_manager_user_tags
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_records_with_nft_manager_user_tags AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_records_with_nft_manager_user_tags AS
 SELECT
   nfts.efp_list_nft_chain_id,
   nfts.efp_list_nft_contract_address,
@@ -28,8 +28,8 @@ SELECT
     ELSE FALSE
   END AS has_mute_tag
 FROM
-  PUBLIC.view__efp_list_records_with_tags AS record_tags
-  LEFT JOIN PUBLIC.view__efp_list_nfts_with_manager_user AS nfts ON nfts.efp_list_storage_location_chain_id = record_tags.chain_id
+  PUBLIC.view__events__efp_list_records_with_tags AS record_tags
+  LEFT JOIN PUBLIC.view__events__efp_list_nfts_with_manager_user AS nfts ON nfts.efp_list_storage_location_chain_id = record_tags.chain_id
   AND nfts.efp_list_storage_location_contract_address = record_tags.contract_address
   AND nfts.efp_list_storage_location_slot = record_tags.slot;
 
@@ -37,7 +37,7 @@ FROM
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_records_with_nft_manager_user_tags
+-- Undo View: view__events__efp_list_records_with_nft_manager_user_tags
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_records_with_nft_manager_user_tags CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_records_with_nft_manager_user_tags CASCADE;

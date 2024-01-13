@@ -1,9 +1,9 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_ops__record_tag
+-- View: view__events__efp_list_ops__record_tag
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_ops__record_tag AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_ops__record_tag AS
 SELECT
   ops.chain_id,
   ops.contract_address,
@@ -17,7 +17,7 @@ SELECT
   unpacked.list_record_bytea AS record,
   unpacked.tag
 FROM
-  PUBLIC.view__efp_list_ops ops,
+  PUBLIC.view__events__efp_list_ops ops,
   LATERAL (
     SELECT
       *
@@ -31,10 +31,10 @@ WHERE
 
 
 -------------------------------------------------------------------------------
--- View: view__latest_record_tags
+-- View: view__events__latest_record_tags
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__latest_record_tags AS
+OR REPLACE VIEW PUBLIC.view__events__latest_record_tags AS
 SELECT
   chain_id,
   contract_address,
@@ -43,7 +43,7 @@ SELECT
   tag,
   MAX(sort_key) AS max_sort_key
 FROM
-  PUBLIC.view__efp_list_ops__record_tag
+  PUBLIC.view__events__efp_list_ops__record_tag
 GROUP BY
   chain_id,
   contract_address,
@@ -54,10 +54,10 @@ GROUP BY
 
 
 -------------------------------------------------------------------------------
--- View: view__efp_list_record_tags
+-- View: view__events__efp_list_record_tags
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_record_tags AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_record_tags AS
 SELECT
   subquery.chain_id,
   subquery.contract_address,
@@ -86,8 +86,8 @@ FROM
       ops.transaction_index,
       ops.log_index
     FROM
-      PUBLIC.view__efp_list_ops__record_tag ops
-      INNER JOIN PUBLIC.view__latest_record_tags max_records ON ops.chain_id = max_records.chain_id
+      PUBLIC.view__events__efp_list_ops__record_tag ops
+      INNER JOIN PUBLIC.view__events__latest_record_tags max_records ON ops.chain_id = max_records.chain_id
       AND ops.contract_address = max_records.contract_address
       AND ops.slot = max_records.slot
       AND ops.record = max_records.record
@@ -101,23 +101,23 @@ FROM
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_record_tags
+-- Undo View: view__events__efp_list_record_tags
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_record_tags CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_record_tags CASCADE;
 
 
 
 -------------------------------------------------------------------------------
--- Undo View: view__latest_record_tags
--------------------------------------------------------------------------------
-DROP VIEW
-  IF EXISTS PUBLIC.view__latest_record_tags CASCADE;
-
-
-
--------------------------------------------------------------------------------
--- Undo View: view__efp_list_ops__record_tag
+-- Undo View: view__events__latest_record_tags
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_ops__record_tag CASCADE;
+  IF EXISTS PUBLIC.view__events__latest_record_tags CASCADE;
+
+
+
+-------------------------------------------------------------------------------
+-- Undo View: view__events__efp_list_ops__record_tag
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__events__efp_list_ops__record_tag CASCADE;

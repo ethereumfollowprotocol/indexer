@@ -1,13 +1,13 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_account_metadata
+-- View: view__events__efp_account_metadata
 -------------------------------------------------------------------------------
 /*
- | View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                                            | Influence on Index Structure                                                      | Index                                                                                                         |
- |--------------------------------|--------------------------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
- | `view__efp_account_metadata`   | `UpdateAccountMetadata`        | 1. Filter on `UpdateAccountMetadata` events                                             | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                                        |
- |                                |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'addr'`, `event_args->>'key'` | Add `chain_id`, `contract_address`, and specific `event_args` fields for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'))`           |
- |                                |                                | 3. Sort by `sort_key` within each group                                                 | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'), sort_key)` |
+ | View Name                            | Event Type Filtered            | Sub-Steps in Query Execution                                                            | Influence on Index Structure                                                      | Index                                                                                                         |
+ |--------------------------------------|--------------------------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+ | `view__events__efp_account_metadata` | `UpdateAccountMetadata`        | 1. Filter on `UpdateAccountMetadata` events                                             | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                                        |
+ |                                      |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'addr'`, `event_args->>'key'` | Add `chain_id`, `contract_address`, and specific `event_args` fields for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'))`           |
+ |                                      |                                | 3. Sort by `sort_key` within each group                                                 | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'addr'), (event_args ->> 'key'), sort_key)` |
  */
 CREATE INDEX
   idx__efp_events__efp_account_metadata ON PUBLIC.events (
@@ -23,7 +23,7 @@ WHERE
 
 
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_account_metadata AS
+OR REPLACE VIEW PUBLIC.view__events__efp_account_metadata AS
 SELECT
   e.chain_id,
   e.contract_address,
@@ -63,7 +63,7 @@ WHERE
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_account_metadata
+-- Undo View: view__events__efp_account_metadata
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_account_metadata CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_account_metadata CASCADE;

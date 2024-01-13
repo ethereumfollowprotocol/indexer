@@ -1,13 +1,13 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_ops
+-- View: view__events__efp_list_ops
 -------------------------------------------------------------------------------
 /*
- | View Name                  | Event Type Filtered | Sub-Steps in Query Execution                           | Influence on Index Structure                                   | Index Building Progress                                                 |
- |----------------------------|---------------------|--------------------------------------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------|
- | `view__efp_list_ops`       | `ListOp`            | 1. Filter on `ListOp` events                           | Start index with `event_name` for filtering                   | Step 1: `(event_name)`                                                  |
- |                            |                     | 2. Project `chain_id`, `contract_address`, `slot`, `op`, and other relevant fields | Include `chain_id`, `contract_address`, and `event_args` fields for efficient data retrieval | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'slot'), (event_args ->> 'op'))` |
- |                            |                     |                                                        |                                                               |                                                                          |
+ | View Name                    | Event Type Filtered | Sub-Steps in Query Execution                           | Influence on Index Structure                                   | Index Building Progress                                                 |
+ |------------------------------|---------------------|--------------------------------------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------|
+ | `view__events__efp_list_ops` | `ListOp`            | 1. Filter on `ListOp` events                           | Start index with `event_name` for filtering                   | Step 1: `(event_name)`                                                  |
+ |                              |                     | 2. Project `chain_id`, `contract_address`, `slot`, `op`, and other relevant fields | Include `chain_id`, `contract_address`, and `event_args` fields for efficient data retrieval | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'slot'), (event_args ->> 'op'))` |
+ |                              |                     |                                                        |                                                               |                                                                          |
  */
 CREATE INDEX
   idx__efp_events__list_ops ON PUBLIC.events (
@@ -22,7 +22,7 @@ WHERE
 
 
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_ops AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_ops AS
 SELECT
   list_op_events.*,
   decoded_op.version,
@@ -62,7 +62,7 @@ FROM
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_ops
+-- Undo View: view__events__efp_list_ops
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_ops CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_ops CASCADE;

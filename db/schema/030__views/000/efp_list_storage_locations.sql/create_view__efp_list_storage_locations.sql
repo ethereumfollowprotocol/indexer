@@ -1,13 +1,13 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_storage_location
+-- View: view__events__efp_list_storage_location
 -------------------------------------------------------------------------------
 /*
- | View Name                            | Event Type Filtered            | Sub-Steps in Query Execution                                         | Influence on Index Structure                                                      | Index Building Progress                                                                  |
- |--------------------------------------|--------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
- | `view__efp_list_storage_locations`   | `UpdateListStorageLocation`    | 1. Filter on `UpdateListStorageLocation` events                      | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                   |
- |                                      |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'tokenId'` | Add `chain_id`, `contract_address`, and `event_args->>'tokenId'` for grouping     | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'))`           |
- |                                      |                                | 3. Sort by `sort_key` within each group                              | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'), sort_key)` |
+ | View Name                                  | Event Type Filtered            | Sub-Steps in Query Execution                                         | Influence on Index Structure                                                      | Index Building Progress                                                                  |
+ |--------------------------------------------|--------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+ | `view__events__efp_list_storage_locations` | `UpdateListStorageLocation`    | 1. Filter on `UpdateListStorageLocation` events                      | Start index with `event_name` for filtering                                       | Step 1: `(event_name)`                                                                   |
+ |                                            |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'tokenId'` | Add `chain_id`, `contract_address`, and `event_args->>'tokenId'` for grouping     | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'))`           |
+ |                                            |                                | 3. Sort by `sort_key` within each group                              | Append `sort_key` for sorting                                                     | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'), sort_key)` |
  */
 CREATE INDEX
   idx__efp_events__list_storage_locations ON PUBLIC.events (
@@ -22,7 +22,7 @@ WHERE
 
 
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_storage_locations AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_storage_locations AS
 SELECT
   subquery.efp_list_nft_chain_id,
   subquery.efp_list_nft_contract_address,
@@ -71,7 +71,7 @@ FROM
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_storage_locations
+-- Undo View: view__events__efp_list_storage_locations
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_storage_locations CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_storage_locations CASCADE;

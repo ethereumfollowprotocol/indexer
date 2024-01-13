@@ -1,11 +1,11 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_contracts
+-- View: view__events__efp_contracts
 -------------------------------------------------------------------------------
 /*
  | View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                    | Influence on Index Structure                                | Index                                                        |
  |--------------------------------|--------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------|--------------------------------------------------------------|
- | `view__efp_contracts`          | `OwnershipTransferred`         | 1. Filter on `OwnershipTransferred` events                      | Start index with `event_name` for filtering                 | Step 1: `(event_name)`                                       |
+ | `view__events__efp_contracts`  | `OwnershipTransferred`         | 1. Filter on `OwnershipTransferred` events                      | Start index with `event_name` for filtering                 | Step 1: `(event_name)`                                       |
  |                                |                                | 2. Group by `chain_id` and `contract_address`                   | Add `chain_id` and `contract_address` for grouping          | Step 2: `(event_name, chain_id, contract_address)`           |
  |                                |                                | 3. Sort by `sort_key` within each group                         | Append `sort_key` for sorting                               | Step 3: `(event_name, chain_id, contract_address, sort_key)` |
  */
@@ -17,7 +17,7 @@ WHERE
 
 
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_contracts AS
+OR REPLACE VIEW PUBLIC.view__events__efp_contracts AS
 SELECT
   e.chain_id,
   e.contract_address AS address,
@@ -50,34 +50,34 @@ WHERE
 
 -- Comment on the view
 COMMENT
-  ON VIEW public.view__efp_contracts IS 'View to list the latest ownership details of EFP contracts.';
+  ON VIEW public.view__events__efp_contracts IS 'View to list the latest ownership details of EFP contracts.';
 
 
 
 -- Comment on the columns
 COMMENT
-  ON COLUMN public.view__efp_contracts.chain_id IS 'Chain ID of the deployed contract.';
+  ON COLUMN public.view__events__efp_contracts.chain_id IS 'Chain ID of the deployed contract.';
 
 
 
 COMMENT
-  ON COLUMN public.view__efp_contracts.address IS 'Contract address.';
+  ON COLUMN public.view__events__efp_contracts.address IS 'Contract address.';
 
 
 
 COMMENT
-  ON COLUMN public.view__efp_contracts.name IS 'Contract name.';
+  ON COLUMN public.view__events__efp_contracts.name IS 'Contract name.';
 
 
 
 COMMENT
-  ON COLUMN public.view__efp_contracts.owner IS 'Contract owner.';
+  ON COLUMN public.view__events__efp_contracts.owner IS 'Contract owner.';
 
 
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_contracts
+-- Undo View: view__events__efp_contracts
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_contracts CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_contracts CASCADE;

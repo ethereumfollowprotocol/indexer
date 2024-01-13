@@ -1,9 +1,9 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_records
+-- View: view__events__efp_list_records
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_records AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_records AS
 SELECT
   ops.chain_id,
   ops.contract_address,
@@ -20,7 +20,7 @@ SELECT
   ops.transaction_index,
   ops.log_index
 FROM
-  PUBLIC.view__efp_list_ops ops
+  PUBLIC.view__events__efp_list_ops ops
   INNER JOIN (
     SELECT
       chain_id,
@@ -31,7 +31,7 @@ FROM
       -- This helps in identifying the latest operation for each unique record
       MAX(sort_key) AS max_sort_key
     FROM
-      PUBLIC.view__efp_list_ops
+      PUBLIC.view__events__efp_list_ops
     WHERE
       -- restrict to opcodes 1 (add record) or 2 (remove record)
       opcode = 1
@@ -54,7 +54,7 @@ WHERE
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_records
+-- Undo View: view__events__efp_list_records
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_records CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_records CASCADE;

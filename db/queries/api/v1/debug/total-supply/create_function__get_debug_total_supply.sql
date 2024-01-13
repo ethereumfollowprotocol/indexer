@@ -11,7 +11,7 @@ DECLARE
   total_supply BIGINT;
 BEGIN
   SELECT COUNT(DISTINCT token_id) INTO total_supply
-  FROM public.view__efp_list_nfts;
+  FROM public.view__events__efp_list_nfts;
 
   RETURN total_supply;
 END;

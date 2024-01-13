@@ -37,7 +37,7 @@ BEGIN
     -- Get the primary list token id
     SELECT v.primary_list_token_id
     INTO primary_list_token_id
-    FROM public.view__efp_accounts_with_primary_list AS v
+    FROM public.view__events__efp_accounts_with_primary_list AS v
     WHERE v.address = normalized_addr;
 
     -- If no primary list token id is found, return an empty result set
@@ -55,7 +55,7 @@ BEGIN
       list_storage_location_contract_address,
       list_storage_location_storage_slot
     FROM
-      public.view__efp_list_storage_locations AS v
+      public.view__events__efp_list_storage_locations AS v
     WHERE
       v.efp_list_nft_token_id = primary_list_token_id;
 
@@ -68,7 +68,7 @@ BEGIN
         PUBLIC.hexlify(v.record_data)::types.eth_address AS following_address,
         v.tags
     FROM
-        public.view__efp_list_records_with_tags AS v
+        public.view__events__efp_list_records_with_tags AS v
     WHERE
         v.chain_id = list_storage_location_chain_id AND
         v.contract_address = list_storage_location_contract_address AND

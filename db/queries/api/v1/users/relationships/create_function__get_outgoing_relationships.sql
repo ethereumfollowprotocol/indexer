@@ -36,7 +36,7 @@ BEGIN
     -- Get the primary list token id once
     SELECT v.primary_list_token_id
     INTO primary_list_token_id
-    FROM public.view__efp_accounts_with_primary_list AS v
+    FROM public.view__events__efp_accounts_with_primary_list AS v
     WHERE v.address = normalized_addr;
 
     -- If no primary list token id is found, return an empty result set
@@ -55,7 +55,7 @@ BEGIN
             v.record_data,
             v.tags
         FROM
-            public.view__efp_list_records_with_nft_manager_user_tags AS v
+            public.view__events__efp_list_records_with_nft_manager_user_tags AS v
         WHERE
             -- only list record version 1
             v.record_version = 1 AND

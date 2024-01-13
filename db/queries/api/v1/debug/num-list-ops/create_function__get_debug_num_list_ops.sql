@@ -11,7 +11,7 @@ DECLARE
   num_list_ops BIGINT;
 BEGIN
   SELECT COUNT(*) INTO num_list_ops
-  FROM public.view__efp_list_ops;
+  FROM public.view__events__efp_list_ops;
 
   RETURN num_list_ops;
 END;

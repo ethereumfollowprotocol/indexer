@@ -16,7 +16,7 @@ BEGIN
         v.efp_list_user AS address,
         COUNT(DISTINCT v.record_data) AS blocks_count
     FROM
-        public.view__efp_list_records_with_nft_manager_user_tags AS v
+        public.view__events__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only version 1
         v.record_version = 1 AND

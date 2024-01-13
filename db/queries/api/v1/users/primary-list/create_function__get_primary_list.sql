@@ -19,7 +19,7 @@ DECLARE
 BEGIN
     SELECT v.primary_list_token_id
     INTO primary_list_token_id
-    FROM public.view__efp_accounts_with_primary_list AS v
+    FROM public.view__events__efp_accounts_with_primary_list AS v
     WHERE v.address = public.normalize_eth_address(p_address);
 
     RETURN primary_list_token_id;

@@ -22,7 +22,7 @@ BEGIN
     efp_list_storage_location_contract_address,
     efp_list_storage_location_slot
   FROM
-    public.view__efp_list_storage_locations
+    public.view__events__efp_list_storage_locations
   WHERE
     efp_list_nft_token_id = p_token_id;
 END;

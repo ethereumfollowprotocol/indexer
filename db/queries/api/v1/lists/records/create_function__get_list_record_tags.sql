@@ -24,7 +24,7 @@ BEGIN
       record_tags.record_type,
       record_tags.record_data,
       record_tags.tags
-    FROM public.view__efp_list_records_with_tags AS record_tags
+    FROM public.view__events__efp_list_records_with_tags AS record_tags
     JOIN query.get_list_storage_location(token_id) AS list_storage_location
     ON record_tags.chain_id = list_storage_location.chain_id
       AND record_tags.contract_address = list_storage_location.contract_address

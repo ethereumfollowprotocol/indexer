@@ -1,11 +1,11 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_nfts
+-- View: view__events__efp_list_nfts
 -------------------------------------------------------------------------------
 /*
  | View Name                      | Event Type Filtered            | Sub-Steps in Query Execution                                         | Influence on Index Structure                                                  | Index                                                                                    |
  |--------------------------------|--------------------------------|----------------------------------------------------------------------|-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
- | `view__efp_list_nfts`          | `Transfer`                     | 1. Filter on `Transfer` events                                       | Start index with `event_name` for filtering                                   | Step 1: `(event_name)`                                                                   |
+ | `view__events__efp_list_nfts`  | `Transfer`                     | 1. Filter on `Transfer` events                                       | Start index with `event_name` for filtering                                   | Step 1: `(event_name)`                                                                   |
  |                                |                                | 2. Group by `chain_id`, `contract_address`, `event_args->>'tokenId'` | Add `chain_id`, `contract_address`, and `event_args->>'tokenId'` for grouping | Step 2: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'))`           |
  |                                |                                | 3. Sort by `sort_key` within each group                              | Append `sort_key` for sorting                                                 | Step 3: `(event_name, chain_id, contract_address, (event_args ->> 'tokenId'), sort_key)` |
  */
@@ -22,7 +22,7 @@ WHERE
 
 
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_nfts AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_nfts AS
 SELECT
   e.chain_id,
   e.contract_address AS address,
@@ -55,7 +55,7 @@ WHERE
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_nfts
+-- Undo View: view__events__efp_list_nfts
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_nfts CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_nfts CASCADE;

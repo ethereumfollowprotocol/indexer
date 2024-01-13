@@ -1,9 +1,9 @@
 -- migrate:up
 -------------------------------------------------------------------------------
--- View: view__efp_list_record_tags__deleted
+-- View: view__events__efp_list_record_tags__deleted
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_record_tags__deleted AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_record_tags__deleted AS
 SELECT
   vlo.chain_id,
   vlo.contract_address,
@@ -21,7 +21,7 @@ SELECT
   vlo.transaction_index,
   vlo.log_index
 FROM
-  PUBLIC.view__efp_list_ops__record_tag vlo
+  PUBLIC.view__events__efp_list_ops__record_tag vlo
   INNER JOIN (
     SELECT
       chain_id,
@@ -34,7 +34,7 @@ FROM
       -- order by block_number, transaction_index, log_index
       MAX(sort_key) AS max_sort_key
     FROM
-      PUBLIC.view__efp_list_ops__record_tag
+      PUBLIC.view__events__efp_list_ops__record_tag
     WHERE
       opcode = 3
       OR opcode = 4
@@ -61,7 +61,7 @@ WHERE
 
 -- migrate:down
 -------------------------------------------------------------------------------
--- Undo View: view__efp_list_record_tags__deleted
+-- Undo View: view__events__efp_list_record_tags__deleted
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_record_tags__deleted CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_record_tags__deleted CASCADE;

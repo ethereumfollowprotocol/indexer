@@ -27,7 +27,7 @@ BEGIN
         v.efp_list_nft_token_id,
         COALESCE(v.tags, '{}') AS tags
     FROM
-        public.view__efp_list_records_with_nft_manager_user_tags AS v
+        public.view__events__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
         v.record_version = 1 AND

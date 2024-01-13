@@ -3,7 +3,7 @@
 -- View: view_list_nfts_with_manager_user
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE VIEW PUBLIC.view__efp_list_nfts_with_manager_user AS
+OR REPLACE VIEW PUBLIC.view__events__efp_list_nfts_with_manager_user AS
 SELECT
   nft_locs.efp_list_nft_chain_id,
   nft_locs.efp_list_nft_contract_address,
@@ -18,16 +18,16 @@ SELECT
   lm_manager.value :: TYPES.eth_address AS efp_list_manager,
   lm_user.value :: TYPES.eth_address AS efp_list_user
 FROM
-  PUBLIC.view__efp_list_nfts AS nfts
-  LEFT JOIN PUBLIC.view__efp_list_storage_locations AS nft_locs ON nft_locs.efp_list_nft_chain_id = nfts.chain_id
+  PUBLIC.view__events__efp_list_nfts AS nfts
+  LEFT JOIN PUBLIC.view__events__efp_list_storage_locations AS nft_locs ON nft_locs.efp_list_nft_chain_id = nfts.chain_id
   AND nft_locs.efp_list_nft_contract_address = nfts.address
   AND nft_locs.efp_list_nft_token_id = nfts.token_id
-  LEFT JOIN PUBLIC.view__efp_list_metadata AS lm_manager ON lm_manager.chain_id = nft_locs.efp_list_storage_location_chain_id
+  LEFT JOIN PUBLIC.view__events__efp_list_metadata AS lm_manager ON lm_manager.chain_id = nft_locs.efp_list_storage_location_chain_id
   AND lm_manager.contract_address = nft_locs.efp_list_storage_location_contract_address
   AND lm_manager.slot = nft_locs.efp_list_storage_location_slot
   AND lm_manager.key = 'manager'
   AND PUBLIC.is_valid_address (lm_manager.value)
-  LEFT JOIN PUBLIC.view__efp_list_metadata AS lm_user ON lm_user.chain_id = nft_locs.efp_list_storage_location_chain_id
+  LEFT JOIN PUBLIC.view__events__efp_list_metadata AS lm_user ON lm_user.chain_id = nft_locs.efp_list_storage_location_chain_id
   AND lm_user.contract_address = nft_locs.efp_list_storage_location_contract_address
   AND lm_user.slot = nft_locs.efp_list_storage_location_slot
   AND lm_user.key = 'user'
@@ -40,4 +40,4 @@ FROM
 -- Undo View: view_list_nfts_with_manager_user
 -------------------------------------------------------------------------------
 DROP VIEW
-  IF EXISTS PUBLIC.view__efp_list_nfts_with_manager_user CASCADE;
+  IF EXISTS PUBLIC.view__events__efp_list_nfts_with_manager_user CASCADE;
