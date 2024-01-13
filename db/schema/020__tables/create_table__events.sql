@@ -1,5 +1,4 @@
 -- migrate:up
--- Table Creation: Define all necessary tables
 SET
   default_tablespace = '';
 
@@ -120,3 +119,5 @@ COMMENT
 
 
 -- migrate:down
+DROP TABLE
+  IF EXISTS public.events CASCADE;

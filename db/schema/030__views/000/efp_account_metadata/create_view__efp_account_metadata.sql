@@ -62,3 +62,8 @@ WHERE
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_account_metadata
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_account_metadata CASCADE;

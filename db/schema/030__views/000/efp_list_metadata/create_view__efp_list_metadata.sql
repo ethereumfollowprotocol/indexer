@@ -27,7 +27,14 @@ OR REPLACE VIEW PUBLIC.view__efp_list_metadata AS
 SELECT
   e.chain_id,
   e.contract_address,
-  DECODE(SUBSTRING((event_args ->> 'slot') FROM 3), 'hex') :: TYPES.efp_list_storage_location_slot AS slot,
+  DECODE(
+    SUBSTRING(
+      (event_args ->> 'slot')
+      FROM
+        3
+    ),
+    'hex'
+  ) :: TYPES.efp_list_storage_location_slot AS slot,
   e.event_args ->> 'key' AS key,
   e.event_args ->> 'value' AS value,
   e.block_number,
@@ -62,3 +69,8 @@ WHERE
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_list_metadata
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_list_metadata CASCADE;

@@ -34,3 +34,8 @@ GROUP BY
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_list_records_with_tags
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_list_records_with_tags CASCADE;

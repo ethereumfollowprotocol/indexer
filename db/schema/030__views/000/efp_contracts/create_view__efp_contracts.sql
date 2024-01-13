@@ -76,3 +76,8 @@ COMMENT
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_contracts
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_contracts CASCADE;

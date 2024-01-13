@@ -100,3 +100,24 @@ FROM
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_list_record_tags
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_list_record_tags CASCADE;
+
+
+
+-------------------------------------------------------------------------------
+-- Undo View: view__latest_record_tags
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__latest_record_tags CASCADE;
+
+
+
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_list_ops__record_tag
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_list_ops__record_tag CASCADE;

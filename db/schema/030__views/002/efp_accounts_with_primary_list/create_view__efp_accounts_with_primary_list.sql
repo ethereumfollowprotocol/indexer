@@ -33,3 +33,8 @@ GROUP BY
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_accounts_with_primary_list
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS public.view__efp_accounts_with_primary_list CASCADE;

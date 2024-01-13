@@ -53,3 +53,8 @@ WHERE
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view__efp_list_records
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_list_records CASCADE;

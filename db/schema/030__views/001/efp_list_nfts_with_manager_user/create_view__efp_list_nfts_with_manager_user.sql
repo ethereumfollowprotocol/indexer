@@ -36,3 +36,8 @@ FROM
 
 
 -- migrate:down
+-------------------------------------------------------------------------------
+-- Undo View: view_list_nfts_with_manager_user
+-------------------------------------------------------------------------------
+DROP VIEW
+  IF EXISTS PUBLIC.view__efp_list_nfts_with_manager_user CASCADE;
