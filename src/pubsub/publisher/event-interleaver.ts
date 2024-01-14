@@ -148,7 +148,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
 
   async #processQueue(): Promise<void> {
     const now = new Date()
-    const batchSize = 100
+    const batchSize = 1
     let batch = []
 
     // drain the queue of "ready" events

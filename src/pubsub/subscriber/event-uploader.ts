@@ -26,6 +26,9 @@ export class EventUploader implements EventSubscriber {
     }
     const rows = events.map(event => EventUploader.#toTableRow(event))
     const result = await database.insertInto('events').values(rows).executeTakeFirst()
+    logger.info(result)
+    // sleep 1 sec
+    await new Promise(resolve => setTimeout(resolve, 250))
     if (result.numInsertedOrUpdatedRows !== BigInt(events.length)) {
       logger.error(`Failed to insert events ${JSON.stringify(events)}`)
     }

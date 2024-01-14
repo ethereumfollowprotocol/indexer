@@ -31,26 +31,12 @@ DECLARE
     normalized_from_address types.eth_address;
     normalized_to_address types.eth_address;
 BEGIN
-
     -- Normalize the input addresses to lowercase
     normalized_contract_address := public.normalize_eth_address(p_contract_address);
     normalized_from_address := public.normalize_eth_address(p_from_address);
     normalized_to_address := public.normalize_eth_address(p_to_address);
 
     IF normalized_from_address = '0x0000000000000000000000000000000000000000' THEN
-        -- Attempt to insert new row
-        IF EXISTS (
-            SELECT 1 FROM public.efp_list_nfts nft
-            WHERE nft.chain_id = p_chain_id
-            AND nft.contract_address = normalized_contract_address
-            AND nft.token_id = p_token_id
-        ) THEN
-            RAISE EXCEPTION 'Attempt to insert duplicate efp_list_nfts row (chain_id=%, contract_address=%, token_id=%)',
-                p_chain_id,
-                normalized_contract_address,
-                p_token_id;
-        END IF;
-
         -- Insert new row
         INSERT INTO public.efp_list_nfts (
             chain_id,
@@ -60,20 +46,44 @@ BEGIN
         )
         VALUES (
             p_chain_id,
-            normalized_contract_address::types.eth_address,
+            normalized_contract_address,
             p_token_id,
-            normalized_to_address::types.eth_address
+            normalized_to_address
         )
         ON CONFLICT (chain_id, contract_address, token_id) DO NOTHING;
 
+        INSERT INTO public.efp_lists (
+            nft_chain_id,
+            nft_contract_address,
+            token_id,
+            owner,
+            manager,
+            "user"
+        )
+        VALUES (
+            p_chain_id,
+            normalized_contract_address,
+            p_token_id,
+            normalized_to_address,
+            normalized_to_address,
+            normalized_to_address
+        )
+        ON CONFLICT (nft_chain_id, nft_contract_address, token_id) DO NOTHING;
+
     ELSE
         -- Update existing row
-        UPDATE public.efp_list_nfts as nft
+        UPDATE public.efp_list_nfts AS nft
         SET nft.owner = normalized_to_address
         WHERE nft.chain_id = p_chain_id
         AND nft.contract_address = normalized_contract_address
         AND nft.token_id = p_token_id;
 
+        -- Update existing row
+        UPDATE public.efp_lists AS l
+        SET l.owner = normalized_to_address
+        WHERE l.nft_chain_id = p_chain_id
+        AND l.nft_contract_address = normalized_contract_address
+        AND l.token_id = p_token_id;
     END IF;
 END;
 $$;

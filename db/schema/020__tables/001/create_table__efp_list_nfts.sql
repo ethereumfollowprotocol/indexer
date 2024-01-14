@@ -8,10 +8,10 @@ CREATE TABLE
     contract_address types.eth_address NOT NULL,
     token_id types.efp_list_nft_token_id NOT NULL,
     owner types.eth_address NOT NULL,
-    list_storage_location BYTEA,
-    list_storage_location_chain_id BIGINT,
-    list_storage_location_contract_address types.eth_address,
-    list_storage_location_slot types.efp_list_storage_location_slot,
+    -- list_storage_location BYTEA,
+    -- list_storage_location_chain_id BIGINT,
+    -- list_storage_location_contract_address types.eth_address,
+    -- list_storage_location_slot types.efp_list_storage_location_slot,
     created_at TIMESTAMP
     WITH
       TIME ZONE DEFAULT CURRENT_TIMESTAMP,
