@@ -20,8 +20,8 @@
     "format:sql": "./scripts/format-sql.sh",
     "format:ts": "bunx @biomejs/biome format . --write",
     "indexer": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans indexer",
-    "lint": "bunx @biomejs/biome check --apply . && bun lint:typecheck",
-    "lint:typecheck": "tsc --project tsconfig.json --noEmit",
+    "lint": "bunx @biomejs/biome check --apply . && bun typecheck",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
     "ping": "docker compose --file='compose.yml' --project-name='efp' up --build --force-recreate --remove-orphans ping",
     "reup": "bun drop && bun up",
     "test": "vitest --run",
@@ -39,20 +39,20 @@
     "kysely-postgres-js": "^2.0.0",
     "postgres": "^3.4.3",
     "std-env": "^3.7.0",
-    "viem": "^2.0.5"
+    "viem": "^2.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.5.0",
+    "@biomejs/biome": "^1.5.1",
     "@total-typescript/ts-reset": "^0.5.1",
-    "@types/bun": "^1.0.0",
-    "@types/node": "^20.10.8",
-    "@vitest/ui": "^1.1.3",
-    "bun": "^1.0.21",
+    "@types/bun": "^1.0.1",
+    "@types/node": "^20.11.0",
+    "@vitest/ui": "^1.2.0",
+    "bun": "^1.0.22",
     "dbmate": "^2.10.0",
     "kysely-codegen": "^0.11.0",
     "pg": "^8.11.3",
     "typescript": "^5.3.3",
-    "vitest": "^1.1.3"
+    "vitest": "^1.2.0"
   },
   "repository": "github:ethereumfollowprotocol/indexer",
   "homepage": "github:ethereumfollowprotocol/indexer#README.md",

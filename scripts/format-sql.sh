@@ -8,7 +8,7 @@ echo '{"language":"postgresql","uppercase":"true","linesBetweenQueries":3}' > "$
 
 # Create a temporary directory for output files
 output_dir=$(mktemp -d)
-num_cpus=$(nproc)
+num_cpus=$(nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 
 # Run formatting in parallel, but store outputs in temporary files
 find db/migrations -type f | sort | xargs -I {} -P "$num_cpus" sh -c 'file_base=$(basename "$1"); bun sql-formatter --fix --language=postgresql --config "'"$config_file"'" "$1" > "'"$output_dir"'/$file_base.out" 2>&1 && echo "$file_base" > "'"$output_dir"'/$file_base.done"' _ {}
