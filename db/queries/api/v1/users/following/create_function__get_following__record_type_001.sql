@@ -68,7 +68,7 @@ BEGIN
         PUBLIC.hexlify(v.record_data)::types.eth_address AS following_address,
         v.tags
     FROM
-        public.view__events__efp_list_records_with_tags AS v
+        public.view__join__efp_list_records_with_tags AS v
     WHERE
         v.chain_id = list_storage_location_chain_id AND
         v.contract_address = list_storage_location_contract_address AND

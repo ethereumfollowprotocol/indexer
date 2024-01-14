@@ -28,7 +28,7 @@ SELECT
     ELSE FALSE
   END AS has_mute_tag
 FROM
-  PUBLIC.view__events__efp_list_records_with_tags AS record_tags
+  PUBLIC.view__join__efp_list_records_with_tags AS record_tags
   LEFT JOIN PUBLIC.view__events__efp_list_nfts_with_manager_user AS nfts ON nfts.efp_list_storage_location_chain_id = record_tags.chain_id
   AND nfts.efp_list_storage_location_contract_address = record_tags.contract_address
   AND nfts.efp_list_storage_location_slot = record_tags.slot;

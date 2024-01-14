@@ -7,7 +7,7 @@ CREATE TABLE
     chain_id types.eth_chain_id NOT NULL,
     contract_address types.eth_address NOT NULL,
     slot types.efp_list_storage_location_slot NOT NULL,
-    record types.hexstring NOT NULL,
+    record BYTEA NOT NULL,
     tag types.efp_tag NOT NULL,
     created_at TIMESTAMP
     WITH

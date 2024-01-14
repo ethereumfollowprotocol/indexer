@@ -32,7 +32,7 @@ BEGIN
             chain_id = p_chain_id AND
             contract_address = p_contract_address AND
             slot = p_slot AND
-            record = public.hexlify(p_list_op__v001__opcode_004.record) AND
+            record = p_list_op__v001__opcode_004.record AND
             tag = p_list_op__v001__opcode_004.tag
     ) THEN
         -- RAISE WARNING 'Attempt to remove non-existent efp_list_record_tags row (chain_id=%, contract_address=%, slot=%, record=%, tag=%)',
@@ -55,7 +55,7 @@ BEGIN
         chain_id = p_chain_id AND
         contract_address = p_contract_address AND
         slot = p_slot AND
-        record = public.hexlify(p_list_op__v001__opcode_004.record) AND
+        record = p_list_op__v001__opcode_004.record AND
         tag = p_list_op__v001__opcode_004.tag;
 END;
 $$;

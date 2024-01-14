@@ -23,11 +23,7 @@ OR REPLACE FUNCTION public.handle_contract_event__ListOp__v001__opcode_002 (
   p_list_op_hex types.hexstring,
   p_list_op__v001__opcode_002 types.efp_list_op__v001__opcode_002
 ) RETURNS VOID LANGUAGE plpgsql AS $$
-DECLARE
-    list_record_hex types.hexstring;
 BEGIN
-    list_record_hex := public.hexlify(p_list_op__v001__opcode_002.record);
-
     -- if it doesn't already exist, raise exception
     IF NOT EXISTS (
         SELECT 1
@@ -36,7 +32,7 @@ BEGIN
             chain_id = p_chain_id AND
             contract_address = p_contract_address AND
             slot = p_slot AND
-            record = list_record_hex
+            record = p_list_op__v001__opcode_002.record
     ) THEN
         -- RAISE WARNING 'Attempt to remove non-existent efp_list_records row (chain_id=%, contract_address=%, slot=%, record=%)',
         --     p_chain_id,
@@ -56,7 +52,7 @@ BEGIN
         chain_id = p_chain_id AND
         contract_address = p_contract_address AND
         slot = p_slot AND
-        record = list_record_hex;
+        record = p_list_op__v001__opcode_002.record;
 END;
 $$;
 

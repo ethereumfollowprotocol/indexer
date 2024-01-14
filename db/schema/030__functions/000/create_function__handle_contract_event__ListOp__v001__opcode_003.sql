@@ -36,7 +36,7 @@ BEGIN
         p_chain_id,
         p_contract_address,
         p_slot,
-        public.hexlify(p_list_op__v001__opcode_003.record),
+        p_list_op__v001__opcode_003.record,
         p_list_op__v001__opcode_003.tag
     );
 END;

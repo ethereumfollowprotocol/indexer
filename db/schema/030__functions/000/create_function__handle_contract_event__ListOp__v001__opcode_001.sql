@@ -36,18 +36,18 @@ BEGIN
         contract_address,
         slot,
         record,
-        version,
+        record_version,
         record_type,
-        data
+        record_data
     )
     VALUES (
         p_chain_id,
         p_contract_address,
         p_slot,
-        list_record_hex,
+        p_list_op__v001__opcode_001.record,
         list_record.version,
         list_record.record_type,
-        public.hexlify(list_record.data)
+        list_record.data
     );
 END;
 $$;
