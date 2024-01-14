@@ -19,7 +19,7 @@ OR REPLACE FUNCTION query.get_list_records (token_id BIGINT) RETURNS TABLE (
 BEGIN
   RETURN QUERY
   SELECT lr.record_version, lr.record_type, lr.record_data
-  FROM public.view__events__efp_list_records AS lr
+  FROM public.efp_list_records AS lr
   JOIN query.get_list_storage_location(token_id) AS lsl
   ON lr.chain_id = lsl.chain_id
     AND lr.contract_address = lsl.contract_address

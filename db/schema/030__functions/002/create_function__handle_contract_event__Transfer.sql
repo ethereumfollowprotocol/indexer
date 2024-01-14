@@ -65,8 +65,8 @@ BEGIN
             normalized_contract_address,
             p_token_id,
             normalized_to_address,
-            normalized_to_address,
-            normalized_to_address
+            '0x0000000000000000000000000000000000000000'::types.eth_address,
+            '0x0000000000000000000000000000000000000000'::types.eth_address
         )
         ON CONFLICT (nft_chain_id, nft_contract_address, token_id) DO NOTHING;
 

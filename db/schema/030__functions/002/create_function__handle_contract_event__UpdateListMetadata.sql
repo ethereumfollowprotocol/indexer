@@ -40,8 +40,8 @@ BEGIN
         SET
             "user" = p_value
         WHERE
-            l.nft_chain_id = p_chain_id
-            AND l.nft_contract_address = normalized_contract_address
+            l.list_storage_location_chain_id = p_chain_id
+            AND l.list_storage_location_contract_address = normalized_contract_address
             AND l.list_storage_location_slot = p_slot;
     END IF;
 
@@ -51,8 +51,8 @@ BEGIN
         SET
             manager = p_value
         WHERE
-            l.nft_chain_id = p_chain_id
-            AND l.nft_contract_address = normalized_contract_address
+            l.list_storage_location_chain_id = p_chain_id
+            AND l.list_storage_location_contract_address = normalized_contract_address
             AND l.list_storage_location_slot = p_slot;
     END IF;
 END;
