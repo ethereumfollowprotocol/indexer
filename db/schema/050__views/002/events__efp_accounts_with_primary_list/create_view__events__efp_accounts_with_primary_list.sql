@@ -13,10 +13,10 @@ WHERE
   am.key = 'primary-list'
 UNION
 SELECT
-  nft.efp_list_user AS address,
-  MIN(nft.efp_list_nft_token_id) AS primary_list_token_id
+  l.user AS address,
+  MIN(l.token_id) AS primary_list_token_id
 FROM
-  PUBLIC.view__events__efp_list_nfts_with_manager_user nft
+  PUBLIC.efp_lists l
 WHERE
   NOT EXISTS (
     SELECT
@@ -24,11 +24,11 @@ WHERE
     FROM
       PUBLIC.efp_account_metadata am
     WHERE
-      am.address = nft.efp_list_user
+      am.address = l.user
       AND am.key = 'primary-list'
   )
 GROUP BY
-  nft.efp_list_user;
+  l.user;
 
 
 

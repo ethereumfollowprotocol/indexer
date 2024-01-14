@@ -35,16 +35,16 @@ BEGIN
     decoded_location := public.decode__efp_list_storage_location__v001__location_type_001(p_list_storage_location);
 
     -- Update list_nfts with the decoded values
-    UPDATE public.efp_lists lists
+    UPDATE public.efp_lists l
     SET
         list_storage_location = DECODE(SUBSTRING(p_list_storage_location FROM 3), 'hex'),
         list_storage_location_chain_id = decoded_location.chain_id,
         list_storage_location_contract_address = decoded_location.contract_address,
         list_storage_location_slot = decoded_location.slot
     WHERE
-        lists.nft_chain_id = p_chain_id
-        AND lists.nft_contract_address = normalized_contract_address
-        AND lists.token_id = p_token_id;
+        l.nft_chain_id = p_chain_id
+        AND l.nft_contract_address = normalized_contract_address
+        AND l.token_id = p_token_id;
 END;
 $$;
 

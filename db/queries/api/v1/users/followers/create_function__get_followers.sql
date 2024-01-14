@@ -6,26 +6,28 @@
 --              type, excluding blocked or muted relationships.
 -- Parameters:
 --   - address (text): Address used to identify and filter followers.
--- Returns: A table with 'efp_list_nft_token_id' (BIGINT), 'efp_list_user'
---          (types.eth_address), tags (types.efp_tag []), representing the
---          list token ID, list user, and tags.
+-- Returns: A table with
+--            'efp_list_nft_token_id' (types.efp_list_nft_token_id),
+--            'follower' (types.eth_address),
+--             tags (types.efp_tag []),
+--          representing the list token ID, list user, and tags.
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_followers (p_address types.eth_address) RETURNS TABLE (
-  efp_list_nft_token_id BIGINT,
-  efp_list_user types.eth_address,
+  efp_list_nft_token_id types.efp_list_nft_token_id,
+  follower types.eth_address,
   tags types.efp_tag []
 ) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
     SELECT
         -- the token id that follows the <p_address>
-        v.efp_list_nft_token_id,
+        v.token_id AS efp_list_nft_token_id,
         -- the list user of the EFP List that follows the <p_address>
-        v.efp_list_user AS follower,
+        v.user AS follower,
         v.tags
     FROM
-        public.view__events__efp_list_records_with_nft_manager_user_tags AS v
+        public.view__join__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only list record version 1
         v.record_version = 1 AND
@@ -41,7 +43,7 @@ BEGIN
         -- (the "data" of the address record is the address that is followed)
         v.record_data = public.unhexlify(p_address)
     ORDER BY
-        v.efp_list_nft_token_id ASC;
+        v.token_id ASC;
 END;
 $$;
 

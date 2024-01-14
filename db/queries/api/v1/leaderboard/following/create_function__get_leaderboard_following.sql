@@ -18,10 +18,10 @@ OR REPLACE FUNCTION query.get_leaderboard_following (limit_count BIGINT) RETURNS
 BEGIN
     RETURN QUERY
   SELECT
-        v.efp_list_user AS address,
+        v.user AS address,
         COUNT(DISTINCT v.record_data) AS following_count
     FROM
-        public.view__events__efp_list_records_with_nft_manager_user_tags AS v
+        public.view__join__efp_list_records_with_nft_manager_user_tags AS v
     WHERE
         -- only version 1
         v.record_version = 1 AND
@@ -34,10 +34,10 @@ BEGIN
         -- valid address format
         public.is_valid_address(v.record_data)
     GROUP BY
-        v.efp_list_user
+        v.user
     ORDER BY
         following_count DESC,
-        v.efp_list_user ASC
+        v.user ASC
     LIMIT limit_count;
 END;
 $$;

@@ -33,6 +33,28 @@ BEGIN
     VALUES (p_chain_id, normalized_contract_address, p_slot, p_key, p_value)
     ON CONFLICT (chain_id, contract_address, slot, key)
     DO UPDATE SET value = EXCLUDED.value;
+
+    -- if p_key is equal to "user", then update the user column of efp_lists for this list
+    IF p_key = 'user' THEN
+        UPDATE public.efp_lists l
+        SET
+            "user" = p_value
+        WHERE
+            l.nft_chain_id = p_chain_id
+            AND l.nft_contract_address = normalized_contract_address
+            AND l.list_storage_location_slot = p_slot;
+    END IF;
+
+    -- if p_key is equal to "manager", then update the manager column of efp_lists for this list
+    IF p_key = 'manager' THEN
+        UPDATE public.efp_lists l
+        SET
+            manager = p_value
+        WHERE
+            l.nft_chain_id = p_chain_id
+            AND l.nft_contract_address = normalized_contract_address
+            AND l.list_storage_location_slot = p_slot;
+    END IF;
 END;
 $$;
 

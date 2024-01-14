@@ -19,7 +19,7 @@
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_outgoing_relationships (address types.eth_address, tag VARCHAR(255)) RETURNS TABLE (
-  efp_list_nft_token_id BIGINT,
+  efp_list_nft_token_id types.efp_list_nft_token_id,
   efp_list_user types.eth_address,
   record_version types.uint8,
   record_type types.uint8,
@@ -48,14 +48,14 @@ BEGIN
     RETURN QUERY
     WITH primary_list AS (
         SELECT
-            v.efp_list_nft_token_id,
-            v.efp_list_user,
+            v.token_id AS efp_list_nft_token_id,
+            v.user AS efp_list_user,
             v.record_version,
             v.record_type,
             v.record_data,
             v.tags
         FROM
-            public.view__events__efp_list_records_with_nft_manager_user_tags AS v
+            public.view__join__efp_list_records_with_nft_manager_user_tags AS v
         WHERE
             -- only list record version 1
             v.record_version = 1 AND
@@ -64,9 +64,9 @@ BEGIN
             -- valid address format
             public.is_valid_address(v.record_data) AND
             -- who is followed by the list user
-            v.efp_list_user = normalized_addr AND
+            v.user = normalized_addr AND
             -- from their primary list
-            v.efp_list_nft_token_id = primary_list_token_id AND
+            v.token_id = primary_list_token_id AND
             -- okay if blocked/muted we are looking at tags in general
             -- tag is in the list of tags
             v.tags @> ARRAY[tag]::varchar(255)[]

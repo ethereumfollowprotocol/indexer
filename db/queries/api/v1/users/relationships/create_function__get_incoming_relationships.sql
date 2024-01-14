@@ -18,7 +18,7 @@
 -------------------------------------------------------------------------------
 CREATE
 OR REPLACE FUNCTION query.get_incoming_relationships (address types.eth_address, tag VARCHAR(255)) RETURNS TABLE (
-  efp_list_nft_token_id BIGINT,
+  efp_list_nft_token_id types.efp_list_nft_token_id,
   efp_list_user types.eth_address,
   tags types.efp_tag []
 ) LANGUAGE plpgsql AS $$
@@ -30,8 +30,8 @@ BEGIN
 
     RETURN QUERY
     SELECT
-      v.efp_list_nft_token_id,
-      v.efp_list_user,
+      v.token_id AS efp_list_nft_token_id,
+      v.user AS efp_list_user,
       v.tags
     FROM public.view__list_records_with_nft_manager_user_tags AS v
     WHERE
