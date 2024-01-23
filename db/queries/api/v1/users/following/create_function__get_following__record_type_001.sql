@@ -17,7 +17,7 @@
 --          version, record type, and following address.
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_following__record_type_001 (p_address types.eth_address) RETURNS TABLE (
+OR REPLACE FUNCTION query.get_following__record_type_001 (p_address VARCHAR(42)) RETURNS TABLE (
   efp_list_nft_token_id BIGINT,
   record_version types.uint8,
   record_type types.uint8,
