@@ -887,7 +887,7 @@ export const efpListRegistryAbi = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'quantity', internalType: 'uint256', type: 'uint256' }
     ],
     name: 'mintBatchTo',
@@ -897,7 +897,7 @@ export const efpListRegistryAbi = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'listStorageLocation', internalType: 'bytes', type: 'bytes' }
     ],
     name: 'mintTo',
@@ -1026,6 +1026,13 @@ export const efpListRegistryAbi = [
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }]
   },
   {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'tokenURIProvider_', internalType: 'address', type: 'address' }],
+    name: 'setTokenURIProvider',
+    outputs: []
+  },
+  {
     stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
@@ -1045,6 +1052,13 @@ export const efpListRegistryAbi = [
     inputs: [{ name: 'tokenId', internalType: 'uint256', type: 'uint256' }],
     name: 'tokenURI',
     outputs: [{ name: '', internalType: 'string', type: 'string' }]
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'tokenURIProvider',
+    outputs: [{ name: '', internalType: 'contract ITokenURIProvider', type: 'address' }]
   },
   {
     stateMutability: 'view',
@@ -1095,6 +1109,16 @@ export const efpListRegistryAbi = [
     inputs: [],
     name: 'unpause',
     outputs: []
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'recipient', internalType: 'address payable', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' }
+    ],
+    name: 'withdraw',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
   },
   {
     type: 'event',
@@ -1237,6 +1261,19 @@ export const efpListRegistryAbi = [
     type: 'event',
     anonymous: false,
     inputs: [
+      {
+        name: 'tokenURIProvider',
+        internalType: 'address',
+        type: 'address',
+        indexed: false
+      }
+    ],
+    name: 'TokenURIProviderChange'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
       { name: 'from', internalType: 'address', type: 'address', indexed: true },
       { name: 'to', internalType: 'address', type: 'address', indexed: true },
       {
@@ -1346,7 +1383,7 @@ export const iefpListRegistryErc721Abi = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'quantity', internalType: 'uint256', type: 'uint256' }
     ],
     name: 'mintBatchTo',
@@ -1356,7 +1393,7 @@ export const iefpListRegistryErc721Abi = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'listStorageLocation', internalType: 'bytes', type: 'bytes' }
     ],
     name: 'mintTo',
