@@ -10,7 +10,6 @@ export type Row<T extends keyof DB> = InsertObject<DB, T>
 export const postgresClient = postgres(env.DATABASE_URL)
 
 export const database = new Kysely<DB>({
-  // @ts-expect-error
   dialect: new PostgresJSDialect({
     postgres: postgresClient
   })
