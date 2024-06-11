@@ -1,3 +1,7 @@
+-- migrate:up
+-------------------------------------------------------------------------------
+-- Table: ens_metadata
+-------------------------------------------------------------------------------
 CREATE TABLE
   public.ens_metadata (
     "name" TEXT NOT NULL,
@@ -24,3 +28,10 @@ UPDATE
   ON public.ens_metadata FOR EACH ROW
 EXECUTE
   FUNCTION public.update_updated_at_column();
+
+-- migrate:down
+-------------------------------------------------------------------------------
+-- Undo Table: ens_metadata
+-------------------------------------------------------------------------------
+DROP TABLE
+  IF EXISTS public.ens_metadata CASCADE;
