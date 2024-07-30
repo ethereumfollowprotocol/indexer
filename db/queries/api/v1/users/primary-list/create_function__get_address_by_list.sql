@@ -20,9 +20,9 @@ BEGIN
     INTO primary_list_address
     FROM efp_lists as v,  efp_account_metadata AS meta
     WHERE v.token_id = primary_list_id AND (
-		meta.address = v.user AND
-		convert_hex_to_bigint(meta.value) = v.token_id
-	);
+        meta.address = v.user AND
+        convert_hex_to_bigint(meta.value) = v.token_id
+    );
 
     RETURN primary_list_address;
 END;
