@@ -44,6 +44,6 @@ db/schema.sql
 .idea/
 
 # migrations
-db/migrations/*
+# db/migrations/*
 dist
 _
