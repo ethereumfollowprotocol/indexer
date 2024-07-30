@@ -49,6 +49,8 @@ for sql_file in "${sql_files[@]}"; do
   ((counter++))
 done
 
+echo "running dbmate up"
+
 bunx dbmate up
 
 # bun database:generate-types
