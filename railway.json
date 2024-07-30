@@ -6,7 +6,7 @@
     "dockerfilePath": "./Dockerfile"
   },
   "deploy": {
-    "startCommand": "bun database:up && bun --hot --watch ./src/index.ts",
+    "startCommand": "bun --hot --watch ./src/index.ts",
     "restartPolicyType": "ALWAYS",
     "restartPolicyMaxRetries": 4
   }
