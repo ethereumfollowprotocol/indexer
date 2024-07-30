@@ -7,30 +7,30 @@ networks:
     driver: bridge
 
 services:
-  ping:
-    container_name: efp-indexer-ping
-    image: bash:latest
-    build:
-        FROM bash:latest
-        WORKDIR /usr/src/app
-        RUN apk add --no-cache curl && rm -rf /var/cache/apk/*
-        COPY ./scripts/ping.sh /usr/src/app/ping.sh
-    command: ./ping.sh
-    entrypoint: /usr/local/bin/bash
-    networks:
-      - default
+#   ping:
+#    container_name: efp-indexer-ping
+#    image: bash:latest
+#    build:
+#        FROM bash:latest
+#        WORKDIR /usr/src/app
+#        RUN apk add --no-cache curl && rm -rf /var/cache/apk/*
+#        COPY ./scripts/ping.sh /usr/src/app/ping.sh
+#    command: ./ping.sh
+#    entrypoint: /usr/local/bin/bash
+#    networks:
+#      - default
 
-  anvil:
-    container_name: efp-indexer-anvil
-    image: ghcr.io/foundry-rs/foundry:latest
-    command: anvil
-    tty: true
-    environment:
-      - ANVIL_IP_ADDR=0.0.0.0
-    ports:
-      - 8545:8545
-    networks:
-      - default
+#  anvil:
+#    container_name: efp-indexer-anvil
+#    image: ghcr.io/foundry-rs/foundry:latest
+#    command: anvil
+#    tty: true
+#    environment:
+#      - ANVIL_IP_ADDR=0.0.0.0
+#    ports:
+#      - 8545:8545
+#    networks:
+#      - default
 
   database:
     container_name: efp-database
