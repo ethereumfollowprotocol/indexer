@@ -6,7 +6,6 @@ set -e
 migrations_dir="db/migrations"
 schema_dir="db/schema"
 queries_dir="db/queries"
-functions_dir="db/functions"
 
 # Create the migrations directory if it does not exist
 mkdir -p "$migrations_dir"
@@ -28,7 +27,6 @@ aggregate_files() {
 # Aggregate files from schema and queries directories
 aggregate_files "$schema_dir"
 aggregate_files "$queries_dir"
-aggregate_files "$functions_dir"
 
 # Counter to prefix file names to preserve order
 counter=1
