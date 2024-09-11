@@ -22,6 +22,7 @@ interface EnvironmentVariables {
   readonly QUIKNODE_PREFIX: string
   readonly SNITCH_ID: string
   readonly START_BLOCK: string
+  readonly BATCH_SIZE: number
 }
 
 declare module 'bun' {

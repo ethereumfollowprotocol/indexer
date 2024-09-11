@@ -72,18 +72,18 @@ BEGIN
 
     ELSE
         -- Update existing row
-        UPDATE public.efp_list_nfts AS nft
-        SET nft.owner = normalized_to_address
-        WHERE nft.chain_id = p_chain_id
-        AND nft.contract_address = normalized_contract_address
-        AND nft.token_id = p_token_id;
+        UPDATE public.efp_list_nfts
+        SET owner = normalized_to_address
+        WHERE chain_id = p_chain_id
+        AND contract_address = normalized_contract_address
+        AND token_id = p_token_id;
 
         -- Update existing row
-        UPDATE public.efp_lists AS l
-        SET l.owner = normalized_to_address
-        WHERE l.nft_chain_id = p_chain_id
-        AND l.nft_contract_address = normalized_contract_address
-        AND l.token_id = p_token_id;
+        UPDATE public.efp_lists 
+        SET owner = normalized_to_address
+        WHERE nft_chain_id = p_chain_id
+        AND nft_contract_address = normalized_contract_address
+        AND token_id = p_token_id;
     END IF;
 END;
 $$;
