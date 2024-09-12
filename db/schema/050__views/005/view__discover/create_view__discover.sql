@@ -29,7 +29,7 @@ FROM (
 		r._index
 	FROM public.view__latest_follows r
 	JOIN public.efp_leaderboard l ON l.address = r.address
-	WHERE r.address NOT IN (SELECT address FROM public.view__latest_leaders) )
+	)
 )
 ORDER BY _index ASC;
 

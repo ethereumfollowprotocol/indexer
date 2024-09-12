@@ -37,7 +37,7 @@ export const evmClients = {
            * TODO: investigate why public actions hang when rank is enabled
            * @link https://discord.com/channels/1156791276818157609/1156791519089541241/1178111399839399937
            */
-          rank: true
+          rank: false
         }
       ),
       batch: { multicall: true }
@@ -57,7 +57,7 @@ export const evmClients = {
           webSocket(`wss://opt-mainnet.g.alchemy.com/v2/${env.OPTIMISM_ALCHEMY_ID}`),
           webSocket(`wss://optimism.llamarpc.com/rpc/${env.LLAMAFOLIO_ID}`)
         ],
-        { rank: true }
+        { rank: false }
       ),
       batch: { multicall: true }
     }).extend(walletActions),
@@ -72,7 +72,7 @@ export const evmClients = {
           http(`https://${env.QUIKNODE_PREFIX}.base-mainnet.quiknode.pro/${env.QUIKNODE_ID}`),
           http(`https://sepolia.base.org`)
         ],
-        { rank: true }
+        { rank: false }
       ),
       batch: { multicall: true }
     }).extend(walletActions),
@@ -90,7 +90,7 @@ export const evmClients = {
           webSocket(`wss://sepolia.infura.io/ws/v3/${env.INFURA_ID}`),
           webSocket(`wss://eth-sepolia.g.alchemy.com/v2/${env.SEPOLIA_ALCHEMY_ID}`)
         ],
-        { rank: true }
+        { rank: false }
       ),
       batch: { multicall: true }
     }).extend(walletActions),
@@ -107,7 +107,7 @@ export const evmClients = {
           http('https://sepolia.optimism.io'),
           http('https://sepolia-rollup.arbitrum.io/rpc')
         ],
-        { rank: true }
+        { rank: false }
       ),
       batch: { multicall: true }
     }).extend(walletActions),
@@ -122,7 +122,7 @@ export const evmClients = {
           http(`https://${env.QUIKNODE_PREFIX}.base-sepolia.quiknode.pro/${env.QUIKNODE_ID}`),
           http(`https://sepolia.base.org`)
         ],
-        { rank: true }
+        { rank: false }
       ),
       batch: { multicall: true }
     }).extend(walletActions)

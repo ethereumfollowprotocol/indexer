@@ -33,9 +33,9 @@ BEGIN
         LEFT JOIN public.efp_leaderboard l ON v.follower = l.address
         WHERE v.tags && p_tags
         ORDER BY  
-            (CASE WHEN direction = 'followers' THEN l.followers END) DESC,
-            (CASE WHEN direction = 'earliest' THEN v.updated_at END) ASC,
-            (CASE WHEN direction = 'latest' THEN v.updated_at END) DESC;
+            (CASE WHEN direction = 'followers' THEN l.followers END) DESC NULLS LAST,
+            (CASE WHEN direction = 'earliest' THEN v.updated_at END) ASC NULLS LAST,
+            (CASE WHEN direction = 'latest' THEN v.updated_at END) DESC NULLS LAST;
     ELSE
         RETURN QUERY
         SELECT 
@@ -49,9 +49,9 @@ BEGIN
         FROM query.get_unique_followers(normalized_addr) v
         LEFT JOIN public.efp_leaderboard l ON v.follower = l.address
         ORDER BY  
-            (CASE WHEN direction = 'followers' THEN l.followers END) DESC,
-            (CASE WHEN direction = 'earliest' THEN v.updated_at END) ASC,
-            (CASE WHEN direction = 'latest' THEN v.updated_at END) DESC;
+            (CASE WHEN direction = 'followers' THEN l.followers END) DESC NULLS LAST,
+            (CASE WHEN direction = 'earliest' THEN v.updated_at END) ASC NULLS LAST,
+            (CASE WHEN direction = 'latest' THEN v.updated_at END) DESC NULLS LAST;
     END IF;
 END;
 $$;

@@ -11,10 +11,12 @@ CREATE TABLE
     "followers_rank" BIGINT,
     "following_rank" BIGINT,
     "blocks_rank" BIGINT,
+    "top8_rank" BIGINT,
     "mutuals" BIGINT DEFAULT 0,
     "following" BIGINT DEFAULT 0,
     "followers" BIGINT DEFAULT 0,
     "blocks" BIGINT DEFAULT 0,
+    "top8" BIGINT DEFAULT 0,
     created_at TIMESTAMP
     WITH
       TIME ZONE DEFAULT CURRENT_TIMESTAMP,

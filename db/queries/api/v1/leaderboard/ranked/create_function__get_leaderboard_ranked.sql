@@ -11,10 +11,12 @@ OR REPLACE FUNCTION query.get_leaderboard_ranked (p_limit INT, p_offset INT, p_c
   followers_rank BIGINT,
   following_rank BIGINT,
   blocks_rank BIGINT,
+  top8_rank BIGINT,
   mutuals BIGINT,
   following BIGINT,
   followers BIGINT,
   blocks BIGINT,
+  top8 BIGINT,
   created_at TIMESTAMP WITH TIME ZONE,
   updated_at TIMESTAMP WITH TIME ZONE
 ) LANGUAGE plpgsql AS $$
@@ -53,6 +55,16 @@ BEGIN
         ORDER BY  
             (CASE WHEN direction = 'asc' THEN v.blocks END) asc,
             (CASE WHEN direction = 'desc' THEN v.blocks END) desc
+        LIMIT p_limit
+        OFFSET p_offset;
+    ELSEIF col = 'top8' THEN
+        RETURN QUERY
+        SELECT * 
+        FROM public.efp_leaderboard v
+        WHERE v.top8_rank > 0
+        ORDER BY  
+            (CASE WHEN direction = 'asc' THEN v.top8 END) asc,
+            (CASE WHEN direction = 'desc' THEN v.top8 END) desc
         LIMIT p_limit
         OFFSET p_offset;
     ELSE
