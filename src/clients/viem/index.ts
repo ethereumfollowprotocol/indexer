@@ -8,16 +8,9 @@ export const evmClients = {
       key: 'mainnet-client',
       name: 'Mainnet Client',
       chain: mainnet,
-      transport: fallback(
-        [
-
-          http(env.PRIMARY_RPC_ETH),
-          http(env.SECONDARY_RPC_ETH)
-        ],
-        {
-          rank: false
-        }
-      ),
+      transport: fallback([http(env.PRIMARY_RPC_ETH), http(env.SECONDARY_RPC_ETH)], {
+        rank: false
+      }),
       batch: { multicall: true }
     }).extend(walletActions),
   '10': () =>
@@ -25,13 +18,7 @@ export const evmClients = {
       key: 'optimism-client',
       name: 'Optimism Client',
       chain: optimism,
-      transport: fallback(
-        [
-          http(env.PRIMARY_RPC_OP),
-          http(env.SECONDARY_RPC_OP)
-        ],
-        { rank: false }
-      ),
+      transport: fallback([http(env.PRIMARY_RPC_OP), http(env.SECONDARY_RPC_OP)], { rank: false }),
       batch: { multicall: true }
     }).extend(walletActions),
   '8453': () =>
@@ -39,13 +26,7 @@ export const evmClients = {
       key: 'base-client',
       name: 'Base Client',
       chain: base,
-      transport: fallback(
-        [
-          http(env.PRIMARY_RPC_BASE),
-          http(env.SECONDARY_RPC_BASE)
-        ],
-        { rank: false }
-      ),
+      transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false }),
       batch: { multicall: true }
     }).extend(walletActions)
 }
