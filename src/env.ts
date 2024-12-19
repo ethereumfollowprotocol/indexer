@@ -4,7 +4,7 @@ export const env = Object.freeze({
   NODE_ENV: getEnvVariable('NODE_ENV'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
   CHAIN_ID: getEnvVariable('CHAIN_ID'),
-  SNITCH_ID: getEnvVariable('SNITCH_ID'),
+  SNITCH_ID: getEnvVariable('SNITCH_ID') ?? undefined,
   START_BLOCK: getEnvVariable('START_BLOCK'),
   BATCH_SIZE: getEnvVariable('BATCH_SIZE'),
   RECOVER_HISTORY: getEnvVariable('RECOVER_HISTORY'),
