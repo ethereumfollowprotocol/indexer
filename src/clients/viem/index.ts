@@ -26,8 +26,8 @@ export const evmClients = {
       key: 'base-client',
       name: 'Base Client',
       chain: base,
-      transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false }),
-      batch: { multicall: true }
+    //   transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false })
+      transport: http(env.PRIMARY_RPC_BASE)
     }).extend(walletActions)
 }
 

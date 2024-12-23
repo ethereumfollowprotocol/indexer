@@ -41,7 +41,21 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     eventInterleaver.subscribe(new EventUploader())
 
     // Start all publishers
-    await Promise.all(publishers.map(publisher => publisher.start()))
+    // await Promise.all(publishers.map(publisher => publisher.start()))
+    await eventInterleaver.start()
+    logger.log('Started EventInterleaver publisher')
+
+    // await publishers[1]?.start()
+    // logger.log('Started EFPListRegistry publisher')
+    // await publishers[0]?.start()
+    // logger.log('Started EFPAccountMetadata publisher')
+
+    await Promise.all([publishers[0], publishers[1]].map(publisher => publisher.start()))
+
+    await publishers[2]?.start()
+    logger.log('Started EFPListRecords publisher')
+    // await publishers[3]?.start()
+    // logger.log('Started EFPListMinter publisher')
 
     asyncExitHook(
       signal => {

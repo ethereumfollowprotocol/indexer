@@ -53,7 +53,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
   private subscribers: EventSubscriber[] = []
 
   // Delay before propagating events to ensure time ordering.
-  private readonly propagationDelay: number = 3000
+  private readonly propagationDelay: number = 5000
 
   // Interval at which the queue is checked and processed.
   private readonly daemonInterval: number = 1000
