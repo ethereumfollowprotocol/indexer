@@ -50,7 +50,7 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     // await publishers[0]?.start()
     // logger.log('Started EFPAccountMetadata publisher')
 
-    await Promise.all([publishers[0], publishers[1]].map(publisher => publisher.start()))
+    await Promise.all([publishers[0], publishers[1]].map(publisher => publisher?.start()))
 
     await publishers[2]?.start()
     logger.log('Started EFPListRecords publisher')
