@@ -1,4 +1,4 @@
-import { http, createPublicClient, fallback, walletActions } from 'viem'
+import { http, createPublicClient, fallback, walletActions, webSocket } from 'viem'
 import { base, mainnet, optimism } from 'viem/chains'
 import { env } from '#/env.ts'
 
@@ -26,8 +26,7 @@ export const evmClients = {
       key: 'base-client',
       name: 'Base Client',
       chain: base,
-      //   transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false })
-      transport: http(env.PRIMARY_RPC_BASE)
+      transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false })
     }).extend(walletActions)
 }
 

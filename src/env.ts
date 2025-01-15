@@ -19,7 +19,8 @@ export const env = Object.freeze({
   PRIMARY_RPC_OP: getEnvVariable('PRIMARY_RPC_OP'),
   SECONDARY_RPC_OP: getEnvVariable('SECONDARY_RPC_OP'),
   PRIMARY_RPC_ETH: getEnvVariable('PRIMARY_RPC_ETH'),
-  SECONDARY_RPC_ETH: getEnvVariable('SECONDARY_RPC_ETH')
+  SECONDARY_RPC_ETH: getEnvVariable('SECONDARY_RPC_ETH'),
+  RECORDS_ONLY: getEnvVariable('RECORDS_ONLY'),
 })
 
 function getEnvVariable<T extends keyof EnvironmentVariables>(name: T) {

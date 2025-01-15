@@ -30,7 +30,6 @@ BEGIN
     list_record_hex := public.hexlify(p_list_op__v001__opcode_001.record);
     list_record := public.decode__list_record(list_record_hex);
 
-    -- if there's a conflict, then this will raise an exception
     INSERT INTO public.efp_list_records (
         chain_id,
         contract_address,
@@ -48,7 +47,7 @@ BEGIN
         list_record.version,
         list_record.record_type,
         list_record.data
-    );
+    ) ON CONFLICT DO NOTHING;
 END;
 $$;
 

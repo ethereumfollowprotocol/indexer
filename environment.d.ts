@@ -17,6 +17,7 @@ interface EnvironmentVariables {
   readonly SECONDARY_RPC_OP: string
   readonly PRIMARY_RPC_ETH: string
   readonly SECONDARY_RPC_ETH: string
+  readonly RECORDS_ONLY: string
 }
 
 declare module 'bun' {

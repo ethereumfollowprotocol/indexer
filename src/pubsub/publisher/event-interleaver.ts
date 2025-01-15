@@ -53,7 +53,7 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
   private subscribers: EventSubscriber[] = []
 
   // Delay before propagating events to ensure time ordering.
-  private readonly propagationDelay: number = 5000
+  private readonly propagationDelay: number = 3000
 
   // Interval at which the queue is checked and processed.
   private readonly daemonInterval: number = 1000
@@ -167,7 +167,6 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
         await this.#propagateBatch(batch)
         batch = []
       }
-      //   await sleep(1000)
     }
 
     // Propagate any remaining events in the last batch
@@ -182,6 +181,8 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
   }
 
   async #propagateBatch(events: Event[]): Promise<void> {
-    await Promise.allSettled(this.subscribers.map(subscriber => subscriber.onEvents(events)))
+    for (const subscriber of this.subscribers) {
+      await subscriber.onEvents(events)
+    }
   }
 }

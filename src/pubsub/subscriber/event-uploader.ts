@@ -6,15 +6,10 @@ import type { EventSubscriber } from './interface'
 export class EventUploader implements EventSubscriber {
   async onEvent(event: Event): Promise<void> {
     await this.onEvents([event])
-    const rows = [EventUploader.#toTableRow(event)]
-    const result = await database.insertInto('events').values(rows).executeTakeFirst()
-    if (result.numInsertedOrUpdatedRows !== 1n) {
-      logger.error(`Failed to insert event ${JSON.stringify(event)}`)
-    }
   }
 
   async onEvents(events: Event[]): Promise<void> {
-    if (events.length > 1) {
+    if (events.length > 0) {
       logger.info(`⏳ Uploading ${events.length} events`)
     }
     for (const event of events) {
@@ -24,13 +19,21 @@ export class EventUploader implements EventSubscriber {
         ).join(', ')})`
       )
     }
-    const rows = events.map(event => EventUploader.#toTableRow(event))
-    const result = await database.insertInto('events').values(rows).executeTakeFirst()
+    try {
+      const rows = events.map(event => EventUploader.#toTableRow(event))
+      const result = await database
+        .insertInto('events')
+        .values(rows)
+        .onConflict(oc => oc.doNothing())
+        .executeTakeFirst()
 
-    if (result.numInsertedOrUpdatedRows !== BigInt(events.length)) {
-      logger.error(`Failed to insert events ${JSON.stringify(events)}`)
+      if (result.numInsertedOrUpdatedRows !== BigInt(events.length)) {
+        logger.error(`❌Failed to insert some events`)
+      }
+      logger.info(`✅ Uploaded ${result.numInsertedOrUpdatedRows} / ${events.length} events`)
+    } catch (error) {
+      logger.error(`❌❌❌❌❌ Error inserting event: ${error}`)
     }
-    logger.info(`✅ Uploaded ${events.length} events`)
   }
 
   static #toTableRow(event: Event): {

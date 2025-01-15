@@ -1178,6 +1178,21 @@ export const efpListRegistryAbi = [
     ],
     name: 'Transfer'
   },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'owner', internalType: 'address', type: 'address', indexed: true },
+      { name: 'operator', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'approved',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false
+      }
+    ],
+    name: 'ApprovalForAll'
+  },
   //   {
   //     type: 'event',
   //     anonymous: false,

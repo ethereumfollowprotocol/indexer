@@ -29,8 +29,7 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
         efpListRegistryAbi,
         env.EFP_CONTRACTS.LIST_REGISTRY
       ),
-      new ContractEventPublisher(client, chainId, 'EFPListRecords', efpListRecordsAbi, env.EFP_CONTRACTS.LIST_RECORDS),
-      new ContractEventPublisher(client, chainId, 'EFPListMinter', efpListMinterAbi, env.EFP_CONTRACTS.LIST_MINTER)
+      new ContractEventPublisher(client, chainId, 'EFPListRecords', efpListRecordsAbi, env.EFP_CONTRACTS.LIST_RECORDS)
     ]
 
     // 2. Collect and interleave events in to a single ordered steam
@@ -40,22 +39,17 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     // 3. Upload events to the database
     eventInterleaver.subscribe(new EventUploader())
 
-    // Start all publishers
-    // await Promise.all(publishers.map(publisher => publisher.start()))
+    // Start publishers
     await eventInterleaver.start()
     logger.log('Started EventInterleaver publisher')
 
-    // await publishers[1]?.start()
-    // logger.log('Started EFPListRegistry publisher')
-    // await publishers[0]?.start()
-    // logger.log('Started EFPAccountMetadata publisher')
-
-    await Promise.all([publishers[0], publishers[1]].map(publisher => publisher?.start()))
-
-    await publishers[2]?.start()
-    logger.log('Started EFPListRecords publisher')
-    // await publishers[3]?.start()
-    // logger.log('Started EFPListMinter publisher')
+    if(env.RECORDS_ONLY === 'true'){
+        await publishers[2]?.start()
+        logger.log('Started in ListRecords only mode')
+    } else {
+        await Promise.all([publishers[0], publishers[1], publishers[2]].map(publisher => publisher?.start()))
+        logger.log('Started in All Events mode')
+    }
 
     asyncExitHook(
       signal => {
