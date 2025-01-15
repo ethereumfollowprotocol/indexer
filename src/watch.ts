@@ -43,12 +43,12 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     await eventInterleaver.start()
     logger.log('Started EventInterleaver publisher')
 
-    if(env.RECORDS_ONLY === 'true'){
-        await publishers[2]?.start()
-        logger.log('Started in ListRecords only mode')
+    if (env.RECORDS_ONLY === 'true') {
+      await publishers[2]?.start()
+      logger.log('Started in ListRecords only mode')
     } else {
-        await Promise.all([publishers[0], publishers[1], publishers[2]].map(publisher => publisher?.start()))
-        logger.log('Started in All Events mode')
+      await Promise.all([publishers[0], publishers[1], publishers[2]].map(publisher => publisher?.start()))
+      logger.log('Started in All Events mode')
     }
 
     asyncExitHook(
