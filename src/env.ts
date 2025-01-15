@@ -10,7 +10,6 @@ export const env = Object.freeze({
   RECOVER_HISTORY: getEnvVariable('RECOVER_HISTORY'),
   EFP_CONTRACTS: {
     ACCOUNT_METADATA: getEnvVariable('EFP_CONTRACT_ACCOUNT_METADATA'),
-    LIST_MINTER: getEnvVariable('EFP_CONTRACT_LINT_MINTER'),
     LIST_REGISTRY: getEnvVariable('EFP_CONTRACT_LIST_REGISTRY'),
     LIST_RECORDS: getEnvVariable('EFP_CONTRACT_LIST_RECORDS')
   },

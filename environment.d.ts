@@ -3,8 +3,6 @@ interface EnvironmentVariables {
   readonly CHAIN_ID: '1' | '10' | '8453'
   readonly DATABASE_URL: string
   readonly EFP_CONTRACT_ACCOUNT_METADATA: `0x${string}`
-  readonly EFP_CONTRACT_LIST_METADATA: `0x${string}`
-  readonly EFP_CONTRACT_LINT_MINTER: `0x${string}`
   readonly EFP_CONTRACT_LIST_REGISTRY: `0x${string}`
   readonly EFP_CONTRACT_LIST_RECORDS: `0x${string}`
   readonly SNITCH_ID: string | undefined
