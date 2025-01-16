@@ -16,10 +16,12 @@ OR REPLACE FUNCTION query.search_leaderboard (p_term TEXT) RETURNS TABLE (
   followers_rank BIGINT,
   following_rank BIGINT,
   blocks_rank BIGINT,
+  top8_rank BIGINT,
   mutuals BIGINT,
   following BIGINT,
   followers BIGINT,
   blocks BIGINT,
+  top8 BIGINT,
   updated_at TIMESTAMP WITH TIME ZONE
 ) LANGUAGE plpgsql AS $$
 BEGIN
@@ -33,10 +35,12 @@ BEGIN
         lb.followers_rank,
         lb.following_rank,
         lb.blocks_rank,
+        lb.top8_rank,
         lb.mutuals,
         lb.following,
         lb.followers,
         lb.blocks,
+        lb.top8,
         lb.updated_at
     FROM public.efp_leaderboard lb 
     WHERE lb.address ~ p_term 

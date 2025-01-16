@@ -1,29 +1,21 @@
 interface EnvironmentVariables {
   readonly NODE_ENV: 'development' | 'production' | 'test'
-  readonly CHAIN_ID: '1' | '10' | '31337' | '11155111' | '11155420' | '84532'
-  readonly ANKR_ID: string
-  readonly INFURA_ID: string
-  readonly LLAMAFOLIO_ID: string
-  readonly MAINNET_ALCHEMY_ID: string
-  readonly OPTIMISM_ALCHEMY_ID: string
-  readonly SEPOLIA_ALCHEMY_ID: string
-  readonly BASE_SEPOLIA_ALCHEMY_ID: string
-  readonly OP_SEPOLIA_ALCHEMY_ID: string
-  readonly ETHEREUM_LOCAL_NODE_URL: string
+  readonly CHAIN_ID: '1' | '10' | '8453'
   readonly DATABASE_URL: string
-  readonly ENABLE_DATABASE_LOGGING: string
-  readonly ANVIL_ACCOUNT_PRIVATE_KEY: `0x${string}`
   readonly EFP_CONTRACT_ACCOUNT_METADATA: `0x${string}`
-  readonly EFP_CONTRACT_LIST_METADATA: `0x${string}`
-  readonly EFP_CONTRACT_LINT_MINTER: `0x${string}`
   readonly EFP_CONTRACT_LIST_REGISTRY: `0x${string}`
   readonly EFP_CONTRACT_LIST_RECORDS: `0x${string}`
-  readonly QUIKNODE_ID: string
-  readonly QUIKNODE_PREFIX: string
-  readonly SNITCH_ID: string
+  readonly SNITCH_ID: string | undefined
   readonly START_BLOCK: string
   readonly BATCH_SIZE: number
   readonly RECOVER_HISTORY: string
+  readonly PRIMARY_RPC_BASE: string
+  readonly SECONDARY_RPC_BASE: string
+  readonly PRIMARY_RPC_OP: string
+  readonly SECONDARY_RPC_OP: string
+  readonly PRIMARY_RPC_ETH: string
+  readonly SECONDARY_RPC_ETH: string
+  readonly RECORDS_ONLY: string
 }
 
 declare module 'bun' {

@@ -181,58 +181,58 @@ export const efpAccountMetadataAbi = [
     ],
     name: 'OwnershipTransferred'
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Paused'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'proxy',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'ProxyAdded'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'proxy',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'ProxyRemoved'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Unpaused'
-  },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Paused'
+  //   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'proxy',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'ProxyAdded'
+  //   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'proxy',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'ProxyRemoved'
+  //   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Unpaused'
+  //   },
   {
     type: 'event',
     anonymous: false,
@@ -725,32 +725,32 @@ export const efpListRecordsAbi = [
     ],
     name: 'OwnershipTransferred'
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Paused'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Unpaused'
-  },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Paused'
+  //   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Unpaused'
+  //   },
   {
     type: 'event',
     anonymous: false,
@@ -1182,15 +1182,30 @@ export const efpListRegistryAbi = [
     type: 'event',
     anonymous: false,
     inputs: [
+      { name: 'owner', internalType: 'address', type: 'address', indexed: true },
+      { name: 'operator', internalType: 'address', type: 'address', indexed: true },
       {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
+        name: 'approved',
+        internalType: 'bool',
+        type: 'bool',
         indexed: false
       }
     ],
-    name: 'Unpaused'
+    name: 'ApprovalForAll'
   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Unpaused'
+  //   },
   {
     type: 'event',
     anonymous: false,
@@ -1523,32 +1538,32 @@ export const listMetadataAbi = [
     ],
     name: 'OwnershipTransferred'
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Paused'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Unpaused'
-  },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Paused'
+  //   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Unpaused'
+  //   },
   {
     type: 'event',
     anonymous: false,
@@ -1828,32 +1843,32 @@ export const listRecordsAbi = [
     ],
     name: 'OwnershipTransferred'
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Paused'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'account',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'Unpaused'
-  },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Paused'
+  //   },
+  //   {
+  //     type: 'event',
+  //     anonymous: false,
+  //     inputs: [
+  //       {
+  //         name: 'account',
+  //         internalType: 'address',
+  //         type: 'address',
+  //         indexed: false
+  //       }
+  //     ],
+  //     name: 'Unpaused'
+  //   },
   {
     type: 'event',
     anonymous: false,

@@ -61,7 +61,6 @@ export class ContractEventPublisher implements EventPublisher {
     let i = 0
     const logs: Log[] = []
     for (const eventSignature of eventSignatures) {
-      await sleep(500)
       console.log(
         `Fetching historical logs for ${this.contractName} ${eventSignature} (${++i}/${eventSignatures.length})`
       )
@@ -135,7 +134,7 @@ export class ContractEventPublisher implements EventPublisher {
     if (env.RECOVER_HISTORY === 'true') {
       // Fetch and process historical events
       const latestBlock = await this.client.getBlockNumber()
-      const batchSize = 10000n
+      const batchSize = 2000n
       for (let fromBlock = BigInt(env.START_BLOCK); fromBlock <= latestBlock; fromBlock += batchSize) {
         const toBlock = fromBlock + batchSize - 1n
         logger.info(`Fetching historical events for ${this.contractName} from block ${fromBlock} to ${toBlock}`)

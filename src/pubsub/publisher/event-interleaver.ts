@@ -167,7 +167,6 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
         await this.#propagateBatch(batch)
         batch = []
       }
-      //   await sleep(1000)
     }
 
     // Propagate any remaining events in the last batch
@@ -182,6 +181,8 @@ export class EventInterleaver implements EventPublisher, EventSubscriber {
   }
 
   async #propagateBatch(events: Event[]): Promise<void> {
-    await Promise.allSettled(this.subscribers.map(subscriber => subscriber.onEvents(events)))
+    for (const subscriber of this.subscribers) {
+      await subscriber.onEvents(events)
+    }
   }
 }

@@ -142,11 +142,7 @@ BEGIN
             -- match the address parameter
             v.record_data = addr_bytea AND
             -- Valid record data lookup
-            v.user IS NOT NULL AND
-            -- NOT blocked
-            v.has_block_tag = FALSE AND
-            -- NOT muted
-            v.has_mute_tag = FALSE
+            v.user IS NOT NULL
         GROUP BY
             v.user,
             v.token_id,

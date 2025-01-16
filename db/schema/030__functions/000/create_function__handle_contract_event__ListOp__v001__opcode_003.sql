@@ -38,7 +38,7 @@ BEGIN
         p_slot,
         p_list_op__v001__opcode_003.record,
         p_list_op__v001__opcode_003.tag
-    );
+    ) ON CONFLICT DO NOTHING;
 END;
 $$;
 
