@@ -53,4 +53,4 @@ done
 
 bunx dbmate up
 
-# bun database:generate-types
+bun database:generate-types
