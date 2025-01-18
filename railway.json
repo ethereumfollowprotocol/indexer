@@ -10,5 +10,5 @@
     "restartPolicyType": "ALWAYS",
     "restartPolicyMaxRetries": 4,
     "region": "us-east1"
-}
+  }
 }
