@@ -8,7 +8,6 @@
   "deploy": {
     "startCommand": "bun --hot --watch ./src/index.ts",
     "restartPolicyType": "ALWAYS",
-    "restartPolicyMaxRetries": 4,
-    "region": "us-east1"
+    "restartPolicyMaxRetries": 4
   }
 }
