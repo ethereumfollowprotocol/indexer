@@ -125,34 +125,36 @@ BEGIN
     ) ON COMMIT DROP;
 
     INSERT INTO temp_addr_follows SELECT
-            v.user AS follower,
-            v.token_id AS efp_list_nft_token_id,
-            v.record_version,
-            v.record_type,
-            v.record_data,
-            COALESCE(v.tags, '{}') AS tags,
-            v.updated_at
-        FROM
-            public.view__join__efp_list_records_with_nft_manager_user_tags AS v
-        WHERE
-            -- only list record version 1
-            v.record_version = 1 AND
-            -- address record type (1)
-            v.record_type = 1 AND
-            -- match the address parameter
-            v.record_data = addr_bytea AND
-            -- Valid record data lookup
-            v.user IS NOT NULL
-        GROUP BY
-            v.user,
-            v.token_id,
-            v.record_version,
-            v.record_type,
-            v.record_data,
-            v.tags,
-            v.updated_at 
-        ORDER BY
-            v.user ASC;
+        l.user AS follower,
+        l.token_id AS efp_list_nft_token_id,
+        r.record_version,
+        r.record_type,
+        r.record_data,
+        array_agg(t.tag) FILTER (WHERE t.tag IS NOT NULL) AS tags,
+        r.updated_at
+
+    FROM efp_list_records r
+    LEFT JOIN efp_list_record_tags t ON r.chain_id::bigint = t.chain_id::bigint AND r.contract_address::text = t.contract_address::text AND r.slot::bytea = t.slot::bytea AND r.record = t.record
+    JOIN view__join__efp_lists_with_metadata l ON l.list_storage_location_chain_id = r.chain_id::bigint AND l.list_storage_location_contract_address::text = r.contract_address::text AND l.list_storage_location_slot::bytea = r.slot::bytea
+    JOIN efp_account_metadata meta ON l."user"::text = meta.address::text AND l.token_id::bigint = convert_hex_to_bigint(meta.value::text)
+    
+    WHERE
+        -- only list record version 1
+        r.record_version = 1 AND
+        -- address record type (1)
+        r.record_type = 1 AND
+        -- match the address parameter
+        r.record_data = addr_bytea AND
+        -- Valid record data lookup
+        l.user IS NOT NULL 
+    GROUP BY
+        l.user,
+        l.token_id,
+        r.record_version,
+        r.record_type,
+        r.record_data,
+        r.updated_at ;
+    -- ORDER BY
 
     RETURN QUERY
         SELECT
