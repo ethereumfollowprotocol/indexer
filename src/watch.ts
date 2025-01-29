@@ -70,10 +70,11 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
       logger.info('Waiting for events...')
       await sleep(1_000)
       heartbeat++
-      if (heartbeat > 300 && env.SNITCH_ID && env.SNITCH_ID !== '0') {
+      if (heartbeat > 300 && env.HEARTBEAT_URL && env.HEARTBEAT_URL !== 'unset') {
         // call snitch
         try {
-          const response = await fetch(`https://nosnch.in/${env.SNITCH_ID}`)
+          const response = await fetch(`${env.HEARTBEAT_URL}`)
+          const text = await response.text()
           logger.info(`Heartbeat registered`)
           heartbeat = 0
         } catch (err) {

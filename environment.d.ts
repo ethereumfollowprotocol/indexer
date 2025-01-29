@@ -5,7 +5,7 @@ interface EnvironmentVariables {
   readonly EFP_CONTRACT_ACCOUNT_METADATA: `0x${string}`
   readonly EFP_CONTRACT_LIST_REGISTRY: `0x${string}`
   readonly EFP_CONTRACT_LIST_RECORDS: `0x${string}`
-  readonly SNITCH_ID: string | undefined
+  readonly HEARTBEAT_URL: string
   readonly START_BLOCK: string
   readonly BATCH_SIZE: number
   readonly RECOVER_HISTORY: string
