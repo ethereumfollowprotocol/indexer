@@ -1,5 +1,5 @@
 import { http, createPublicClient, fallback, walletActions, webSocket } from 'viem'
-import { base, mainnet, optimism, baseSepolia, optimismSepolia, sepolia} from 'viem/chains'
+import { base, baseSepolia, mainnet, optimism, optimismSepolia, sepolia } from 'viem/chains'
 import { env } from '#/env.ts'
 
 export const evmClients = {
@@ -31,28 +31,28 @@ export const evmClients = {
 
   '11155111': () =>
     createPublicClient({
-        key: 'mainnet-sepolia-client',
-        name: 'Mainnet Sepolia Client',
-        chain: sepolia,
-        transport: fallback([http(env.PRIMARY_RPC_ETH), http(env.SECONDARY_RPC_ETH)], {
+      key: 'mainnet-sepolia-client',
+      name: 'Mainnet Sepolia Client',
+      chain: sepolia,
+      transport: fallback([http(env.PRIMARY_RPC_ETH), http(env.SECONDARY_RPC_ETH)], {
         rank: false
-        }),
-        batch: { multicall: true }
+      }),
+      batch: { multicall: true }
     }).extend(walletActions),
   '11155420': () =>
     createPublicClient({
-        key: 'optimism-sepolia-client',
-        name: 'Optimism Sepolia Client',
-        chain: optimismSepolia,
-        transport: fallback([http(env.PRIMARY_RPC_OP), http(env.SECONDARY_RPC_OP)], { rank: false }),
-        batch: { multicall: true }
+      key: 'optimism-sepolia-client',
+      name: 'Optimism Sepolia Client',
+      chain: optimismSepolia,
+      transport: fallback([http(env.PRIMARY_RPC_OP), http(env.SECONDARY_RPC_OP)], { rank: false }),
+      batch: { multicall: true }
     }).extend(walletActions),
   '84532': () =>
     createPublicClient({
-        key: 'base-sepolia-client',
-        name: 'Base Sepolia Client',
-        chain: baseSepolia,
-        transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false })
+      key: 'base-sepolia-client',
+      name: 'Base Sepolia Client',
+      chain: baseSepolia,
+      transport: fallback([http(env.PRIMARY_RPC_BASE), http(env.SECONDARY_RPC_BASE)], { rank: false })
     }).extend(walletActions)
 }
 
