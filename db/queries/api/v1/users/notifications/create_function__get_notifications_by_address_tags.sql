@@ -3,7 +3,7 @@
 --
 -------------------------------------------------------------------------------
 CREATE
-OR REPLACE FUNCTION query.get_notifications_by_address_tags (p_address types.eth_address, p_opcode BIGINT, p_interval INTERVAL, p_tag types.efp_tag, p_limit BIGINT, p_offset BIGINT) RETURNS TABLE (
+OR REPLACE FUNCTION query.get_notifications_by_address_tags (p_address types.eth_address, p_opcode BIGINT, p_start_timestamp BIGINT, p_interval INTERVAL, p_tag types.efp_tag, p_limit BIGINT, p_offset BIGINT) RETURNS TABLE (
     address types.eth_address,
     name TEXT,
     avatar TEXT,
@@ -34,7 +34,10 @@ BEGIN
         LEFT JOIN ens_metadata ens ON l.user = ens.address
     WHERE r.op ~ substring(normalized_addr, 3, 40) 
 		AND (p_opcode = 0 OR r.opcode = p_opcode)
-        AND (p_interval = '999:00:00' OR (now() - r.updated_at) <= p_interval)
+        AND (p_interval = '999:00:00' OR (
+            r.updated_at <= TO_TIMESTAMP(p_start_timestamp)
+            AND r.updated_at >= TO_TIMESTAMP(p_start_timestamp) - p_interval
+		))
         AND (p_tag = 'p_tag_empty' OR convert_from(decode(substring(r.op, 51, 64), 'hex')::bytea, 'utf-8') = p_tag)
     ORDER BY r.updated_at DESC
     LIMIT p_limit   
