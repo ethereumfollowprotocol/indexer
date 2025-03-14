@@ -36,10 +36,19 @@ BEGIN
     normalized_addr := public.normalize_eth_address(p_address);
 
     -- Get the primary list token id
-    SELECT v.primary_list_token_id
+    SELECT l.token_id 
     INTO primary_list_token_id
-    FROM public.view__events__efp_accounts_with_primary_list AS v
-    WHERE v.address = normalized_addr;
+    FROM public.efp_lists l 
+    JOIN public.efp_list_metadata m 
+        ON m.chain_id = l.list_storage_location_chain_id
+        AND m.contract_address = l.list_storage_location_contract_address
+        AND m.slot = l.list_storage_location_slot,
+    efp_account_metadata meta
+    WHERE meta.address::text = m.value::text 
+        AND meta.key = 'primary-list'
+        AND convert_hex_to_bigint(meta.value::text) = l.token_id::bigint
+        AND meta.address = normalized_addr
+    GROUP BY l.token_id;
 
     -- If no primary list token id is found, return an empty result set
     IF primary_list_token_id IS NULL THEN

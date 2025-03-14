@@ -16,7 +16,14 @@ OR REPLACE FUNCTION query.get_recommended_stack_by_list (p_list_id INT, p_limit 
   top8_rank BIGINT,
   blocks_rank BIGINT
 ) LANGUAGE plpgsql AS $$
+DECLARE
+    normalized_addr types.eth_address;
 BEGIN
+    SELECT v.user 
+    INTO normalized_addr
+    FROM public.view__join__efp_lists_with_metadata as v 
+    WHERE token_id = p_list_id;
+
     RETURN QUERY
 
 	SELECT 
@@ -39,6 +46,7 @@ BEGIN
 		FROM query.get_all_following_by_list(p_list_id) fol
 		WHERE r.address = fol.following_address
 	)
+    AND r.address <> normalized_addr
 	ORDER BY r.index ASC
     LIMIT p_limit   
     OFFSET p_offset;

@@ -7,6 +7,7 @@ OR REPLACE FUNCTION query.get_leaderboard_ranked (p_limit INT, p_offset INT, p_c
   address types.eth_address,
   name text,
   avatar text,
+  header text,
   mutuals_rank BIGINT,
   followers_rank BIGINT,
   following_rank BIGINT,

@@ -7,6 +7,7 @@ CREATE TABLE
     "address" types.eth_address NOT NULL,
     "name" TEXT,
     "avatar" TEXT,
+    "header" TEXT,
     "followers" BIGINT DEFAULT 0,
     "following" BIGINT DEFAULT 0,
     "_index" BIGINT DEFAULT 0,
