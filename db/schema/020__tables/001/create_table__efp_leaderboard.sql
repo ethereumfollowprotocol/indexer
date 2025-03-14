@@ -7,6 +7,7 @@ CREATE TABLE
     "address" types.eth_address NOT NULL,
     "name" TEXT,
     "avatar" TEXT,
+    "header" TEXT,
     "mutuals_rank" BIGINT,
     "followers_rank" BIGINT,
     "following_rank" BIGINT,

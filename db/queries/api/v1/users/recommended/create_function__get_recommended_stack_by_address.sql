@@ -43,6 +43,7 @@ BEGIN
         FROM query.get_all_following__record_type_001(normalized_addr) fol
         WHERE r.address = fol.following_address
     )
+    AND efp_recommended.address <> normalized_addr
     ORDER BY r.index ASC
     LIMIT p_limit   
     OFFSET p_offset;

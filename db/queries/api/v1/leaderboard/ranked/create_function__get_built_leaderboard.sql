@@ -7,6 +7,7 @@ OR REPLACE FUNCTION query.get_built_leaderboard () RETURNS TABLE (
   address types.eth_address,
   name text,
   avatar text,
+  header text,
   mutuals_rank BIGINT,
   followers_rank BIGINT,
   following_rank BIGINT,
@@ -19,9 +20,6 @@ OR REPLACE FUNCTION query.get_built_leaderboard () RETURNS TABLE (
   top8 BIGINT
 ) LANGUAGE plpgsql AS $$
 
-DECLARE
-	direction text;
-    col text;
 BEGIN
 
 -- build a table of all list records with tags 
@@ -183,6 +181,7 @@ BEGIN
         SELECT efp.address,
         COALESCE(ens.name) AS ens_name,
         COALESCE(ens.avatar) AS ens_avatar,
+        REPLACE(ens.records->>'header', '"', '') as header, 
         mut.mutuals_rank,
         fers.followers_rank,
         fing.following_rank,
