@@ -8,6 +8,7 @@ CREATE TABLE
     "name" TEXT NOT NULL,
     "address" types.eth_address NOT NULL,
     "avatar" TEXT,
+    "header" TEXT,
     "class" TEXT,
     created_at TIMESTAMP
     WITH

@@ -25,11 +25,10 @@ BEGIN
         efp_recommended.name,
         efp_recommended.address,
         efp_recommended.avatar,
-        meta.records->>'header' as header,
+        efp_recommended.header,
         efp_recommended.class,
         efp_recommended.created_at
     FROM public.efp_recommended
-    LEFT JOIN public.ens_metadata meta ON efp_recommended.address = meta.address
     WHERE NOT EXISTS (
         SELECT 1 
         FROM query.get_all_following_by_list(p_list_id) fol
