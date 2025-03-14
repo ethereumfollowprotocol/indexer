@@ -30,10 +30,23 @@ DECLARE
 BEGIN
     follower_addr := public.normalize_eth_address(p_follower_address);
 
-    SELECT v.primary_list_token_id
+    -- SELECT v.primary_list_token_id
+    -- INTO follower_list_id
+    -- FROM public.view__events__efp_accounts_with_primary_list AS v
+    -- WHERE v.address = follower_addr;
+    SELECT l.token_id 
     INTO follower_list_id
-    FROM public.view__events__efp_accounts_with_primary_list AS v
-    WHERE v.address = follower_addr;
+    FROM public.efp_lists l 
+    JOIN public.efp_list_metadata m 
+        ON m.chain_id = l.list_storage_location_chain_id
+        AND m.contract_address = l.list_storage_location_contract_address
+        AND m.slot = l.list_storage_location_slot,
+    efp_account_metadata meta
+    WHERE meta.address::text = m.value::text 
+        AND meta.key = 'primary-list'
+        AND convert_hex_to_bigint(meta.value::text) = l.token_id::bigint
+        AND meta.address = follower_addr
+    GROUP BY l.token_id;
 
     SELECT
         v.efp_list_storage_location_chain_id,
