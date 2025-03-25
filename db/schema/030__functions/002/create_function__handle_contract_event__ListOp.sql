@@ -53,20 +53,22 @@ BEGIN
     -- Handle the operation
     CASE list_op.version
       WHEN 1 THEN
-          list_op__v001 := (
-              list_op.version::types.uint8__1,
-              list_op.opcode,
-              list_op.data
-          )::types.efp_list_op__v001;
-          PERFORM public.handle_contract_event__ListOp__v001(
-            p_chain_id,
-            p_contract_address,
-            p_slot,
-            p_list_op_hex,
-            list_op__v001
-          );
+		  IF list_op.opcode IS NOT NULL THEN
+	          list_op__v001 := (
+	              list_op.version::types.uint8__1,
+	              list_op.opcode,
+	              list_op.data
+	          )::types.efp_list_op__v001;
+	          PERFORM public.handle_contract_event__ListOp__v001(
+	            p_chain_id,
+	            p_contract_address,
+	            p_slot,
+	            p_list_op_hex,
+	            list_op__v001
+	          );
+		  END IF;
       ELSE
-          RAISE EXCEPTION 'Unsupported list op version: %', list_op.version;
+          -- RAISE EXCEPTION 'Unsupported list op version: %', list_op.version;
     END CASE;
 END;
 $$;

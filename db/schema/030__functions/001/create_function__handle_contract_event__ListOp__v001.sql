@@ -25,61 +25,69 @@ DECLARE
 BEGIN
     CASE p_list_op__v001.opcode
         WHEN 1 THEN
-            PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
-              p_chain_id,
-              p_contract_address,
-              p_slot,
-              p_list_op_hex,
-              (
-                  p_list_op__v001.version,
-                  p_list_op__v001.opcode::types.uint8__1,
-                  p_list_op__v001.data
-              )::types.efp_list_op__v001__opcode_001
-            );
+			IF LENGTH(p_list_op__v001.data) = 24 THEN
+	            PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
+	              p_chain_id,
+	              p_contract_address,
+	              p_slot,
+	              p_list_op_hex,
+	              (
+	                  p_list_op__v001.version,
+	                  p_list_op__v001.opcode::types.uint8__1,
+	                  p_list_op__v001.data
+	              )::types.efp_list_op__v001__opcode_001
+	            );
+			END IF;
         WHEN 2 THEN
-            PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
-              p_chain_id,
-              p_contract_address,
-              p_slot,
-              p_list_op_hex,
-              (
-                  p_list_op__v001.version,
-                  p_list_op__v001.opcode::types.uint8__2,
-                  p_list_op__v001.data
-              )::types.efp_list_op__v001__opcode_002
-            );
+			IF LENGTH(p_list_op__v001.data) = 24 THEN
+	            PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
+	              p_chain_id,
+	              p_contract_address,
+	              p_slot,
+	              p_list_op_hex,
+	              (
+	                  p_list_op__v001.version,
+	                  p_list_op__v001.opcode::types.uint8__2,
+	                  p_list_op__v001.data
+	              )::types.efp_list_op__v001__opcode_002
+	            );
+			END IF;
         WHEN 3 THEN
-            pair_list_record_tag := public.unpack__list_record_tag(
-              p_list_op__v001.data
-            );
-            PERFORM public.handle_contract_event__ListOp__v001__opcode_003(
-              p_chain_id,
-              p_contract_address,
-              p_slot,
-              p_list_op_hex,
-              (
-                  p_list_op__v001.version,
-                  p_list_op__v001.opcode::types.uint8__3,
-                  pair_list_record_tag.list_record_bytea,
-                  pair_list_record_tag.tag
-              )::types.efp_list_op__v001__opcode_003
-            );
+			IF LENGTH(p_list_op__v001.data) > 24 THEN
+	            pair_list_record_tag := public.unpack__list_record_tag(
+	              p_list_op__v001.data
+	            );
+	            PERFORM public.handle_contract_event__ListOp__v001__opcode_003(
+	              p_chain_id,
+	              p_contract_address,
+	              p_slot,
+	              p_list_op_hex,
+	              (
+	                  p_list_op__v001.version,
+	                  p_list_op__v001.opcode::types.uint8__3,
+	                  pair_list_record_tag.list_record_bytea,
+	                  pair_list_record_tag.tag
+	              )::types.efp_list_op__v001__opcode_003
+	            );
+			END IF;
         WHEN 4 THEN
-            pair_list_record_tag := public.unpack__list_record_tag(
-              p_list_op__v001.data
-            );
-            PERFORM public.handle_contract_event__ListOp__v001__opcode_004(
-              p_chain_id,
-              p_contract_address,
-              p_slot,
-              p_list_op_hex,
-              (
-                  p_list_op__v001.version,
-                  p_list_op__v001.opcode::types.uint8__4,
-                  pair_list_record_tag.list_record_bytea,
-                  pair_list_record_tag.tag
-              )::types.efp_list_op__v001__opcode_004
-            );
+			IF LENGTH(p_list_op__v001.data) > 24 THEN
+	            pair_list_record_tag := public.unpack__list_record_tag(
+	              p_list_op__v001.data
+	            );
+	            PERFORM public.handle_contract_event__ListOp__v001__opcode_004(
+	              p_chain_id,
+	              p_contract_address,
+	              p_slot,
+	              p_list_op_hex,
+	              (
+	                  p_list_op__v001.version,
+	                  p_list_op__v001.opcode::types.uint8__4,
+	                  pair_list_record_tag.list_record_bytea,
+	                  pair_list_record_tag.tag
+	              )::types.efp_list_op__v001__opcode_004
+	            );
+			END IF;
         ELSE
             RAISE EXCEPTION 'Unsupported list op version 1 opcode: %',
                 p_list_op__v001.opcode;

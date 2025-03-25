@@ -221,9 +221,9 @@ BEGIN
         WHEN list_op_opcode = 1 THEN
             PERFORM public.validate_list_op__v001__opcode_001(p_op_bytea);
         WHEN list_op_opcode = 2 THEN
-            PERFORM public.validate_list_op__v001__opcode_002(p_op_bytea);
+            -- PERFORM public.validate_list_op__v001__opcode_002(p_op_bytea);
         WHEN list_op_opcode = 3 THEN
-            PERFORM public.validate_list_op__v001__opcode_003(p_op_bytea);
+            -- PERFORM public.validate_list_op__v001__opcode_003(p_op_bytea);
         WHEN list_op_opcode = 4 THEN
             PERFORM public.validate_list_op__v001__opcode_004(p_op_bytea);
         ELSE
@@ -282,6 +282,9 @@ BEGIN
         RETURN (NULL, NULL, NULL);
     END IF;
 
+    IF list_op_bytea IS NULL THEN
+        RETURN (NULL, NULL, NULL);
+    END IF;
     ----------------------------------------
     -- version
     ----------------------------------------
@@ -299,8 +302,9 @@ BEGIN
             -- technically both "opcode" and "data" are defined by the
             -- list op version 1 schema and so they may not exist in
             -- other versions, so we just return NULL for both
-            list_op_opcode := NULL;
-            list_op_data := NULL;
+        
+			list_op_opcode := '00';
+            list_op_data := '00';
     END CASE;
 
     RETURN (
