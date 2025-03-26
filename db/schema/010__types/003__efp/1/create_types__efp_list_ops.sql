@@ -302,8 +302,7 @@ BEGIN
             -- technically both "opcode" and "data" are defined by the
             -- list op version 1 schema and so they may not exist in
             -- other versions, so we just return NULL for both
-        
-			list_op_opcode := '00';
+            list_op_opcode := '00';
             list_op_data := '00';
     END CASE;
 
