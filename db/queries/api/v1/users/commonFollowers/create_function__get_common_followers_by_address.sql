@@ -7,6 +7,7 @@ OR REPLACE FUNCTION query.get_common_followers_by_address(p_user_address types.e
     address types.eth_address,
     name TEXT,
     avatar TEXT,
+    header TEXT,
     mutuals_rank BIGINT
 ) LANGUAGE plpgsql AS $$
 DECLARE
@@ -164,6 +165,7 @@ SELECT
     public.hexlify(r.record_data)::types.eth_address as address,
     l.name,
     l.avatar,
+    l.header,
     l.mutuals_rank as mutuals_rank
 FROM temp_list_records r
 INNER JOIN public.efp_leaderboard l ON l.address = public.hexlify(r.record_data)
