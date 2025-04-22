@@ -12,44 +12,43 @@ let kyselyInstance = new Kysely<DB>({
   dialect: new PostgresJSDialect({ postgres: postgresClient })
 })
 
-let retryTimeout: ReturnType<typeof setTimeout> | null = null;
+let retryTimeout: ReturnType<typeof setTimeout> | null = null
 
 function scheduleReconnect() {
-  if (retryTimeout) return;
+  if (retryTimeout) return
   retryTimeout = setTimeout(() => {
-    retryTimeout = null;
+    retryTimeout = null
     try {
-      postgresClient = postgres(env.DATABASE_URL);
+      postgresClient = postgres(env.DATABASE_URL)
       kyselyInstance = new Kysely<DB>({
         dialect: new PostgresJSDialect({ postgres: postgresClient })
-      });
-      console.log('[POSTGRES] Reconnected successfully');
+      })
+      console.log('[POSTGRES] Reconnected successfully')
     } catch (err) {
-      console.error('[POSTGRES] Reconnection attempt failed:', err);
-      scheduleReconnect();
+      console.error('[POSTGRES] Reconnection attempt failed:', err)
+      scheduleReconnect()
     }
-  }, 5000);
+  }, 5000)
 }
 
 const database: Kysely<DB> = new Proxy({} as Kysely<DB>, {
   get(_, prop) {
-    const target = kyselyInstance[prop as keyof Kysely<DB>];
+    const target = kyselyInstance[prop as keyof Kysely<DB>]
 
     if (typeof target === 'function') {
       return (...args: any[]) => {
         try {
-          return (kyselyInstance[prop as keyof Kysely<DB>] as any)(...args);
+          return (kyselyInstance[prop as keyof Kysely<DB>] as any)(...args)
         } catch (err) {
-          console.error(`[POSTGRES] Kysely method ${String(prop)} failed:`, err);
-          scheduleReconnect();
-          throw err;
+          console.error(`[POSTGRES] Kysely method ${String(prop)} failed:`, err)
+          scheduleReconnect()
+          throw err
         }
-      };
+      }
     }
 
-    return target;
+    return target
   }
-});
+})
 
-export { database };
-
+export { database }
