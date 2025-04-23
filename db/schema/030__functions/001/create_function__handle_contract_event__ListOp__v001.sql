@@ -25,7 +25,7 @@ DECLARE
 BEGIN
     CASE p_list_op__v001.opcode
         WHEN 1 THEN
-			IF LENGTH(p_list_op__v001.data) = 24 THEN
+			IF LENGTH(p_list_op__v001.data) = 22 THEN
 	            PERFORM public.handle_contract_event__ListOp__v001__opcode_001(
 	              p_chain_id,
 	              p_contract_address,
@@ -39,7 +39,7 @@ BEGIN
 	            );
 			END IF;
         WHEN 2 THEN
-			IF LENGTH(p_list_op__v001.data) = 24 THEN
+			IF LENGTH(p_list_op__v001.data) = 22 THEN
 	            PERFORM public.handle_contract_event__ListOp__v001__opcode_002(
 	              p_chain_id,
 	              p_contract_address,
@@ -53,7 +53,7 @@ BEGIN
 	            );
 			END IF;
         WHEN 3 THEN
-			IF LENGTH(p_list_op__v001.data) > 24 THEN
+			IF LENGTH(p_list_op__v001.data) > 22 THEN
 	            pair_list_record_tag := public.unpack__list_record_tag(
 	              p_list_op__v001.data
 	            );
@@ -71,7 +71,7 @@ BEGIN
 	            );
 			END IF;
         WHEN 4 THEN
-			IF LENGTH(p_list_op__v001.data) > 24 THEN
+			IF LENGTH(p_list_op__v001.data) > 22 THEN
 	            pair_list_record_tag := public.unpack__list_record_tag(
 	              p_list_op__v001.data
 	            );

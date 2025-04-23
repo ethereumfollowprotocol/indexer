@@ -53,7 +53,7 @@ BEGIN
     -- Handle the operation
     CASE list_op.version
       WHEN 1 THEN
-		  IF list_op.opcode IS NOT NULL THEN
+		--   IF list_op.opcode IS NOT NULL THEN
 	          list_op__v001 := (
 	              list_op.version::types.uint8__1,
 	              list_op.opcode,
@@ -66,7 +66,7 @@ BEGIN
 	            p_list_op_hex,
 	            list_op__v001
 	          );
-		  END IF;
+		--   END IF;
       ELSE
           -- RAISE EXCEPTION 'Unsupported list op version: %', list_op.version;
     END CASE;
