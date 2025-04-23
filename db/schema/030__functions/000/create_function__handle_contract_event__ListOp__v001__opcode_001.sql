@@ -28,26 +28,28 @@ DECLARE
     list_record types.efp_list_record;
 BEGIN
     list_record_hex := public.hexlify(p_list_op__v001__opcode_001.record);
-    list_record := public.decode__list_record(list_record_hex);
+    if list_record_hex IS NOT NULL THEN
+        list_record := public.decode__list_record(list_record_hex);
 
-    INSERT INTO public.efp_list_records (
-        chain_id,
-        contract_address,
-        slot,
-        record,
-        record_version,
-        record_type,
-        record_data
-    )
-    VALUES (
-        p_chain_id,
-        p_contract_address,
-        p_slot,
-        p_list_op__v001__opcode_001.record,
-        list_record.version,
-        list_record.record_type,
-        list_record.data
-    ) ON CONFLICT DO NOTHING;
+        INSERT INTO public.efp_list_records (
+            chain_id,
+            contract_address,
+            slot,
+            record,
+            record_version,
+            record_type,
+            record_data
+        )
+        VALUES (
+            p_chain_id,
+            p_contract_address,
+            p_slot,
+            p_list_op__v001__opcode_001.record,
+            list_record.version,
+            list_record.record_type,
+            list_record.data
+        ) ON CONFLICT DO NOTHING;
+    END IF;
 END;
 $$;
 
