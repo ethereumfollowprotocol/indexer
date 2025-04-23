@@ -170,6 +170,10 @@ BEGIN
         RETURN (NULL, NULL, NULL);
     END IF;
 
+    IF record_bytea IS NULL THEN
+        RETURN (NULL, NULL, NULL);
+    END IF;
+
     ----------------------------------------
     -- version
     ----------------------------------------
@@ -186,8 +190,8 @@ BEGIN
             -- technically both "record_type" and "data" are defined by the
             -- list record version 1 schema and so they may not exist in
             -- other versions, so we just return NULL for both
-            record_type := NULL;
-            record_data := NULL;
+            record_type := '00';
+            record_data := '00';
     END CASE;
 
     RETURN (record_version, record_type, record_data::types.bytea__not_null);
