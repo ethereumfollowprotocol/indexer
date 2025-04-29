@@ -19,7 +19,8 @@ CREATE TABLE
       updated_at TIMESTAMP
     WITH
       TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY ("address")
+      PRIMARY KEY ("address"),
+      CONSTRAINT unique_name UNIQUE ("name")
   );
 
 CREATE TRIGGER

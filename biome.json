@@ -48,7 +48,8 @@
         "noForEach": "off",
         "useLiteralKeys": "off",
         "noUselessEmptyExport": "off",
-        "noUselessTernary": "off"
+        "noUselessTernary": "off",
+        "noBannedTypes": "off"
       },
       "correctness": {
         "all": true,
