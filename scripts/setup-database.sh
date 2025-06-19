@@ -7,6 +7,7 @@ migrations_dir="db/migrations"
 schema_dir="db/schema"
 queries_dir="db/queries"
 functions_dir="db/functions"
+patch_dir="db/patch"
 
 # Create the migrations directory if it does not exist
 mkdir -p "$migrations_dir"
@@ -29,6 +30,7 @@ aggregate_files() {
 aggregate_files "$schema_dir"
 aggregate_files "$queries_dir"
 aggregate_files "$functions_dir"
+aggregate_files "$patch_dir"
 
 # Counter to prefix file names to preserve order
 counter=1
