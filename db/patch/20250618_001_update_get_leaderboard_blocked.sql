@@ -9,10 +9,10 @@ DROP VIEW
     IF EXISTS PUBLIC.view__join__efp_leaderboard CASCADE;
 
 DROP FUNCTION 
-    IF EXISTS query.get_leaderboard_blocked(bigint);
+    IF EXISTS query.get_leaderboard_blocked_or_muted(bigint);
 
 DROP FUNCTION 
-    IF EXISTS query.get_leaderboard_blocked_or_muted(bigint);
+    IF EXISTS query.get_leaderboard_blocked(bigint);
 
 CREATE
 OR REPLACE FUNCTION query.get_leaderboard_blocked (limit_count BIGINT) RETURNS TABLE (address types.eth_address, blocked_count BIGINT, blocked_rank BIGINT) LANGUAGE PLPGSQL AS $$
