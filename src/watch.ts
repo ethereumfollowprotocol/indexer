@@ -10,6 +10,17 @@ import { efpAccountMetadataAbi, efpListMinterAbi, efpListRecordsAbi, efpListRegi
 import type { EvmClient } from './clients/viem/index'
 
 export async function watchAllEfpContractEvents({ client }: { client: EvmClient }) {
+
+  if (env.HEARTBEAT_URL && env.HEARTBEAT_URL !== 'unset') {
+    try {
+      const response = await fetch(`${env.HEARTBEAT_URL}`)
+      const text = await response.text()
+      logger.info(`Heartbeat registered`)
+    } catch (err) {
+        logger.info(`Failed to register heartbeat `)
+    }
+  }
+  
   try {
     const chainId: bigint = BigInt(await client.getChainId())
 
