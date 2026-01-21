@@ -40,7 +40,14 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
         efpListRegistryAbi,
         env.EFP_CONTRACTS.LIST_REGISTRY
       ),
-      new ContractEventPublisher(client, chainId, 'EFPListRecords', efpListRecordsAbi, env.EFP_CONTRACTS.LIST_RECORDS)
+      new ContractEventPublisher(client, chainId, 'EFPListRecords', efpListRecordsAbi, env.EFP_CONTRACTS.LIST_RECORDS),
+      new ContractEventPublisher(
+        client,
+        chainId,
+        'EFPListRecordsV2',
+        efpListRecordsAbi,
+        env.EFP_CONTRACTS.LIST_RECORDS_V2
+      )
     ]
 
     // 2. Collect and interleave events in to a single ordered steam
@@ -55,10 +62,12 @@ export async function watchAllEfpContractEvents({ client }: { client: EvmClient 
     logger.log('Started EventInterleaver publisher')
 
     if (env.RECORDS_ONLY === 'true') {
-      await publishers[2]?.start()
+      await Promise.all([publishers[2], publishers[3]].map(publisher => publisher?.start()))
       logger.log('Started in ListRecords only mode')
     } else {
-      await Promise.all([publishers[0], publishers[1], publishers[2]].map(publisher => publisher?.start()))
+      await Promise.all(
+        [publishers[0], publishers[1], publishers[2], publishers[3]].map(publisher => publisher?.start())
+      )
       logger.log('Started in All Events mode')
     }
 
